@@ -1395,6 +1395,142 @@
       cursor: pointer;
     }
 
+    /* ── RUNWAY VISUALIZATION ── */
+    #rwyVisualization {
+      position: absolute;
+      right: calc(clamp(10px, 1.4vw, 28px) + 50px);
+      top: 50%;
+      transform: translateY(-50%);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 480ms ease;
+      z-index: 3;
+    }
+
+    .stage.rwy-filled #rwyVisualization {
+      opacity: 1;
+    }
+
+    .rwy-viz-track {
+      position: relative;
+      width: clamp(56px, 4.4vw, 92px);
+      height: clamp(440px, 64vh, 920px);
+      background: #0e0e0e;
+      border-radius: 3px;
+      box-shadow: 0 4px 22px rgba(0, 0, 0, 0.7), inset 0 0 0 1px rgba(255, 255, 255, 0.06);
+    }
+
+    /* Threshold piano stripes — BOTTOM of strip, thin lines */
+    .rwy-viz-threshold {
+      position: absolute;
+      bottom: 2%;
+      left: 12%;
+      right: 12%;
+      height: 5%;
+      background: repeating-linear-gradient(
+        to right,
+        rgba(255, 255, 255, 0.88) 0px,
+        rgba(255, 255, 255, 0.88) 3px,
+        transparent 3px,
+        transparent calc(100% / 8)
+      );
+    }
+
+    /* Runway number above threshold */
+    .rwy-viz-number {
+      position: absolute;
+      bottom: 9%;
+      left: 0;
+      right: 0;
+      text-align: center;
+      font-size: clamp(16px, 1.3vw, 26px);
+      font-weight: 700;
+      color: #ffffff;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+    }
+
+    /* Centerline segments – bottom-to-top layout */
+    .rwy-viz-cl {
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
+      width: clamp(3px, 0.28vw, 5px);
+      background: repeating-linear-gradient(
+        to top,
+        #ffffff 0%,
+        #ffffff 55%,
+        transparent 55%,
+        transparent 100%
+      );
+      background-size: 100% clamp(28px, 4vh, 52px);
+    }
+
+    /* Lower segment: from just above number up to centre gap */
+    .rwy-viz-cl-top {
+      top: 57%;
+      bottom: 17%;
+    }
+
+    /* Upper segment: from centre gap to top of strip */
+    .rwy-viz-cl-bottom {
+      top: 3%;
+      bottom: 44%;
+    }
+
+    /* Length label in the centre gap */
+    .rwy-viz-length-block {
+      position: absolute;
+      top: 44%;
+      bottom: 44%;
+      left: 0;
+      right: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .rwy-viz-length {
+      font-size: clamp(7px, 0.58vw, 11px);
+      color: rgba(255, 255, 255, 0.55);
+      writing-mode: vertical-rl;
+      transform: rotate(180deg);
+      letter-spacing: 1px;
+      white-space: nowrap;
+      text-transform: uppercase;
+    }
+
+    /* Scale bracket — right side, aligned with lower centerline */
+    .rwy-viz-scale {
+      position: absolute;
+      left: calc(100% + 5px);
+      top: 57%;
+      height: clamp(28px, 4vh, 52px);
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      gap: 3px;
+    }
+
+    .rwy-viz-scale-bracket {
+      height: 100%;
+      width: 7px;
+      border-top: 1px solid rgba(255, 255, 255, 0.7);
+      border-right: 1px solid rgba(255, 255, 255, 0.7);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.7);
+      border-left: none;
+      flex-shrink: 0;
+    }
+
+    .rwy-viz-scale-text {
+      font-size: clamp(6px, 0.52vw, 10px);
+      color: rgba(255, 255, 255, 0.7);
+      white-space: nowrap;
+      letter-spacing: 0.3px;
+      writing-mode: vertical-rl;
+      transform: rotate(180deg);
+    }
+
     @media (max-width: 900px) {
       body {
         padding: 0;
@@ -1941,6 +2077,23 @@
       </div>
     </section>
 
+    <!-- ── RUNWAY VISUALIZATION ── -->
+    <div id="rwyVisualization" aria-hidden="true">
+      <div class="rwy-viz-track">
+        <div class="rwy-viz-threshold"></div>
+        <div id="rwyVizNumber" class="rwy-viz-number"></div>
+        <div class="rwy-viz-cl rwy-viz-cl-top"></div>
+        <div class="rwy-viz-length-block">
+          <span id="rwyVizLength" class="rwy-viz-length"></span>
+        </div>
+        <div class="rwy-viz-cl rwy-viz-cl-bottom"></div>
+        <div class="rwy-viz-scale">
+          <div class="rwy-viz-scale-bracket"></div>
+          <span id="rwyVizScaleLabel" class="rwy-viz-scale-text"></span>
+        </div>
+      </div>
+    </div>
+
     <div class="brightness-layer" aria-hidden="true"></div>
     <div class="grain" aria-hidden="true"></div>
     <div class="top-glow" aria-hidden="true"></div>
@@ -2092,11 +2245,12 @@
     const airportsIndex = new Map();
     const airportsSearchData = [];
     const iataToIcao = new Map();
-    const runwaysByAirport = new Map();
+    const runwaysByAirport = new Map(); // Map<ICAO, Map<ident, lengthM>>
     let airportsDataLoaded = false;
     let runwaysDataLoaded = false;
     let selectedAirportIcao = 'NIL';
     let selectedRunway = 'NIL';
+    let selectedRunwayLengthM = 0;
     let activeWindField = 'dir';
     let windInputUnit = 'kt';
     let windDraft = { dir: '', speed: '', gust: '' };
@@ -2261,6 +2415,7 @@
         const airportIdentIndex = headers.indexOf('airport_ident');
         const leIdentIndex = headers.indexOf('le_ident');
         const heIdentIndex = headers.indexOf('he_ident');
+        const lengthFtIndex = headers.indexOf('length_ft');
         const closedIndex = headers.indexOf('closed');
         const leClosedIndex = headers.indexOf('le_closed');
         const heClosedIndex = headers.indexOf('he_closed');
@@ -2287,21 +2442,23 @@
           }
 
           if (!runwaysByAirport.has(airportIcao)) {
-            runwaysByAirport.set(airportIcao, new Set());
+            runwaysByAirport.set(airportIcao, new Map());
           }
 
-          const runwaySet = runwaysByAirport.get(airportIcao);
+          const runwayMap = runwaysByAirport.get(airportIcao);
           const le = normalizeAirportCode(cols[leIdentIndex]);
           const he = normalizeAirportCode(cols[heIdentIndex]);
           const leClosed = leClosedIndex !== -1 && isTruthyFlag(cols[leClosedIndex]);
           const heClosed = heClosedIndex !== -1 && isTruthyFlag(cols[heClosedIndex]);
+          const lengthFt = lengthFtIndex !== -1 ? parseInt(cols[lengthFtIndex], 10) : 0;
+          const lengthM = Number.isFinite(lengthFt) && lengthFt > 0 ? Math.round(lengthFt * 0.3048) : 0;
 
           if (le && !leClosed) {
-            runwaySet.add(le);
+            runwayMap.set(le, lengthM);
           }
 
           if (he && !heClosed) {
-            runwaySet.add(he);
+            runwayMap.set(he, lengthM);
           }
         }
 
@@ -2318,12 +2475,46 @@
         return [];
       }
 
-      const runwaySet = runwaysByAirport.get(icao);
-      if (!runwaySet) {
+      const runwayMap = runwaysByAirport.get(icao);
+      if (!runwayMap) {
         return [];
       }
 
-      return Array.from(runwaySet).sort((a, b) => a.localeCompare(b, undefined, { numeric: true }));
+      return Array.from(runwayMap.keys()).sort((a, b) => a.localeCompare(b, undefined, { numeric: true }));
+    };
+
+    const getRunwayLengthM = (icaoCode, rwyIdent) => {
+      const icao = normalizeAirportCode(icaoCode);
+      const ident = normalizeAirportCode(rwyIdent);
+      const rwMap = runwaysByAirport.get(icao);
+      if (!rwMap) return 0;
+      return rwMap.get(ident) || 0;
+    };
+
+    const updateRunwayVisualization = () => {
+      const vizLength = document.querySelector('#rwyVizLength');
+      const vizNumber = document.querySelector('#rwyVizNumber');
+      const vizScaleLabel = document.querySelector('#rwyVizScaleLabel');
+
+      if (!vizLength || !vizNumber || !vizScaleLabel) return;
+
+      if (selectedRunway === 'NIL' || !selectedRunwayLengthM) {
+        vizLength.textContent = '';
+        vizNumber.textContent = '';
+        vizScaleLabel.textContent = '';
+        return;
+      }
+
+      // Centerline spans 6%–92% of track, with background-size 8% → ~10.75 visible segments
+      const SEGMENT_COUNT = 11;
+      const rawSegment = selectedRunwayLengthM / SEGMENT_COUNT;
+      // Round to nearest 50 m (or 25 m for very short runways)
+      const step = rawSegment >= 100 ? 50 : 25;
+      const segmentM = Math.round(rawSegment / step) * step || Math.round(rawSegment);
+
+      vizLength.textContent = `${selectedRunwayLengthM} m`;
+      vizNumber.textContent = selectedRunway;
+      vizScaleLabel.textContent = `${segmentM} m`;
     };
 
     const resetTakeoffDependentData = () => {
@@ -2365,6 +2556,7 @@
     const applyRunwaySelection = (runway) => {
       const value = normalizeAirportCode(runway) || 'NIL';
       selectedRunway = value;
+      selectedRunwayLengthM = value !== 'NIL' ? getRunwayLengthM(selectedAirportIcao, value) : 0;
 
       if (rwyLabel) {
         rwyLabel.textContent = 'RWY';
@@ -2377,6 +2569,7 @@
       stage?.classList.toggle('rwy-filled', value !== 'NIL');
 
       localStorage.setItem(takeoffRunwayStorageKey, value);
+      updateRunwayVisualization();
     };
 
     const syncRunwayAfterAirportChange = async () => {
