@@ -1827,6 +1827,7 @@
       :root {
         --ipad-popup-width: 320px;
         --ipad-popup-scale: 1.25;
+        --ipad-popup-min-height: 340px;
       }
 
       .airport-panel,
@@ -1837,6 +1838,8 @@
       .rwycond-panel,
       .aice-panel {
         width: var(--ipad-popup-width);
+        height: auto;
+        min-height: var(--ipad-popup-min-height);
         max-width: none;
         transform: scale(var(--ipad-popup-scale));
       }
