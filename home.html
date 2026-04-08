@@ -707,7 +707,7 @@
         <div class="card-row">
           <div class="row-content">
             <div class="row-main">Aircraft Type</div>
-            <div id="aircraftTypeValue" class="row-value">--</div>
+            <div id="aircraftTypeValue" class="row-value"></div>
             <button type="button" class="row-edit-btn" data-edit-field="aircraftType" aria-label="Modifica Aircraft Type" title="Modifica Aircraft Type">
               <img src="./pencil.png" alt="" class="row-pencil" aria-hidden="true">
             </button>
@@ -716,7 +716,7 @@
         <div class="card-row">
           <div class="row-content">
             <div class="row-main">Aircraft Registration</div>
-            <div id="aircraftRegistrationValue" class="row-value">--</div>
+            <div id="aircraftRegistrationValue" class="row-value"></div>
             <button type="button" class="row-edit-btn" data-edit-field="aircraftRegistration" aria-label="Modifica Aircraft Registration" title="Modifica Aircraft Registration">
               <img src="./pencil.png" alt="" class="row-pencil" aria-hidden="true">
             </button>
@@ -728,7 +728,7 @@
               <span class="row-main">Weight Variant</span>
               <span class="row-sub">MTOW/MLW/MZFW</span>
             </div>
-            <div id="weightVariantValue" class="row-value">--</div>
+            <div id="weightVariantValue" class="row-value"></div>
             <button type="button" class="row-edit-btn" data-edit-field="weightVariant" aria-label="Modifica Weight Variant" title="Modifica Weight Variant">
               <img src="./pencil.png" alt="" class="row-pencil" aria-hidden="true">
             </button>
@@ -741,7 +741,7 @@
         <div class="card-row">
           <div class="row-content">
             <div class="row-main">Flight Number</div>
-            <div id="flightNumberValue" class="row-value">--</div>
+            <div id="flightNumberValue" class="row-value"></div>
             <button type="button" class="row-edit-btn" data-edit-field="flightNumber" aria-label="Modifica Flight Number" title="Modifica Flight Number">
               <img src="./pencil.png" alt="" class="row-pencil" aria-hidden="true">
             </button>
@@ -750,7 +750,7 @@
         <div class="card-row">
           <div class="row-content">
             <div class="row-main">From</div>
-            <div id="fromValue" class="row-value">--</div>
+            <div id="fromValue" class="row-value"></div>
             <button type="button" class="row-edit-btn" data-edit-field="from" aria-label="Modifica From" title="Modifica From">
               <img src="./pencil.png" alt="" class="row-pencil" aria-hidden="true">
             </button>
@@ -759,7 +759,7 @@
         <div class="card-row">
           <div class="row-content">
             <div class="row-main">To</div>
-            <div id="toValue" class="row-value">--</div>
+            <div id="toValue" class="row-value"></div>
             <button type="button" class="row-edit-btn" data-edit-field="to" aria-label="Modifica To" title="Modifica To">
               <img src="./pencil.png" alt="" class="row-pencil" aria-hidden="true">
             </button>
@@ -898,26 +898,26 @@
           continue;
         }
 
-        element.textContent = String(value || '--').trim() || '--';
+        element.textContent = (value || '').trim();
       }
     };
 
-    const setAircraftValues = ({ type = '--', registration = '--', weight = '--' }) => {
-      aircraftTypeValue.textContent = type || '--';
-      aircraftRegistrationValue.textContent = registration || '--';
-      weightVariantValue.textContent = weight || '--';
+    const setAircraftValues = ({ type = '', registration = '', weight = '' }) => {
+      aircraftTypeValue.textContent = type;
+      aircraftRegistrationValue.textContent = registration;
+      weightVariantValue.textContent = weight;
     };
 
-    const setFlightValues = ({ flightNumber = '--', from = '--', to = '--' }) => {
-      flightNumberValue.textContent = flightNumber || '--';
-      fromValue.textContent = from || '--';
-      toValue.textContent = to || '--';
+    const setFlightValues = ({ flightNumber = '', from = '', to = '' }) => {
+      flightNumberValue.textContent = flightNumber;
+      fromValue.textContent = from;
+      toValue.textContent = to;
     };
 
     const saveTakeoffHeaderData = () => {
-      const registration = (aircraftRegistrationValue?.textContent || '--').trim() || '--';
-      const type = (aircraftTypeValue?.textContent || '--').trim() || '--';
-      const from = (fromValue?.textContent || '--').trim() || '--';
+      const registration = (aircraftRegistrationValue?.textContent || '').trim();
+      const type = (aircraftTypeValue?.textContent || '').trim();
+      const from = (fromValue?.textContent || '').trim();
       localStorage.setItem(takeoffHeaderStorageKey, JSON.stringify({ registration, type, from }));
     };
 
@@ -937,7 +937,7 @@
       }
 
       const currentText = (element.textContent || '').trim();
-      const initialValue = currentText === '--' ? '' : currentText;
+      const initialValue = currentText;
       const nextValue = window.prompt(`Modifica ${label}:`, initialValue);
 
       if (nextValue === null) {
@@ -945,7 +945,7 @@
       }
 
       const normalized = nextValue.trim();
-      const finalValue = normalized || '--';
+      const finalValue = normalized;
 
       element.textContent = finalValue;
       manualOverrides[field] = finalValue;
@@ -954,7 +954,7 @@
 
     const toDisplayWeight = (value) => {
       if (value === undefined || value === null || value === '') {
-        return '--';
+        return '';
       }
 
       const number = Number(value);
@@ -1170,15 +1170,15 @@
         ]);
 
         setAircraftValues({
-          type: String(type || '--'),
-          registration: String(registration || '--'),
+          type: String(type || ''),
+          registration: String(registration || ''),
           weight: formatWeightVariant(mtow, mlw, mzfw)
         });
 
         setFlightValues({
-          flightNumber: String(flightNumber || '--'),
-          from: String(origin || '--'),
-          to: String(destination || '--')
+          flightNumber: String(flightNumber || ''),
+          from: String(origin || ''),
+          to: String(destination || '')
         });
 
         applyManualOverrides();
