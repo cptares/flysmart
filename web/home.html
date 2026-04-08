@@ -1,0 +1,1217 @@
+<!doctype html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FlySmart Replica - Home</title>
+  <style>
+    @font-face {
+      font-family: "FF Aircraft";
+      src:
+        local("FF Aircraft"),
+        local("FFAircraft"),
+        url("./fonts/FF-Aircraft.woff2") format("woff2"),
+        url("./fonts/FF-Aircraft.woff") format("woff"),
+        url("./fonts/FF-Aircraft.otf") format("opentype"),
+        url("./fonts/FF-Aircraft.ttf") format("truetype");
+      font-weight: 400;
+      font-style: normal;
+      font-display: swap;
+    }
+
+    :root {
+      --base-width: 2360;
+      --base-height: 1640;
+      --edge-radius: 18px;
+      --text-color: #f2f4f7;
+      --shadow: 0 30px 90px rgba(0, 0, 0, 0.4);
+      --panel-dark: #424449;
+    }
+
+    * {
+      box-sizing: border-box;
+      font-family: "FF Aircraft", "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    html,
+    body {
+      margin: 0;
+      min-height: 100%;
+      background:
+        radial-gradient(circle at top center, #d3d5d8 0%, #a5a8ad 42%, #90949a 100%);
+      color: var(--text-color);
+    }
+
+    body {
+      min-height: 100vh;
+      display: grid;
+      place-items: center;
+      padding: clamp(12px, 2vw, 24px);
+    }
+
+    .stage {
+      width: min(100%, calc((100vh - 48px) * (var(--base-width) / var(--base-height))));
+      aspect-ratio: calc(var(--base-width) / var(--base-height));
+      position: relative;
+      border-radius: var(--edge-radius);
+      overflow: hidden;
+      box-shadow: var(--shadow);
+      background-image: url("./home.png");
+      background-position: center;
+      background-size: cover;
+      background-repeat: no-repeat;
+    }
+
+    .grain {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      background-image: repeating-linear-gradient(
+        0deg,
+        rgba(255, 255, 255, 0.03),
+        rgba(255, 255, 255, 0.03) 1px,
+        transparent 1px,
+        transparent 3px
+      );
+      mix-blend-mode: overlay;
+    }
+
+    .top-glow {
+      position: absolute;
+      inset: 0 auto auto 0;
+      width: 100%;
+      height: 16%;
+      background: linear-gradient(to bottom, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0));
+      pointer-events: none;
+    }
+
+    .top-actions {
+      position: absolute;
+      top: clamp(12px, 2.3%, 34px);
+      right: clamp(14px, 2.2%, 42px);
+      display: flex;
+      gap: clamp(8px, 0.8vw, 14px);
+      z-index: 3;
+    }
+
+    .nav-warning {
+      position: absolute;
+      top: calc(clamp(17px, 2.3%, 39px) + 10px);
+      left: clamp(18px, 2.2%, 48px);
+      z-index: 3;
+      margin: 0;
+      color: #c51818;
+      font-size: clamp(11px, 0.9vw, 18px);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      text-shadow: 0 1px 1px rgba(255, 255, 255, 0.28);
+      font-weight: 700;
+      pointer-events: none;
+    }
+
+    .round-btn {
+      width: clamp(28px, 2.1vw, 38px);
+      height: clamp(28px, 2.1vw, 38px);
+      border: 0;
+      border-radius: 999px;
+      display: grid;
+      place-items: center;
+      background: transparent;
+      cursor: pointer;
+      box-shadow: none;
+      transition: transform 120ms ease, filter 120ms ease;
+      padding: 0;
+      overflow: hidden;
+    }
+
+    .round-btn:hover {
+      transform: translateY(-1px);
+      filter: brightness(1.04);
+    }
+
+    .round-btn:active {
+      transform: translateY(0);
+      filter: brightness(0.95);
+    }
+
+    .round-btn img {
+      width: 74%;
+      height: 74%;
+      object-fit: contain;
+      pointer-events: none;
+      user-select: none;
+    }
+
+    .brightness-layer {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      background: rgba(0, 0, 0, 0);
+      z-index: 2;
+      transition: background 180ms ease;
+    }
+
+    .stage.dim .brightness-layer {
+      background: rgba(0, 0, 0, 0.24);
+    }
+
+    .btn-light img {
+      width: 78%;
+      height: 78%;
+    }
+
+    .home-panel {
+      position: absolute;
+      left: 50%;
+      top: 52%;
+      transform: translate(-50%, -50%);
+      width: clamp(300px, 40%, 760px);
+      border-radius: 10px;
+      border: 2px solid rgba(95, 103, 112, 0.8);
+      background: rgba(151, 156, 163, 0.2);
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+      z-index: 3;
+      padding: clamp(12px, 1vw, 16px);
+    }
+
+    .settings-backdrop {
+      position: absolute;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.22);
+      z-index: 4;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 140ms ease;
+    }
+
+    .settings-panel {
+      position: absolute;
+      left: var(--panel-left, 0px);
+      top: var(--panel-top, 0px);
+      width: 456px;
+      border-radius: 10px;
+      border: 2px solid rgba(95, 103, 112, 0.8);
+      background: linear-gradient(180deg, #8a919c 0%, #656d78 100%);
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+      z-index: 5;
+      padding: 20px;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 140ms ease;
+    }
+
+    .settings-panel::before {
+      content: "";
+      position: absolute;
+      top: -20px;
+      left: var(--arrow-x, 392px);
+      transform: translateX(-50%);
+      border-left: 16px solid transparent;
+      border-right: 16px solid transparent;
+      border-bottom: 20px solid rgba(95, 103, 112, 0.8);
+    }
+
+    .stage.settings-open .settings-backdrop,
+    .stage.settings-open .settings-panel {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .simbrief-field {
+      position: relative;
+      margin-bottom: 20px;
+    }
+
+    .simbrief-label {
+      position: absolute;
+      left: 20px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #ffffff;
+      font-size: 32px;
+      letter-spacing: 0.5px;
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    .simbrief-display {
+      width: 100%;
+      height: 72px;
+      border: 1px solid rgba(180, 186, 196, 0.24);
+      border-radius: 10px;
+      background: var(--panel-dark);
+      box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.5);
+      color: #e8da32;
+      padding: 0 20px 0 220px;
+      font-size: 32px;
+      letter-spacing: 0.5px;
+      outline: none;
+      text-align: right;
+    }
+
+    .simbrief-display::placeholder {
+      color: transparent;
+    }
+
+    .settings-keypad {
+      width: 100%;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+    }
+
+    .key-btn {
+      width: 100%;
+      height: 68px;
+      border: 1px solid rgba(189, 196, 208, 0.7);
+      border-radius: 10px;
+      background: linear-gradient(180deg, #ffffff 0%, #e8ebef 100%);
+      color: #42454b;
+      font-size: 24px;
+      font-weight: 700;
+      cursor: pointer;
+      line-height: 1;
+      text-shadow: 0 1px 0 rgba(255, 255, 255, 0.7);
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.8), 0 1px 1px rgba(0, 0, 0, 0.08);
+    }
+
+    .key-btn:active {
+      transform: translateY(1px);
+      filter: brightness(0.96);
+    }
+
+    .key-btn.empty {
+      background: transparent;
+      border-color: transparent;
+      box-shadow: none;
+      pointer-events: none;
+    }
+
+    .key-btn.action {
+      font-size: 22px;
+      letter-spacing: 0.1px;
+    }
+
+    .key-btn.muted {
+      background: linear-gradient(180deg, #bcc2c9 0%, #a8afb8 100%);
+      color: #42454b;
+    }
+
+    .key-btn.sign {
+      font-size: 20px;
+    }
+
+    .flight-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: var(--panel-dark);
+      border-radius: 8px;
+      padding: clamp(10px, 1vw, 14px) clamp(14px, 1.2vw, 20px);
+      margin-bottom: 12px;
+      border: 1px solid rgba(180, 186, 196, 0.24);
+    }
+
+    .flight-title {
+      margin: 0;
+      font-size: clamp(22.4px, 1.6vw, 30.4px);
+      line-height: 1;
+      letter-spacing: 0.5px;
+      color: #f1f3f5;
+    }
+
+    .flight-sub {
+      margin: 4px 0 0;
+      font-size: clamp(12.8px, 0.8vw, 15.2px);
+      color: #d8dbe0;
+      letter-spacing: 0.2px;
+    }
+
+    .update-btn {
+      border: 1px solid rgba(189, 196, 208, 0.7);
+      border-radius: 7px;
+      padding: 8px 14px;
+      background: linear-gradient(180deg, #8a919c 0%, #656d78 100%);
+      color: #f5f8ff;
+      font-size: clamp(16px, 0.96vw, 19.2px);
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-weight: 600;
+      line-height: 1;
+      text-shadow: 0 1px 1px rgba(0, 0, 0, 0.4);
+    }
+
+    .update-btn[disabled] {
+      opacity: 0.7;
+      cursor: wait;
+    }
+
+    .update-btn.missing-id {
+      background: linear-gradient(180deg, #d64f4f 0%, #a32222 100%);
+      border-color: rgba(255, 170, 170, 0.8);
+      color: #fff6f6;
+    }
+
+    .update-btn.load-error {
+      background: linear-gradient(180deg, #f0d95a 0%, #c8a826 100%);
+      border-color: rgba(255, 239, 163, 0.85);
+      color: #3b3212;
+      text-shadow: none;
+    }
+
+    .info-card {
+      margin-top: 10px;
+      border-radius: 10px;
+      overflow: hidden;
+      border: 1px solid rgba(55, 60, 67, 0.9);
+      background: #3f4146;
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06);
+    }
+
+    .card-head {
+      background: linear-gradient(180deg, #c8cdd3 0%, #8b939e 46%, #7b828c 100%);
+      color: #f2f6ff;
+      font-size: clamp(19.2px, 1.12vw, 23.2px);
+      padding: 6px 14px;
+      letter-spacing: 0.4px;
+      text-transform: uppercase;
+      text-shadow: 0 1px 1px rgba(0, 0, 0, 0.45);
+    }
+
+    .card-row {
+      min-height: clamp(48px, 3.2vw, 58px);
+      border-top: 1px solid rgba(173, 176, 182, 0.55);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 14px;
+      color: #f1f3f5;
+      background: var(--panel-dark);
+    }
+
+    .card-row:first-of-type {
+      border-top: 0;
+    }
+
+    .row-content {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      width: 100%;
+    }
+
+    .row-main {
+      font-size: clamp(17.6px, 1.01vw, 21.6px);
+      letter-spacing: 0.3px;
+      text-transform: uppercase;
+      line-height: 1;
+    }
+
+    .row-value {
+      color: #e8da32;
+      font-size: clamp(16px, 0.95vw, 20px);
+      text-transform: uppercase;
+      line-height: 1;
+      text-align: right;
+      margin-left: auto;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 46%;
+    }
+
+    .row-sub {
+      color: #c6c9cd;
+      font-size: clamp(12.2px, 0.64vw, 14.1px);
+      margin-left: 6px;
+      line-height: 1;
+    }
+
+    .row-edit-btn {
+      width: clamp(26px, 1.5vw, 30px);
+      height: clamp(26px, 1.5vw, 30px);
+      border: 0;
+      background: transparent;
+      border-radius: 6px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      flex: 0 0 auto;
+      align-self: center;
+      margin-left: -5px;
+      padding: 0;
+      transition: transform 120ms ease, filter 120ms ease;
+    }
+
+    .row-edit-btn:hover {
+      transform: translateY(-1px);
+      filter: brightness(1.08);
+    }
+
+    .row-edit-btn:active {
+      transform: translateY(0);
+      filter: brightness(0.95);
+    }
+
+    .row-pencil {
+      width: clamp(24.15px, 1.44vw, 28.75px);
+      height: clamp(24.15px, 1.44vw, 28.75px);
+      object-fit: contain;
+      flex: 0 0 auto;
+      pointer-events: none;
+      user-select: none;
+    }
+
+    .panel-footer {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 16px 0 10px;
+    }
+
+    .takeoff-btn {
+      border: 0;
+      background: transparent;
+      padding: 0;
+      margin: 0;
+      cursor: pointer;
+      border-radius: 8px;
+      transition: transform 120ms ease, filter 120ms ease;
+    }
+
+    .takeoff-btn:hover {
+      transform: translateY(-1px);
+      filter: brightness(1.04);
+    }
+
+    .takeoff-btn:active {
+      transform: translateY(0);
+      filter: brightness(0.96);
+    }
+
+    .takeoff-btn img {
+      width: clamp(68px, 4.4vw, 92px);
+      height: auto;
+      opacity: 0.72;
+      padding: 4px 8px;
+      border: 0;
+      border-radius: 8px;
+      background: #c8c8c8;
+      box-shadow: 0 0 10px rgba(120, 126, 136, 0.22);
+      object-fit: contain;
+      user-select: none;
+    }
+
+    @media (max-width: 900px) {
+      body {
+        padding: 8px;
+      }
+
+      .stage {
+        width: 100%;
+      }
+
+      .home-panel {
+        width: min(92%, 520px);
+        top: 54%;
+      }
+
+      .settings-panel {
+        width: min(92%, 456px);
+      }
+
+      .settings-keypad {
+        gap: 12px;
+      }
+
+      .key-btn {
+        height: 56px;
+        font-size: 20px;
+      }
+
+      .flight-title {
+        font-size: clamp(17.6px, 4.8vw, 24px);
+      }
+
+      .flight-sub {
+        font-size: clamp(9.6px, 2.4vw, 12.8px);
+      }
+
+      .update-btn {
+        font-size: clamp(11.2px, 2.8vw, 14.4px);
+        padding: 6px 10px;
+      }
+
+      .card-head {
+        font-size: clamp(12.8px, 3.52vw, 17.6px);
+      }
+
+      .row-main {
+        font-size: clamp(11.2px, 3.2vw, 14.4px);
+      }
+
+      .row-sub {
+        font-size: clamp(7.7px, 1.92vw, 9.6px);
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="stage" aria-label="Replica home FlySmart">
+    <p class="nav-warning">NOT FOR NAVIGATIONAL USE</p>
+    <div class="top-actions" aria-label="Azioni rapide">
+      <button id="settingsBtn" class="round-btn" type="button" aria-label="Impostazioni">
+        <img src="./refresh.png" alt="" aria-hidden="true">
+      </button>
+      <button id="brightnessBtn" class="round-btn btn-light" type="button" aria-label="Sole" title="Gestisci luminosita">
+        <img src="./light.png" alt="" aria-hidden="true">
+      </button>
+    </div>
+    <div class="brightness-layer" aria-hidden="true"></div>
+    <div id="settingsBackdrop" class="settings-backdrop" aria-hidden="true"></div>
+    <section class="home-panel" aria-label="Pannello volo">
+      <header class="flight-head">
+        <div>
+          <h2 class="flight-title">My Flight</h2>
+          <p class="flight-sub">EFB Version: 1.0.0</p>
+        </div>
+        <button id="updateBtn" type="button" class="update-btn" aria-label="Aggiorna">&#10227; Update</button>
+      </header>
+
+      <article class="info-card" aria-label="Dati aircraft">
+        <div class="card-head">Aircraft</div>
+        <div class="card-row">
+          <div class="row-content">
+            <div class="row-main">Aircraft Type</div>
+            <div id="aircraftTypeValue" class="row-value">--</div>
+            <button type="button" class="row-edit-btn" data-edit-field="aircraftType" aria-label="Modifica Aircraft Type" title="Modifica Aircraft Type">
+              <img src="./pencil.png" alt="" class="row-pencil" aria-hidden="true">
+            </button>
+          </div>
+        </div>
+        <div class="card-row">
+          <div class="row-content">
+            <div class="row-main">Aircraft Registration</div>
+            <div id="aircraftRegistrationValue" class="row-value">--</div>
+            <button type="button" class="row-edit-btn" data-edit-field="aircraftRegistration" aria-label="Modifica Aircraft Registration" title="Modifica Aircraft Registration">
+              <img src="./pencil.png" alt="" class="row-pencil" aria-hidden="true">
+            </button>
+          </div>
+        </div>
+        <div class="card-row">
+          <div class="row-content">
+            <div>
+              <span class="row-main">Weight Variant</span>
+              <span class="row-sub">MTOW/MLW/MZFW</span>
+            </div>
+            <div id="weightVariantValue" class="row-value">--</div>
+            <button type="button" class="row-edit-btn" data-edit-field="weightVariant" aria-label="Modifica Weight Variant" title="Modifica Weight Variant">
+              <img src="./pencil.png" alt="" class="row-pencil" aria-hidden="true">
+            </button>
+          </div>
+        </div>
+      </article>
+
+      <article class="info-card" aria-label="Dati flight">
+        <div class="card-head">Flight</div>
+        <div class="card-row">
+          <div class="row-content">
+            <div class="row-main">Flight Number</div>
+            <div id="flightNumberValue" class="row-value">--</div>
+            <button type="button" class="row-edit-btn" data-edit-field="flightNumber" aria-label="Modifica Flight Number" title="Modifica Flight Number">
+              <img src="./pencil.png" alt="" class="row-pencil" aria-hidden="true">
+            </button>
+          </div>
+        </div>
+        <div class="card-row">
+          <div class="row-content">
+            <div class="row-main">From</div>
+            <div id="fromValue" class="row-value">--</div>
+            <button type="button" class="row-edit-btn" data-edit-field="from" aria-label="Modifica From" title="Modifica From">
+              <img src="./pencil.png" alt="" class="row-pencil" aria-hidden="true">
+            </button>
+          </div>
+        </div>
+        <div class="card-row">
+          <div class="row-content">
+            <div class="row-main">To</div>
+            <div id="toValue" class="row-value">--</div>
+            <button type="button" class="row-edit-btn" data-edit-field="to" aria-label="Modifica To" title="Modifica To">
+              <img src="./pencil.png" alt="" class="row-pencil" aria-hidden="true">
+            </button>
+          </div>
+        </div>
+      </article>
+
+      <div class="panel-footer">
+        <button id="takeoffBtn" class="takeoff-btn" type="button" aria-label="Apri pagina Takeoff" title="Takeoff">
+          <img src="./takeoff.png" alt="">
+        </button>
+      </div>
+    </section>
+
+    <section class="settings-panel" aria-label="Pannello impostazioni">
+      <div class="simbrief-field">
+        <span class="simbrief-label">SIMBRIEF ID</span>
+        <input id="simbriefId" class="simbrief-display" type="text" inputmode="numeric" placeholder="SIMBRIEF ID">
+      </div>
+      <div class="settings-keypad" aria-label="Tastierino SimBrief">
+        <button type="button" class="key-btn" data-key="1">1</button>
+        <button type="button" class="key-btn" data-key="2">2</button>
+        <button type="button" class="key-btn" data-key="3">3</button>
+        <button type="button" class="key-btn action muted" data-disabled="true">*</button>
+
+        <button type="button" class="key-btn" data-key="4">4</button>
+        <button type="button" class="key-btn" data-key="5">5</button>
+        <button type="button" class="key-btn" data-key="6">6</button>
+        <button type="button" class="key-btn action" data-action="backspace">&#10006;</button>
+
+        <button type="button" class="key-btn" data-key="7">7</button>
+        <button type="button" class="key-btn" data-key="8">8</button>
+        <button type="button" class="key-btn" data-key="9">9</button>
+        <button type="button" class="key-btn action" data-action="done">Done</button>
+
+        <button type="button" class="key-btn muted" data-disabled="true">.</button>
+        <button type="button" class="key-btn" data-key="0">0</button>
+        <button type="button" class="key-btn muted sign" data-disabled="true">+/-</button>
+        <button type="button" class="key-btn action muted" data-disabled="true">Next</button>
+      </div>
+    </section>
+    <div class="grain" aria-hidden="true"></div>
+    <div class="top-glow" aria-hidden="true"></div>
+  </main>
+
+  <script>
+    const stage = document.querySelector('.stage');
+    const brightnessBtn = document.querySelector('#brightnessBtn');
+    const settingsBtn = document.querySelector('#settingsBtn');
+    const settingsBackdrop = document.querySelector('#settingsBackdrop');
+    const settingsPanel = document.querySelector('.settings-panel');
+    const simbriefId = document.querySelector('#simbriefId');
+    const updateBtn = document.querySelector('#updateBtn');
+    const takeoffBtn = document.querySelector('#takeoffBtn');
+    const aircraftTypeValue = document.querySelector('#aircraftTypeValue');
+    const aircraftRegistrationValue = document.querySelector('#aircraftRegistrationValue');
+    const weightVariantValue = document.querySelector('#weightVariantValue');
+    const flightNumberValue = document.querySelector('#flightNumberValue');
+    const fromValue = document.querySelector('#fromValue');
+    const toValue = document.querySelector('#toValue');
+    const rowEditButtons = document.querySelectorAll('.row-edit-btn');
+    const keypadButtons = document.querySelectorAll('.settings-keypad .key-btn');
+    
+    const markMissingSimbriefId = () => {
+      if (!updateBtn) {
+        return;
+      }
+
+      updateBtn.classList.add('missing-id');
+      window.setTimeout(() => updateBtn.classList.remove('missing-id'), 1200);
+    };
+
+    const markLoadError = () => {
+      if (!updateBtn) {
+        return;
+      }
+
+      updateBtn.classList.add('load-error');
+      window.setTimeout(() => updateBtn.classList.remove('load-error'), 1500);
+    };
+
+    const storageKey = 'flysmart-simbrief-id';
+    const overridesStorageKey = 'flysmart-manual-overrides';
+    const takeoffHeaderStorageKey = 'flysmart-takeoff-header';
+    const takeoffAirportStorageKey = 'flysmart-takeoff-airport';
+    const takeoffRunwayStorageKey = 'flysmart-takeoff-rwy';
+    const takeoffWindStorageKey = 'flysmart-takeoff-wind';
+    const takeoffOatStorageKey = 'flysmart-takeoff-oat';
+
+    const valueElements = {
+      aircraftType: aircraftTypeValue,
+      aircraftRegistration: aircraftRegistrationValue,
+      weightVariant: weightVariantValue,
+      flightNumber: flightNumberValue,
+      from: fromValue,
+      to: toValue
+    };
+
+    const fieldLabels = {
+      aircraftType: 'Aircraft Type',
+      aircraftRegistration: 'Aircraft Registration',
+      weightVariant: 'Weight Variant',
+      flightNumber: 'Flight Number',
+      from: 'From',
+      to: 'To'
+    };
+
+    const loadManualOverrides = () => {
+      try {
+        const raw = localStorage.getItem(overridesStorageKey);
+        if (!raw) {
+          return {};
+        }
+
+        const parsed = JSON.parse(raw);
+        return parsed && typeof parsed === 'object' ? parsed : {};
+      } catch {
+        return {};
+      }
+    };
+
+    let manualOverrides = loadManualOverrides();
+
+    const saveManualOverrides = () => {
+      localStorage.setItem(overridesStorageKey, JSON.stringify(manualOverrides));
+    };
+
+    const applyManualOverrides = () => {
+      for (const [field, value] of Object.entries(manualOverrides)) {
+        if (!(field in valueElements)) {
+          continue;
+        }
+
+        const element = valueElements[field];
+        if (!element) {
+          continue;
+        }
+
+        element.textContent = String(value || '--').trim() || '--';
+      }
+    };
+
+    const setAircraftValues = ({ type = '--', registration = '--', weight = '--' }) => {
+      aircraftTypeValue.textContent = type || '--';
+      aircraftRegistrationValue.textContent = registration || '--';
+      weightVariantValue.textContent = weight || '--';
+    };
+
+    const setFlightValues = ({ flightNumber = '--', from = '--', to = '--' }) => {
+      flightNumberValue.textContent = flightNumber || '--';
+      fromValue.textContent = from || '--';
+      toValue.textContent = to || '--';
+    };
+
+    const saveTakeoffHeaderData = () => {
+      const registration = (aircraftRegistrationValue?.textContent || '--').trim() || '--';
+      const type = (aircraftTypeValue?.textContent || '--').trim() || '--';
+      const from = (fromValue?.textContent || '--').trim() || '--';
+      localStorage.setItem(takeoffHeaderStorageKey, JSON.stringify({ registration, type, from }));
+    };
+
+    const clearTakeoffSavedData = () => {
+      localStorage.removeItem(takeoffAirportStorageKey);
+      localStorage.removeItem(takeoffRunwayStorageKey);
+      localStorage.removeItem(takeoffWindStorageKey);
+      localStorage.removeItem(takeoffOatStorageKey);
+    };
+
+    const editFieldValue = (field) => {
+      const element = valueElements[field];
+      const label = fieldLabels[field] || field;
+
+      if (!element) {
+        return;
+      }
+
+      const currentText = (element.textContent || '').trim();
+      const initialValue = currentText === '--' ? '' : currentText;
+      const nextValue = window.prompt(`Modifica ${label}:`, initialValue);
+
+      if (nextValue === null) {
+        return;
+      }
+
+      const normalized = nextValue.trim();
+      const finalValue = normalized || '--';
+
+      element.textContent = finalValue;
+      manualOverrides[field] = finalValue;
+      saveManualOverrides();
+    };
+
+    const toDisplayWeight = (value) => {
+      if (value === undefined || value === null || value === '') {
+        return '--';
+      }
+
+      const number = Number(value);
+      if (Number.isFinite(number)) {
+        // SimBrief can return either tons or kilograms depending on source data.
+        const tonsValue = Math.abs(number) >= 1000 ? (number / 1000) : number;
+        return tonsValue % 1 === 0 ? `${tonsValue}` : tonsValue.toFixed(1);
+      }
+
+      return String(value);
+    };
+
+    const formatWeightVariant = (mtow, mlw, mzfw) => {
+      return [toDisplayWeight(mtow), toDisplayWeight(mlw), toDisplayWeight(mzfw)].join('/');
+    };
+
+    const getNestedValue = (source, paths) => {
+      for (const path of paths) {
+        let current = source;
+
+        for (const key of path) {
+          if (current && typeof current === 'object' && key in current) {
+            current = current[key];
+          } else {
+            current = undefined;
+            break;
+          }
+        }
+
+        if (current !== undefined && current !== null && current !== '') {
+          return current;
+        }
+      }
+
+      return '';
+    };
+
+    const parseAcdata = (data) => {
+      const raw = getNestedValue(data, [
+        ['params', 'acdata'],
+        ['general', 'acdata'],
+        ['acdata']
+      ]);
+
+      if (!raw) {
+        return {};
+      }
+
+      if (typeof raw === 'object') {
+        return raw;
+      }
+
+      if (typeof raw === 'string') {
+        try {
+          return JSON.parse(raw);
+        } catch {
+          return {};
+        }
+      }
+
+      return {};
+    };
+
+    const deepFindByKeys = (source, wantedKeys) => {
+      if (!source || typeof source !== 'object') {
+        return '';
+      }
+
+      const normalizedWanted = wantedKeys.map((key) => key.toLowerCase());
+      const queue = [source];
+      const visited = new Set();
+
+      while (queue.length > 0) {
+        const current = queue.shift();
+
+        if (!current || typeof current !== 'object' || visited.has(current)) {
+          continue;
+        }
+
+        visited.add(current);
+
+        for (const [key, value] of Object.entries(current)) {
+          const normalizedKey = key.toLowerCase();
+
+          if (normalizedWanted.includes(normalizedKey) && value !== undefined && value !== null && value !== '') {
+            return value;
+          }
+
+          if (value && typeof value === 'object') {
+            queue.push(value);
+          }
+        }
+      }
+
+      return '';
+    };
+
+    const getWeightValue = (data, acdata, key) => {
+      const value = getNestedValue(data, [
+        ['weights', key],
+        ['weights', key.toUpperCase()],
+        ['aircraft', key],
+        ['aircraft', key.toUpperCase()],
+        ['airframe', key],
+        ['airframe', key.toUpperCase()],
+        ['general', key],
+        ['general', key.toUpperCase()],
+        ['params', key],
+        ['params', key.toUpperCase()]
+      ]);
+
+      if (value !== '') {
+        return value;
+      }
+
+      if (acdata && typeof acdata === 'object' && key in acdata) {
+        return acdata[key];
+      }
+
+      const aliasMap = {
+        mtow: ['max_tow', 'maxtow', 'max_takeoff_weight', 'maximum_takeoff_weight', 'tow_max'],
+        mlw: ['max_ldw', 'max_law', 'max_lw', 'max_landing_weight', 'maximum_landing_weight', 'landing_weight_max'],
+        mzfw: ['max_zfw', 'maximum_zero_fuel_weight', 'zero_fuel_weight_max']
+      };
+
+      return deepFindByKeys(data, [key, ...(aliasMap[key] || [])]);
+    };
+
+    const loadSimbriefData = async () => {
+      const userId = simbriefId?.value.trim();
+
+      if (!userId) {
+        setAircraftValues({});
+        setFlightValues({});
+        markMissingSimbriefId();
+        return;
+      }
+
+      updateBtn.disabled = true;
+      updateBtn.textContent = 'Loading...';
+
+      manualOverrides = {};
+      saveManualOverrides();
+      clearTakeoffSavedData();
+
+      try {
+        localStorage.setItem(storageKey, userId);
+
+        const response = await fetch(`https://www.simbrief.com/api/xml.fetcher.php?userid=${encodeURIComponent(userId)}&json=1`, {
+          method: 'GET'
+        });
+
+        if (!response.ok) {
+          throw new Error(`HTTP ${response.status}`);
+        }
+
+        const data = await response.json();
+
+        const type = getNestedValue(data, [
+          ['aircraft', 'icaocode'],
+          ['aircraft', 'icao_code'],
+          ['aircraft', 'type'],
+          ['general', 'icao_aircraft'],
+          ['general', 'aircraft_icao'],
+          ['general', 'aircraft']
+        ]);
+
+        const registration = getNestedValue(data, [
+          ['aircraft', 'reg'],
+          ['aircraft', 'registration'],
+          ['general', 'reg'],
+          ['general', 'registration']
+        ]);
+
+        const acdata = parseAcdata(data);
+
+        const mtow = getWeightValue(data, acdata, 'mtow');
+        const mlw = getWeightValue(data, acdata, 'mlw');
+        const mzfw = getWeightValue(data, acdata, 'mzfw');
+
+        const flightNumberRaw = getNestedValue(data, [
+          ['atc', 'callsign'],
+          ['general', 'callsign'],
+          ['params', 'callsign'],
+          ['general', 'flight_number'],
+          ['general', 'fltnum'],
+          ['atc', 'flight_number'],
+          ['params', 'fltnum']
+        ]);
+
+        const airlineCode = getNestedValue(data, [
+          ['general', 'icao_airline'],
+          ['general', 'airline_icao'],
+          ['general', 'airline_iata'],
+          ['params', 'airline']
+        ]);
+
+        const flightNumber = (flightNumberRaw || '').toString().trim() ||
+          `${(airlineCode || '').toString().trim()}${getNestedValue(data, [['general', 'fltnum'], ['params', 'fltnum']])}`.trim();
+
+        const origin = getNestedValue(data, [
+          ['origin', 'icao_code'],
+          ['origin', 'icao'],
+          ['general', 'orig'],
+          ['params', 'orig']
+        ]);
+
+        const destination = getNestedValue(data, [
+          ['destination', 'icao_code'],
+          ['destination', 'icao'],
+          ['general', 'dest'],
+          ['params', 'dest']
+        ]);
+
+        setAircraftValues({
+          type: String(type || '--'),
+          registration: String(registration || '--'),
+          weight: formatWeightVariant(mtow, mlw, mzfw)
+        });
+
+        setFlightValues({
+          flightNumber: String(flightNumber || '--'),
+          from: String(origin || '--'),
+          to: String(destination || '--')
+        });
+
+        applyManualOverrides();
+        saveTakeoffHeaderData();
+        if (origin) {
+          localStorage.setItem(takeoffAirportStorageKey, String(origin).trim().toUpperCase());
+        }
+      } catch (error) {
+        console.error(error);
+        markLoadError();
+      } finally {
+        updateBtn.disabled = false;
+        updateBtn.innerHTML = '&#10227; Update';
+      }
+    };
+
+    brightnessBtn?.addEventListener('click', () => {
+      stage.classList.toggle('dim');
+    });
+
+    const savedSimbriefId = localStorage.getItem(storageKey);
+    if (savedSimbriefId && simbriefId) {
+      simbriefId.value = savedSimbriefId;
+    }
+
+    applyManualOverrides();
+    saveTakeoffHeaderData();
+
+    const closeSettings = () => {
+      stage.classList.remove('settings-open');
+    };
+
+    const positionSettingsPanel = () => {
+      if (!stage || !settingsBtn || !settingsPanel) {
+        return;
+      }
+
+      const stageRect = stage.getBoundingClientRect();
+      const btnRect = settingsBtn.getBoundingClientRect();
+      const panelWidth = settingsPanel.offsetWidth || 456;
+      const panelHeight = settingsPanel.offsetHeight || 220;
+
+      const btnCenterX = btnRect.left - stageRect.left + (btnRect.width / 2);
+      const btnBottomY = btnRect.bottom - stageRect.top;
+
+      const desiredArrowOffset = panelWidth - 30;
+      const minLeft = 10;
+      const maxLeft = Math.max(minLeft, stageRect.width - panelWidth - 10);
+      let panelLeft = btnCenterX - desiredArrowOffset;
+      panelLeft = Math.min(Math.max(panelLeft, minLeft), maxLeft);
+
+      const minTop = 12;
+      const maxTop = Math.max(minTop, stageRect.height - panelHeight - 10);
+      let panelTop = btnBottomY + 12;
+      panelTop = Math.min(Math.max(panelTop, minTop), maxTop);
+
+      const arrowX = Math.min(Math.max(btnCenterX - panelLeft, 16), panelWidth - 16);
+
+      settingsPanel.style.setProperty('--panel-left', `${panelLeft}px`);
+      settingsPanel.style.setProperty('--panel-top', `${panelTop}px`);
+      settingsPanel.style.setProperty('--arrow-x', `${arrowX}px`);
+    };
+
+    settingsBtn?.addEventListener('click', () => {
+      const willOpen = !stage.classList.contains('settings-open');
+      stage.classList.toggle('settings-open');
+      if (willOpen) {
+        positionSettingsPanel();
+        simbriefId?.focus();
+      }
+    });
+
+    settingsBackdrop?.addEventListener('click', closeSettings);
+    updateBtn?.addEventListener('click', loadSimbriefData);
+    takeoffBtn?.addEventListener('click', () => {
+      saveTakeoffHeaderData();
+      window.location.href = './takeoff.html';
+    });
+
+    rowEditButtons.forEach((button) => {
+      button.addEventListener('click', () => {
+        const field = button.dataset.editField;
+        if (!field) {
+          return;
+        }
+
+        editFieldValue(field);
+        if (field === 'aircraftType' || field === 'aircraftRegistration') {
+          saveTakeoffHeaderData();
+        }
+      });
+    });
+
+    simbriefId?.addEventListener('input', () => {
+      updateBtn?.classList.remove('missing-id');
+      updateBtn?.classList.remove('load-error');
+    });
+
+    keypadButtons.forEach((button) => {
+      button.addEventListener('click', () => {
+        if (!simbriefId || button.classList.contains('empty') || button.dataset.disabled === 'true') {
+          return;
+        }
+
+        const key = button.dataset.key;
+        const action = button.dataset.action;
+
+        if (key) {
+          if (key === '.' && simbriefId.value.includes('.')) {
+            return;
+          }
+          simbriefId.value += key;
+          simbriefId.focus();
+          return;
+        }
+
+        if (action === 'backspace') {
+          simbriefId.value = simbriefId.value.slice(0, -1);
+          simbriefId.focus();
+          return;
+        }
+
+        if (action === 'clear') {
+          simbriefId.value = '';
+          simbriefId.focus();
+          return;
+        }
+
+        if (action === 'sign') {
+          simbriefId.value = simbriefId.value.startsWith('-')
+            ? simbriefId.value.slice(1)
+            : `-${simbriefId.value}`;
+          simbriefId.focus();
+          return;
+        }
+
+        if (action === 'done' || action === 'next') {
+          closeSettings();
+        }
+      });
+    });
+
+    document.addEventListener('keydown', (event) => {
+      if (event.key === 'Escape') {
+        closeSettings();
+      }
+    });
+
+    window.addEventListener('resize', () => {
+      if (stage?.classList.contains('settings-open')) {
+        positionSettingsPanel();
+      }
+    });
+  </script>
+</body>
+</html>
