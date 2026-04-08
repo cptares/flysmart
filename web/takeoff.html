@@ -1092,7 +1092,7 @@
       width: 100%;
       display: grid;
       grid-template-columns: repeat(4, 1fr);
-      gap: 8px;
+      gap: 12px;
     }
 
     .wind-header {
@@ -1219,37 +1219,43 @@
       width: 100%;
       display: grid;
       grid-template-columns: repeat(4, 1fr);
-      gap: 8px;
+      gap: 12px;
     }
 
     .wind-key-btn {
       width: 100%;
-      height: 42px;
-      border: 1px solid rgba(189, 196, 208, 0.7);
-      border-radius: 8px;
-      background: linear-gradient(180deg, #ffffff 0%, #e8ebef 100%);
-      color: #42454b;
-      font-size: 18px;
+      height: 56px;
+      border: 1px solid #5f6670;
+      border-radius: 9px;
+      background: linear-gradient(180deg, #f7f9fb 0%, #e2e7ec 100%);
+      color: #4f5b64;
+      font-size: 17px;
       font-weight: 700;
       cursor: pointer;
       line-height: 1;
-      text-shadow: none;
-      box-shadow: none;
+      text-shadow: 0 1px 0 rgba(255, 255, 255, 0.4);
+      box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.95),
+        0 2px 0 rgba(54, 61, 69, 0.45);
     }
 
     .wind-key-btn:active {
       transform: translateY(1px);
-      filter: brightness(0.96);
+      box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.75),
+        0 1px 0 rgba(54, 61, 69, 0.45);
+      filter: brightness(0.98);
     }
 
     .wind-key-btn.action {
-      font-size: 16px;
+      font-size: 15px;
       letter-spacing: 0.1px;
     }
 
     .wind-key-btn.muted {
-      background: linear-gradient(180deg, #bcc2c9 0%, #a8afb8 100%);
-      color: #42454b;
+      background: linear-gradient(180deg, #c7ccd3 0%, #afb6c0 100%);
+      color: #7d8791;
+      text-shadow: none;
     }
 
     .wind-key-btn.empty {
