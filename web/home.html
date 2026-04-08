@@ -86,8 +86,6 @@
       left: 0;
       right: 0;
       bottom: 0;
-      width: var(--viewport-width);
-      height: var(--viewport-height);
       overflow: hidden;
       margin: 0;
       transform: none;
@@ -589,11 +587,6 @@
         padding: 0;
       }
 
-      .stage {
-        width: var(--viewport-width);
-        height: var(--viewport-height);
-      }
-
       .top-actions {
         top: clamp(10px, 2%, 28px);
         right: clamp(12px, 1.8%, 32px);
@@ -626,11 +619,6 @@
     @media only screen and (max-width: 1366px) and (orientation: landscape) {
       body {
         padding: 0;
-      }
-
-      .stage {
-        width: var(--viewport-width);
-        height: var(--viewport-height);
       }
 
       .top-actions {
@@ -697,12 +685,7 @@
       }
     }
 
-    @supports (height: 100dvh) {
-      .stage {
-        width: var(--viewport-width);
-        height: var(--viewport-height);
-      }
-    }
+
 
     /* ────────────────────────────────────────────── */
     /* Edit Modal With Custom Keypad */
@@ -863,9 +846,65 @@
         font-size: 14px;
       }
     }
+
+    /* ─── Portrait orientation lock overlay ─── */
+    #rotate-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      z-index: 99999;
+      background: #1b1c1e;
+      color: #ffffff;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 18px;
+      font-family: -apple-system, BlinkMacSystemFont, 'Helvetica Neue', sans-serif;
+      text-align: center;
+      padding: 32px;
+      touch-action: none;
+    }
+    #rotate-overlay svg {
+      width: 90px;
+      height: 90px;
+      animation: rotate-hint 1.4s ease-in-out infinite alternate;
+    }
+    @keyframes rotate-hint {
+      from { transform: rotate(-18deg); }
+      to   { transform: rotate(18deg); }
+    }
+    #rotate-overlay .rotate-title {
+      font-size: 22px;
+      font-weight: 600;
+      margin: 0;
+      line-height: 1.4;
+    }
+    #rotate-overlay .rotate-sub {
+      font-size: 15px;
+      opacity: 0.55;
+      margin: 0;
+    }
+    @media (orientation: portrait) {
+      #rotate-overlay { display: flex; }
+    }
   </style>
 </head>
 <body>
+  <!-- Portrait orientation lock overlay -->
+  <div id="rotate-overlay" role="alert" aria-live="polite">
+    <svg viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <!-- portrait tablet (faded) -->
+      <rect x="10" y="5" width="18" height="28" rx="3" stroke="rgba(255,255,255,0.35)" stroke-width="2"/>
+      <!-- arrow portrait → landscape -->
+      <path d="M30 15 Q40 2 55 12" stroke="white" stroke-width="2.5" stroke-linecap="round" fill="none"/>
+      <polyline points="51,7 55,12 60,9" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+      <!-- landscape tablet -->
+      <rect x="47" y="28" width="28" height="18" rx="3" stroke="white" stroke-width="2"/>
+    </svg>
+    <p class="rotate-title">Ruota il dispositivo</p>
+    <p class="rotate-sub">Landscape mode required</p>
+  </div>
+
   <main class="stage" aria-label="Replica home FlySmart">
     <p class="nav-warning">NOT FOR NAVIGATIONAL USE</p>
     <div class="top-actions" aria-label="Azioni rapide">
@@ -1108,6 +1147,11 @@
     window.visualViewport?.addEventListener('scroll', syncViewportBounds);
     window.addEventListener('resize', syncViewportBounds);
     window.addEventListener('orientationchange', syncViewportBounds);
+
+    // Try to lock orientation to landscape (works in PWA / some browsers)
+    if (screen.orientation?.lock) {
+      screen.orientation.lock('landscape').catch(() => {});
+    }
 
     const stage = document.querySelector('.stage');
     const brightnessBtn = document.querySelector('#brightnessBtn');
