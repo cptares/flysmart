@@ -1824,6 +1824,23 @@
     /* General iPad Touch Optimization */
     /* ────────────────────────────────────────────── */
     @media only screen and (max-width: 1366px) {
+      :root {
+        --ipad-popup-width: 320px;
+        --ipad-popup-scale: 1.25;
+      }
+
+      .airport-panel,
+      .rwy-panel,
+      .wind-panel,
+      .oat-panel,
+      .qnh-panel,
+      .rwycond-panel,
+      .aice-panel {
+        width: var(--ipad-popup-width);
+        max-width: none;
+        transform: scale(var(--ipad-popup-scale));
+      }
+
       .rwy-viz-number {
         font-size: clamp(28.8px, 2.34vw, 48px);
       }
@@ -1915,7 +1932,7 @@
       .qnh-panel,
       .rwycond-panel,
       .aice-panel {
-        transform: scale(1.18);
+        transform: scale(var(--ipad-popup-scale));
       }
     }
 
