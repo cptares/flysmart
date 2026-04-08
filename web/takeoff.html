@@ -1695,19 +1695,19 @@
       width: var(--wind-sock-width);
       height: var(--wind-sock-height);
       top: calc(20% - var(--wind-axis-offset-y));
-      left: calc(50% - 35px - var(--wind-axis-offset-x));
+      left: calc(50% - 70px - var(--wind-axis-offset-x));
       bottom: auto;
       object-fit: contain;
       z-index: 10;
       opacity: 0;
-      transition: opacity 480ms ease, transform 600ms ease;
+      transition: none;
       pointer-events: none;
       transform-origin: calc(var(--wind-pivot-x-ratio) * 100%) calc(var(--wind-pivot-y-ratio) * 100%);
       transform: rotate(0deg);
     }
 
     .wind-sock-overlay.right-position {
-      left: calc(50% + 35px - var(--wind-axis-offset-x));
+      left: calc(50% + 70px - var(--wind-axis-offset-x));
       right: auto;
     }
 
@@ -2653,6 +2653,9 @@
     const aiceEditBtn = document.querySelector('#aiceEditBtn');
     const aiceOpenTriggers = document.querySelectorAll('.aice-open-trigger');
     const takeoffIncompleteMessage = document.querySelector('#takeoffIncompleteMessage');
+    const rwyVisualization = document.querySelector('#rwyVisualization');
+    const rwyVizTrack = document.querySelector('.rwy-viz-track');
+    const windSockOverlayEl = document.querySelector('.wind-sock-overlay');
     const airportBackdrop = document.querySelector('#airportBackdrop');
     const airportPanel = document.querySelector('#airportPanel');
     const airportInput = document.querySelector('#airportInput');
@@ -2747,6 +2750,32 @@
       return normalized === 'NIL' ? '' : String(value || '');
     };
     const clamp = (value, min, max) => Math.min(Math.max(value, min), max);
+
+    const updateWindSockAnchor = (windFromRight) => {
+      if (!rwyVisualization || !rwyVizTrack || !windSockOverlayEl) {
+        return;
+      }
+
+      const vizRect = rwyVisualization.getBoundingClientRect();
+      const trackRect = rwyVizTrack.getBoundingClientRect();
+      const sockRect = windSockOverlayEl.getBoundingClientRect();
+      if (!vizRect.width || !trackRect.width || !sockRect.width || !sockRect.height) {
+        return;
+      }
+
+      const pivotXRatio = 0.5;
+      const pivotYRatio = 0.06;
+      const pivotX = sockRect.width * pivotXRatio;
+      const pivotY = sockRect.height * pivotYRatio;
+
+      const runwayCenterlineX = (trackRect.left - vizRect.left) + (trackRect.width / 2);
+      const axisX = runwayCenterlineX + (windFromRight ? 70 : -70);
+      const axisY = (trackRect.top - vizRect.top) + (trackRect.height * 0.20);
+
+      windSockOverlayEl.style.left = `${axisX - pivotX}px`;
+      windSockOverlayEl.style.top = `${axisY - pivotY}px`;
+      windSockOverlayEl.style.right = 'auto';
+    };
 
     const updateTakeoffIncompleteMessage = () => {
       if (!takeoffIncompleteMessage) {
@@ -3490,7 +3519,7 @@
       }
 
       // Rotate wind sock based on wind direction relative to runway heading
-      const windSockOverlay = document.querySelector('.wind-sock-overlay');
+      const windSockOverlay = windSockOverlayEl;
       if (windSockOverlay && windDraft.dir && selectedRunway !== 'NIL') {
         const windDir = parseInt(windDraft.dir, 10);
         const runwayHeading = parseInt(selectedRunway, 10) * 10; // Runway number to degrees (e.g., 30 -> 300)
@@ -3499,14 +3528,18 @@
         windSockOverlay.style.transform = `rotate(${rotationDegrees}deg)`;
 
         // Position wind sock: left for headwind/tailwind/left-side wind, right for right-side wind
-        if (windDirRelativeToRunway > 0 && windDirRelativeToRunway < 180) {
+        const windFromRight = windDirRelativeToRunway > 0 && windDirRelativeToRunway < 180;
+        if (windFromRight) {
           windSockOverlay.classList.add('right-position');
         } else {
           windSockOverlay.classList.remove('right-position');
         }
+
+        updateWindSockAnchor(windFromRight);
       } else if (windSockOverlay) {
         windSockOverlay.style.transform = 'rotate(0deg)';
         windSockOverlay.classList.remove('right-position');
+        updateWindSockAnchor(false);
       }
 
       // Update wind component diagram
@@ -3519,8 +3552,7 @@
       if (windComponentsDiagram && windDraft.dir && windDraft.speed && selectedRunway !== 'NIL') {
         const centerX = 60;
         const centerY = 58;
-        const minArrow = 8;
-        const maxArrow = 38;
+        const fullArrow = 34;
 
         const windDir = Number.parseInt(windDraft.dir, 10);
         const windSpeed = Number(windDraft.speed) || 0;
@@ -3543,8 +3575,8 @@
 
         const headwindAbs = Math.abs(headwindComponent);
         const crosswindAbs = Math.abs(crosswindComponent);
-        const headwindLength = headwindAbs < 0.5 ? 0 : Math.max(minArrow, Math.min(headwindAbs * 2, maxArrow));
-        const crosswindLength = crosswindAbs < 0.5 ? 0 : Math.max(minArrow, Math.min(crosswindAbs * 2, maxArrow));
+        const headwindLength = headwindAbs < 0.5 ? 0 : fullArrow;
+        const crosswindLength = crosswindAbs < 0.5 ? 0 : fullArrow;
 
         // Update vertical arrow (headwind/tailwind)
         if (windHeadTailArrow) {
@@ -4619,6 +4651,8 @@
       if (stage?.classList.contains('aice-open')) {
         positionAicePanel();
       }
+
+      updateWindUi();
     });
 
     window.addEventListener('keydown', (event) => {
