@@ -252,7 +252,7 @@
       position: absolute;
       left: clamp(14px, 1.2vw, 26px);
       top: clamp(103px, 11%, 180px);
-      width: clamp(97px, 23%, 338px);
+      width: clamp(82px, 23%, 318px);
       transform: scale(0.75);
       transform-origin: top left;
       z-index: 3;
@@ -461,7 +461,10 @@
     }
 
     #rwyPencil {
-      display: inline-flex;
+      display: block;
+      width: var(--pencil-size);
+      height: var(--pencil-size);
+      flex: 0 0 var(--pencil-size);
     }
 
     #rwyBtn::after {
@@ -1681,7 +1684,7 @@
       }
 
       .left-inputs {
-        width: min(46%, 199px);
+        width: min(46%, 179px);
       }
 
       .left-label {
@@ -1717,7 +1720,7 @@
       .left-inputs {
         left: clamp(8px, 0.8vw, 18px);
         top: clamp(80px, 9%, 150px);
-        width: clamp(92px, 23%, 319px);
+        width: clamp(77px, 23%, 299px);
         transform: scale(0.85);
         gap: clamp(10px, 1vw, 20px);
       }
@@ -1778,7 +1781,7 @@
       .left-inputs {
         left: clamp(10px, 1vw, 20px);
         top: clamp(90px, 10%, 160px);
-        width: clamp(102px, 24%, 338px);
+        width: clamp(87px, 24%, 318px);
         transform: scale(0.9);
         gap: clamp(10px, 1vw, 20px);
       }
