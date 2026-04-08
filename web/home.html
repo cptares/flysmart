@@ -253,6 +253,7 @@
       letter-spacing: 0.5px;
       outline: none;
       text-align: right;
+      caret-color: transparent;
     }
 
     .simbrief-display::placeholder {
@@ -680,7 +681,7 @@
     }
 
     /* ────────────────────────────────────────────── */
-    /* Minimal Edit Modal - iPad Floating Keyboard */
+    /* Edit Modal With Custom Keypad */
     /* ────────────────────────────────────────────── */
     .edit-modal {
       position: fixed;
@@ -705,7 +706,8 @@
     .edit-modal-content {
       position: relative;
       width: 100%;
-      max-width: 100%;
+      max-width: 720px;
+      margin: 0 auto;
       background: #f5f5f7;
       border-radius: 16px 16px 0 0;
       padding: 0;
@@ -765,12 +767,56 @@
       color: #000;
       -webkit-appearance: none;
       appearance: none;
+      caret-color: transparent;
     }
 
     .edit-modal-input:focus {
       outline: none;
       border-color: #0071e3;
       box-shadow: 0 0 0 3px rgba(0, 113, 227, 0.1);
+    }
+
+    .edit-modal-keypad {
+      display: grid;
+      grid-template-columns: repeat(10, minmax(0, 1fr));
+      gap: 8px;
+      padding: 0 16px 16px;
+    }
+
+    .edit-key-btn {
+      min-height: 44px;
+      border: 1px solid #cfd2d7;
+      border-radius: 8px;
+      background: linear-gradient(180deg, #ffffff 0%, #e8ebef 100%);
+      color: #2f3135;
+      font-size: 16px;
+      font-weight: 700;
+      cursor: pointer;
+      -webkit-appearance: none;
+      appearance: none;
+    }
+
+    .edit-key-btn:active {
+      transform: translateY(1px);
+      filter: brightness(0.96);
+    }
+
+    .edit-key-btn.wide {
+      grid-column: span 2;
+    }
+
+    .edit-key-btn.xwide {
+      grid-column: span 3;
+    }
+
+    .edit-key-btn.action {
+      background: linear-gradient(180deg, #bcc2c9 0%, #a8afb8 100%);
+    }
+
+    .edit-key-btn.confirm {
+      background: linear-gradient(180deg, #2a80f7 0%, #1562d3 100%);
+      border-color: #1459bf;
+      color: #fff;
     }
 
     @media (max-height: 500px) {
@@ -781,6 +827,16 @@
       .edit-modal-input {
         margin: 8px;
         padding: 10px 12px;
+      }
+
+      .edit-modal-keypad {
+        gap: 6px;
+        padding: 0 8px 8px;
+      }
+
+      .edit-key-btn {
+        min-height: 38px;
+        font-size: 14px;
       }
     }
   </style>
@@ -882,7 +938,7 @@
     <section class="settings-panel" aria-label="Pannello impostazioni">
       <div class="simbrief-field">
         <span class="simbrief-label">SIMBRIEF ID</span>
-        <input id="simbriefId" class="simbrief-display" type="text" inputmode="none" placeholder="SIMBRIEF ID">
+        <input id="simbriefId" class="simbrief-display" type="text" inputmode="none" placeholder="SIMBRIEF ID" readonly tabindex="-1" autocapitalize="off" autocomplete="off" spellcheck="false">
       </div>
       <div class="settings-keypad" aria-label="Tastierino SimBrief">
         <button type="button" class="key-btn" data-key="1">1</button>
@@ -909,7 +965,7 @@
     <div class="grain" aria-hidden="true"></div>
     <div class="top-glow" aria-hidden="true"></div>
 
-    <!-- Minimal Edit Modal - Triggers iPad Floating Keyboard -->
+    <!-- Edit Modal With Custom Keypad -->
     <div id="editModal" class="edit-modal" aria-hidden="true" role="dialog">
       <div class="edit-modal-backdrop"></div>
       <div class="edit-modal-content">
@@ -917,7 +973,53 @@
           <span id="editModalLabel" class="edit-modal-title"></span>
           <button id="editModalClose" class="edit-modal-close" type="button" aria-label="Chiudi">✕</button>
         </div>
-        <input id="editModalInput" class="edit-modal-input" type="text" inputmode="text" autocomplete="off" spellcheck="false">
+        <input id="editModalInput" class="edit-modal-input" type="text" inputmode="none" readonly tabindex="-1" autocapitalize="characters" autocomplete="off" spellcheck="false">
+        <div class="edit-modal-keypad" aria-label="Tastierino modifica campo">
+          <button type="button" class="edit-key-btn" data-edit-key="Q">Q</button>
+          <button type="button" class="edit-key-btn" data-edit-key="W">W</button>
+          <button type="button" class="edit-key-btn" data-edit-key="E">E</button>
+          <button type="button" class="edit-key-btn" data-edit-key="R">R</button>
+          <button type="button" class="edit-key-btn" data-edit-key="T">T</button>
+          <button type="button" class="edit-key-btn" data-edit-key="Y">Y</button>
+          <button type="button" class="edit-key-btn" data-edit-key="U">U</button>
+          <button type="button" class="edit-key-btn" data-edit-key="I">I</button>
+          <button type="button" class="edit-key-btn" data-edit-key="O">O</button>
+          <button type="button" class="edit-key-btn" data-edit-key="P">P</button>
+          <button type="button" class="edit-key-btn" data-edit-key="A">A</button>
+          <button type="button" class="edit-key-btn" data-edit-key="S">S</button>
+          <button type="button" class="edit-key-btn" data-edit-key="D">D</button>
+          <button type="button" class="edit-key-btn" data-edit-key="F">F</button>
+          <button type="button" class="edit-key-btn" data-edit-key="G">G</button>
+          <button type="button" class="edit-key-btn" data-edit-key="H">H</button>
+          <button type="button" class="edit-key-btn" data-edit-key="J">J</button>
+          <button type="button" class="edit-key-btn" data-edit-key="K">K</button>
+          <button type="button" class="edit-key-btn" data-edit-key="L">L</button>
+          <button type="button" class="edit-key-btn" data-edit-key="M">M</button>
+          <button type="button" class="edit-key-btn" data-edit-key="Z">Z</button>
+          <button type="button" class="edit-key-btn" data-edit-key="X">X</button>
+          <button type="button" class="edit-key-btn" data-edit-key="C">C</button>
+          <button type="button" class="edit-key-btn" data-edit-key="V">V</button>
+          <button type="button" class="edit-key-btn" data-edit-key="B">B</button>
+          <button type="button" class="edit-key-btn" data-edit-key="N">N</button>
+          <button type="button" class="edit-key-btn" data-edit-key="0">0</button>
+          <button type="button" class="edit-key-btn" data-edit-key="1">1</button>
+          <button type="button" class="edit-key-btn" data-edit-key="2">2</button>
+          <button type="button" class="edit-key-btn" data-edit-key="3">3</button>
+          <button type="button" class="edit-key-btn" data-edit-key="4">4</button>
+          <button type="button" class="edit-key-btn" data-edit-key="5">5</button>
+          <button type="button" class="edit-key-btn" data-edit-key="6">6</button>
+          <button type="button" class="edit-key-btn" data-edit-key="7">7</button>
+          <button type="button" class="edit-key-btn" data-edit-key="8">8</button>
+          <button type="button" class="edit-key-btn" data-edit-key="9">9</button>
+          <button type="button" class="edit-key-btn" data-edit-key="/">/</button>
+          <button type="button" class="edit-key-btn" data-edit-key="-">-</button>
+          <button type="button" class="edit-key-btn" data-edit-key=".">.</button>
+          <button type="button" class="edit-key-btn" data-edit-key=" ">Space</button>
+          <button type="button" class="edit-key-btn wide action" data-edit-action="backspace">⌫</button>
+          <button type="button" class="edit-key-btn wide action" data-edit-action="clear">Clear</button>
+          <button type="button" class="edit-key-btn xwide action" data-edit-action="cancel">Annulla</button>
+          <button type="button" class="edit-key-btn xwide confirm" data-edit-action="save">Salva</button>
+        </div>
       </div>
     </div>
   </main>
@@ -946,8 +1048,26 @@
     const editModalInput = document.querySelector('#editModalInput');
     const editModalClose = document.querySelector('#editModalClose');
     const editModalBackdrop = editModal?.querySelector('.edit-modal-backdrop');
+    const editKeyButtons = document.querySelectorAll('[data-edit-key]');
+    const editActionButtons = document.querySelectorAll('[data-edit-action]');
 
     let editModalCurrentField = null;
+
+    const suppressKeyboard = (element) => {
+      if (!element) {
+        return;
+      }
+
+      const blockEvent = (event) => {
+        event.preventDefault();
+        element.blur();
+      };
+
+      element.addEventListener('focus', () => element.blur());
+      element.addEventListener('touchstart', blockEvent, { passive: false });
+      element.addEventListener('pointerdown', blockEvent);
+      element.addEventListener('mousedown', blockEvent);
+    };
     
     const markMissingSimbriefId = () => {
       if (!updateBtn) {
@@ -1070,7 +1190,6 @@
       if (editModal) {
         editModal.classList.add('active');
         editModal.setAttribute('aria-hidden', 'false');
-        setTimeout(() => editModalInput.focus(), 100);
       }
     };
 
@@ -1097,6 +1216,39 @@
       editModal.setAttribute('aria-hidden', 'true');
       editModalCurrentField = null;
       editModalInput.value = '';
+    };
+
+    const appendEditModalValue = (chunk) => {
+      if (!editModalInput) {
+        return;
+      }
+
+      editModalInput.value += chunk;
+    };
+
+    const handleEditModalAction = (action) => {
+      if (!editModalInput) {
+        return;
+      }
+
+      if (action === 'backspace') {
+        editModalInput.value = editModalInput.value.slice(0, -1);
+        return;
+      }
+
+      if (action === 'clear') {
+        editModalInput.value = '';
+        return;
+      }
+
+      if (action === 'cancel') {
+        closeEditModal(false);
+        return;
+      }
+
+      if (action === 'save') {
+        closeEditModal(true);
+      }
     };
 
     const toDisplayWeight = (value) => {
@@ -1351,6 +1503,9 @@
       simbriefId.value = savedSimbriefId;
     }
 
+    suppressKeyboard(simbriefId);
+    suppressKeyboard(editModalInput);
+
     applyManualOverrides();
     saveTakeoffHeaderData();
 
@@ -1394,7 +1549,6 @@
       stage.classList.toggle('settings-open');
       if (willOpen) {
         positionSettingsPanel();
-        simbriefId?.focus();
       }
     });
 
@@ -1438,19 +1592,22 @@
             return;
           }
           simbriefId.value += key;
-          simbriefId.focus();
+          updateBtn?.classList.remove('missing-id');
+          updateBtn?.classList.remove('load-error');
           return;
         }
 
         if (action === 'backspace') {
           simbriefId.value = simbriefId.value.slice(0, -1);
-          simbriefId.focus();
+          updateBtn?.classList.remove('missing-id');
+          updateBtn?.classList.remove('load-error');
           return;
         }
 
         if (action === 'clear') {
           simbriefId.value = '';
-          simbriefId.focus();
+          updateBtn?.classList.remove('missing-id');
+          updateBtn?.classList.remove('load-error');
           return;
         }
 
@@ -1458,7 +1615,8 @@
           simbriefId.value = simbriefId.value.startsWith('-')
             ? simbriefId.value.slice(1)
             : `-${simbriefId.value}`;
-          simbriefId.focus();
+          updateBtn?.classList.remove('missing-id');
+          updateBtn?.classList.remove('load-error');
           return;
         }
 
@@ -1478,12 +1636,16 @@
       closeEditModal(false);
     });
 
-    editModalInput?.addEventListener('keydown', (event) => {
-      if (event.key === 'Enter') {
-        closeEditModal(true);
-      } else if (event.key === 'Escape') {
-        closeEditModal(false);
-      }
+    editKeyButtons.forEach((button) => {
+      button.addEventListener('click', () => {
+        appendEditModalValue(button.dataset.editKey || '');
+      });
+    });
+
+    editActionButtons.forEach((button) => {
+      button.addEventListener('click', () => {
+        handleEditModalAction(button.dataset.editAction || '');
+      });
     });
 
     document.addEventListener('keydown', (event) => {
