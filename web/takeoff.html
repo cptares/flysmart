@@ -1720,7 +1720,7 @@
       .left-inputs {
         left: clamp(8px, 0.8vw, 18px);
         top: clamp(80px, 9%, 150px);
-        width: clamp(77px, 23%, 299px);
+        width: clamp(69px, 20.7%, 269px);
         transform: scale(0.85);
         gap: clamp(10px, 1vw, 20px);
       }
@@ -1781,7 +1781,7 @@
       .left-inputs {
         left: clamp(10px, 1vw, 20px);
         top: clamp(90px, 10%, 160px);
-        width: clamp(87px, 24%, 318px);
+        width: clamp(78px, 21.6%, 286px);
         transform: scale(0.9);
         gap: clamp(10px, 1vw, 20px);
       }
@@ -1835,6 +1835,18 @@
         min-height: 40px;
       }
 
+      #windEditBtn,
+      #oatEditBtn,
+      #qnhEditBtn,
+      #rwyCondEditBtn,
+      #aiceEditBtn {
+        width: var(--pencil-size);
+        height: var(--pencil-size);
+        min-width: 0;
+        min-height: 0;
+        flex: 0 0 var(--pencil-size);
+      }
+
       .rwy-option,
       .airport-option {
         padding: 8px 10px;
@@ -1879,7 +1891,7 @@
     /* ────────────────────────────────────────────── */
     @media only screen and (min-width: 1024px) and (max-width: 1366px) and (orientation: landscape) {
       .left-inputs {
-        transform: scale(0.92);
+        transform: scale(0.83);
       }
 
       .airport-panel,
