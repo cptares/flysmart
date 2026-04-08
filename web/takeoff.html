@@ -251,7 +251,7 @@
       position: absolute;
       left: clamp(14px, 1.2vw, 26px);
       top: clamp(103px, 11%, 180px);
-      width: clamp(142px, 23%, 383px);
+      width: clamp(97px, 23%, 338px);
       transform: scale(0.75);
       transform-origin: top left;
       z-index: 3;
@@ -451,7 +451,12 @@
     .stage.rwycond-filled #rwyCondValue,
     .stage.aice-filled #aiceValue {
       font-family: "Bahnschrift Condensed", "Arial Narrow", "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-      font-weight: 700;
+      font-weight: 400;
+    }
+
+    #rwyCondValue,
+    #aiceValue {
+      text-transform: none;
     }
 
     #rwyPencil {
@@ -1675,7 +1680,7 @@
       }
 
       .left-inputs {
-        width: min(46%, 244px);
+        width: min(46%, 199px);
       }
 
       .left-label {
@@ -1711,7 +1716,7 @@
       .left-inputs {
         left: clamp(8px, 0.8vw, 18px);
         top: clamp(80px, 9%, 150px);
-        width: clamp(137px, 23%, 364px);
+        width: clamp(92px, 23%, 319px);
         transform: scale(0.85);
         gap: clamp(10px, 1vw, 20px);
       }
@@ -1772,7 +1777,7 @@
       .left-inputs {
         left: clamp(10px, 1vw, 20px);
         top: clamp(90px, 10%, 160px);
-        width: clamp(147px, 24%, 383px);
+        width: clamp(102px, 24%, 338px);
         transform: scale(0.9);
         gap: clamp(10px, 1vw, 20px);
       }
@@ -3608,7 +3613,20 @@
       updateTakeoffIncompleteMessage();
     };
 
-    const normalizeRwyCondSelection = (value) => String(value || '').trim().replace(/\\"/g, '"');
+    const RWY_COND_VALUES = ['Dry', 'Wet', 'Water 1/4"', 'Slush 1/4"'];
+    const AICE_VALUES = ['Off', 'Engine only', 'Engine & Wing'];
+
+    const normalizeRwyCondSelection = (value) => {
+      const cleaned = String(value || '').trim().replace(/\\"/g, '"');
+      const matched = RWY_COND_VALUES.find((item) => item.toLowerCase() === cleaned.toLowerCase());
+      return matched || '';
+    };
+
+    const normalizeAiceSelection = (value) => {
+      const cleaned = String(value || '').trim();
+      const matched = AICE_VALUES.find((item) => item.toLowerCase() === cleaned.toLowerCase());
+      return matched || '';
+    };
 
     const updateAiceUi = () => {
       if (aiceValue) {
@@ -3632,7 +3650,7 @@
     };
 
     const loadAiceData = () => {
-      aiceSelection = String(localStorage.getItem(takeoffAIceStorageKey) || '').trim();
+      aiceSelection = normalizeAiceSelection(localStorage.getItem(takeoffAIceStorageKey) || '');
       updateAiceUi();
     };
 
@@ -3882,7 +3900,7 @@
     aiceBackdrop?.addEventListener('click', closeAicePopup);
     aiceOptionButtons.forEach((button) => {
       button.addEventListener('click', () => {
-        aiceSelection = String(button.dataset.value || '').trim();
+        aiceSelection = normalizeAiceSelection(button.dataset.value || '');
         updateAiceUi();
         closeAicePopup();
       });
