@@ -39,6 +39,15 @@
     * {
       box-sizing: border-box;
       font-family: "FF Aircraft", "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      -webkit-user-select: none;
+      user-select: none;
+      -webkit-touch-callout: none;
+    }
+
+    img,
+    button,
+    a {
+      -webkit-user-drag: none;
     }
 
     html,
@@ -1058,6 +1067,8 @@
 
       document.addEventListener('touchmove', preventGesture, { passive: false });
       document.addEventListener('wheel', preventGesture, { passive: false });
+      document.addEventListener('dragstart', preventGesture, { passive: false });
+      document.addEventListener('selectstart', preventGesture, { passive: false });
 
       document.addEventListener('keydown', (event) => {
         if (blockedKeys.has(event.key)) {
