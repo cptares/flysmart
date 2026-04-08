@@ -1535,7 +1535,7 @@
       color: #000000;
       text-align: center;
       font-family: "Bahnschrift Condensed", "Arial Narrow", sans-serif;
-      font-size: clamp(12px, 0.95vw, 18px);
+      font-size: clamp(13.8px, 1.0925vw, 20.7px);
       font-weight: 700;
       line-height: 1.08;
       letter-spacing: 0;
@@ -1824,6 +1824,20 @@
     /* General iPad Touch Optimization */
     /* ────────────────────────────────────────────── */
     @media only screen and (max-width: 1366px) {
+      .rwy-viz-number {
+        font-size: clamp(28.8px, 2.34vw, 48px);
+      }
+
+      .rwy-viz-length {
+        font-size: clamp(27px, 2.349vw, 43.5px);
+      }
+
+      #takeoffIncompleteMessage {
+        width: auto;
+        max-width: 92vw;
+        white-space: nowrap;
+      }
+
       /* Ensure touch targets are at least 44px × 44px */
       .round-btn {
         min-width: 44px;
