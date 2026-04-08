@@ -62,6 +62,7 @@
       --viewport-height: 100vh;
       --edge-radius: 18px;
       --shadow: none;
+      --pencil-size: clamp(26px, 1.7vw, 38px);
     }
 
     * {
@@ -326,8 +327,8 @@
     .left-edit-btn {
       border: 0;
       background: transparent;
-      width: clamp(26px, 1.7vw, 38px);
-      height: clamp(26px, 1.7vw, 38px);
+      width: var(--pencil-size);
+      height: var(--pencil-size);
       padding: 0;
       margin-left: auto;
       display: inline-flex;
@@ -383,8 +384,8 @@
     }
 
     .rwy-btn img {
-      width: clamp(26px, 1.7vw, 38px);
-      height: clamp(26px, 1.7vw, 38px);
+      width: var(--pencil-size);
+      height: var(--pencil-size);
       object-fit: contain;
       pointer-events: none;
       user-select: none;
