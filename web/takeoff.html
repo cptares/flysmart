@@ -1686,46 +1686,54 @@
 
     .wind-sock-overlay {
       position: absolute;
-      left: -70px;
-      bottom: 75%;
-      width: clamp(40px, 3vw, 70px);
-      height: clamp(50px, 4vw, 90px);
+      --wind-sock-width: clamp(40px, 3vw, 70px);
+      --wind-sock-height: clamp(50px, 4vw, 90px);
+      --wind-pivot-x-ratio: 0.5;
+      --wind-pivot-y-ratio: 0.06;
+      --wind-axis-offset-y: calc(var(--wind-sock-height) * var(--wind-pivot-y-ratio));
+      --wind-axis-offset-x: calc(var(--wind-sock-width) * var(--wind-pivot-x-ratio));
+      width: var(--wind-sock-width);
+      height: var(--wind-sock-height);
+      top: calc(20% - var(--wind-axis-offset-y));
+      left: calc(50% - 35px - var(--wind-axis-offset-x));
+      bottom: auto;
       object-fit: contain;
       z-index: 10;
       opacity: 0;
       transition: opacity 480ms ease, transform 600ms ease;
       pointer-events: none;
-      transform-origin: 50% 6%;
+      transform-origin: calc(var(--wind-pivot-x-ratio) * 100%) calc(var(--wind-pivot-y-ratio) * 100%);
       transform: rotate(0deg);
     }
 
     .wind-sock-overlay.right-position {
+      left: calc(50% + 35px - var(--wind-axis-offset-x));
+      right: auto;
+    }
+
+    .stage.rwy-filled.wind-filled .wind-sock-overlay {
+      opacity: 1;
+    }
+
+    .wind-components-diagram {
+      position: absolute;
+      left: -70px;
+      bottom: calc(75% - 120px);
+      width: clamp(90px, 6.5vw, 130px);
+      height: clamp(110px, 8.2vw, 170px);
+      opacity: 0;
+      transition: opacity 480ms ease;
+      pointer-events: none;
+      z-index: 9;
+      overflow: visible;
+    }
+
+    .wind-components-diagram.right-position {
       left: auto;
       right: -70px;
     }
 
-    .stage.rwy-filled.wind-filled .wind-sock-overlay {
-
-          .wind-components-diagram {
-            position: absolute;
-            left: -70px;
-            bottom: calc(75% - 80px);
-            width: clamp(60px, 4.5vw, 100px);
-            height: clamp(90px, 6.5vw, 150px);
-            opacity: 0;
-            transition: opacity 480ms ease;
-            pointer-events: none;
-            z-index: 9;
-          }
-
-          .wind-components-diagram.right-position {
-            left: auto;
-            right: -70px;
-          }
-
-          .stage.rwy-filled.wind-filled .wind-components-diagram {
-            opacity: 1;
-          }
+    .stage.rwy-filled.wind-filled .wind-components-diagram {
       opacity: 1;
     }
 
@@ -1764,31 +1772,29 @@
       }
 
       .wind-sock-overlay {
-        left: -80px;
-        bottom: 75%;
-        width: clamp(45px, 3.5vw, 75px);
-        height: clamp(55px, 4.5vw, 95px);
+        --wind-sock-width: clamp(45px, 3.5vw, 75px);
+        --wind-sock-height: clamp(55px, 4.5vw, 95px);
       }
 
       .wind-sock-overlay.right-position {
+        left: calc(50% + 35px - (var(--wind-sock-width) / 2));
+        right: auto;
+      }
+
+      .wind-components-diagram {
+        left: -80px;
+        bottom: calc(75% - 130px);
+        width: clamp(96px, 7vw, 140px);
+        height: clamp(118px, 9vw, 186px);
+      }
+
+      .wind-components-diagram.right-position {
         left: auto;
         right: -80px;
       }
 
       .top-actions {
         gap: clamp(6px, 0.6vw, 10px);
-
-            .wind-components-diagram {
-              left: -80px;
-              bottom: calc(75% - 95px);
-              width: clamp(65px, 5vw, 110px);
-              height: clamp(100px, 7vw, 165px);
-            }
-
-            .wind-components-diagram.right-position {
-              left: auto;
-              right: -80px;
-            }
       }
 
       .round-btn {
@@ -1851,13 +1857,23 @@
       }
 
       .wind-sock-overlay {
-        left: -85px;
-        bottom: 75%;
-        width: clamp(50px, 3.8vw, 80px);
-        height: clamp(60px, 4.8vw, 100px);
+        --wind-sock-width: clamp(50px, 3.8vw, 80px);
+        --wind-sock-height: clamp(60px, 4.8vw, 100px);
       }
 
       .wind-sock-overlay.right-position {
+        left: calc(50% + 35px - (var(--wind-sock-width) / 2));
+        right: auto;
+      }
+
+      .wind-components-diagram {
+        left: -85px;
+        bottom: calc(75% - 140px);
+        width: clamp(104px, 7.4vw, 150px);
+        height: clamp(126px, 9.5vw, 194px);
+      }
+
+      .wind-components-diagram.right-position {
         left: auto;
         right: -85px;
       }
@@ -1866,18 +1882,6 @@
         top: clamp(10px, 1.5%, 20px);
         right: clamp(12px, 1.5%, 22px);
         gap: clamp(6px, 0.5vw, 10px);
-
-            .wind-components-diagram {
-              left: -85px;
-              bottom: calc(75% - 100px);
-              width: clamp(70px, 5.5vw, 120px);
-              height: clamp(110px, 7.5vw, 180px);
-            }
-
-            .wind-components-diagram.right-position {
-              left: auto;
-              right: -85px;
-            }
       }
 
       .round-btn {
@@ -1967,6 +1971,8 @@
         width: auto;
         max-width: 92vw;
         white-space: nowrap;
+        font-size: clamp(11px, 0.78vw, 15px);
+        line-height: 1.05;
       }
 
       /* Ensure touch targets are at least 44px × 44px */
@@ -2026,6 +2032,143 @@
       textarea,
       select {
         font-size: 16px;
+      }
+    }
+
+    /* ────────────────────────────────────────────── */
+    /* Desktop iPad Mirror */
+    /* ────────────────────────────────────────────── */
+    @media only screen and (min-width: 900px) and (pointer: fine) {
+      body {
+        padding: 0;
+        background: #000;
+      }
+
+      .stage {
+        width: min(92vw, calc(92vh * 4 / 3));
+        height: min(92vh, calc(92vw * 3 / 4));
+        aspect-ratio: 4 / 3;
+        left: 50%;
+        top: 50%;
+        right: auto;
+        bottom: auto;
+        transform: translate(-50%, -50%) scale(0.9);
+        transform-origin: center center;
+        background-size: 100% 100%;
+        background-position: center center;
+      }
+
+      :root {
+        --ipad-popup-width: 320px;
+        --ipad-popup-scale: 1.25;
+        --ipad-popup-min-height: 340px;
+      }
+
+      .rwy-viz-track {
+        margin-left: -50px;
+      }
+
+      .wind-sock-overlay {
+        --wind-sock-width: clamp(50px, 3.8vw, 80px);
+        --wind-sock-height: clamp(60px, 4.8vw, 100px);
+      }
+
+      .wind-sock-overlay.right-position {
+        left: calc(50% + 35px - (var(--wind-sock-width) / 2));
+        right: auto;
+      }
+
+      .wind-components-diagram {
+        left: -85px;
+        bottom: calc(75% - 140px);
+        width: clamp(104px, 7.4vw, 150px);
+        height: clamp(126px, 9.5vw, 194px);
+      }
+
+      .wind-components-diagram.right-position {
+        left: auto;
+        right: -85px;
+      }
+
+      .top-actions {
+        top: clamp(10px, 1.5%, 20px);
+        right: clamp(12px, 1.5%, 22px);
+        gap: clamp(6px, 0.5vw, 10px);
+      }
+
+      .round-btn {
+        width: clamp(26px, 2vw, 36px);
+        height: clamp(26px, 2vw, 36px);
+        min-width: 44px;
+        min-height: 44px;
+      }
+
+      .left-edit-btn {
+        min-width: 40px;
+        min-height: 40px;
+      }
+
+      .left-inputs {
+        left: clamp(10px, 1vw, 20px);
+        top: clamp(90px, 10%, 160px);
+        width: clamp(82px, 22.7%, 300px);
+        transform: scale(0.9);
+        gap: clamp(10px, 1vw, 20px);
+      }
+
+      .left-label {
+        font-size: clamp(21px, 1.6vw, 33px);
+      }
+
+      .left-sub {
+        font-size: clamp(17px, 1.15vw, 23px);
+      }
+
+      .left-value {
+        font-size: clamp(21px, 1.5vw, 32px);
+      }
+
+      .airport-panel,
+      .rwy-panel,
+      .wind-panel,
+      .oat-panel,
+      .qnh-panel,
+      .rwycond-panel,
+      .aice-panel {
+        width: var(--ipad-popup-width);
+        height: auto;
+        min-height: var(--ipad-popup-min-height);
+        max-width: none;
+        transform: scale(var(--ipad-popup-scale));
+      }
+
+      .rwy-viz-number {
+        font-size: clamp(28.8px, 2.34vw, 48px);
+      }
+
+      .rwy-viz-length {
+        font-size: clamp(27px, 2.349vw, 43.5px);
+      }
+
+      #takeoffIncompleteMessage {
+        width: auto;
+        max-width: 92vw;
+        white-space: nowrap;
+      }
+
+      .takeoff-strip-title {
+        font-size: clamp(24px, 1.8vw, 37.5px);
+        width: min(80%, 1250px);
+      }
+
+      .nav-warning {
+        font-size: clamp(11px, 0.9vw, 17px);
+      }
+
+      .rwy-option,
+      .airport-option {
+        padding: 8px 10px;
+        min-height: 44px;
       }
     }
 
@@ -2399,18 +2542,15 @@
         </div>
       </div>
       <img src="wind.png" alt="Wind sock" class="wind-sock-overlay" aria-hidden="true" />
-      <svg class="wind-components-diagram" viewBox="0 0 80 120" aria-hidden="true">
-        <!-- Center point -->
-        <circle cx="40" cy="20" r="3" fill="#00FF00" />
-        <!-- Vertical arrow (headwind/tailwind) -->
-        <line id="windHeadTailArrow" x1="40" y1="20" x2="40" y2="50" stroke="#00FF00" stroke-width="2" marker-end="url(#arrowgreen)" />
-        <text id="windHeadTailLabel" x="28" y="35" fill="#00FF00" font-size="14" font-weight="bold">9</text>
-        <!-- Horizontal arrow (crosswind) -->
-        <line id="windCrossArrow" x1="40" y1="20" x2="70" y2="20" stroke="#00FF00" stroke-width="2" marker-end="url(#arrowgreen)" />
-        <text id="windCrossLabel" x="50" y="15" fill="#00FF00" font-size="14" font-weight="bold">16</text>
+      <svg class="wind-components-diagram" viewBox="0 0 120 140" aria-hidden="true">
+        <circle id="windComponentCenter" cx="60" cy="58" r="4" fill="#55ff55" />
+        <line id="windHeadTailArrow" x1="60" y1="58" x2="60" y2="28" stroke="#55ff55" stroke-width="3" marker-end="url(#arrowgreen)" />
+        <text id="windHeadTailLabel" x="44" y="24" fill="#55ff55" font-size="16" font-weight="700">0</text>
+        <line id="windCrossArrow" x1="60" y1="58" x2="90" y2="58" stroke="#55ff55" stroke-width="3" marker-end="url(#arrowgreen)" />
+        <text id="windCrossLabel" x="94" y="52" fill="#55ff55" font-size="16" font-weight="700">0</text>
         <defs>
-          <marker id="arrowgreen" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto" markerUnits="strokeWidth">
-            <path d="M0,0 L0,6 L9,3 z" fill="#00FF00" />
+          <marker id="arrowgreen" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto" markerUnits="strokeWidth">
+            <path d="M0,0 L8,4 L0,8 z" fill="#55ff55" />
           </marker>
         </defs>
       </svg>
@@ -3377,9 +3517,14 @@
       const windCrossLabel = document.querySelector('#windCrossLabel');
 
       if (windComponentsDiagram && windDraft.dir && windDraft.speed && selectedRunway !== 'NIL') {
-        const windDir = parseInt(windDraft.dir, 10);
+        const centerX = 60;
+        const centerY = 58;
+        const minArrow = 8;
+        const maxArrow = 38;
+
+        const windDir = Number.parseInt(windDraft.dir, 10);
         const windSpeed = Number(windDraft.speed) || 0;
-        const runwayHeading = parseInt(selectedRunway, 10) * 10;
+        const runwayHeading = Number.parseInt(selectedRunway, 10) * 10;
         const windDirRelativeToRunway = (windDir - runwayHeading + 360) % 360;
 
         // Convert to radians
@@ -3396,49 +3541,75 @@
           windComponentsDiagram.classList.remove('right-position');
         }
 
-        // Scale arrow lengths based on components (40 is center, max 70 for full visualization)
-        const headwindLength = Math.min(Math.abs(headwindComponent) * 2, 30);
-        const crosswindLength = Math.min(Math.abs(crosswindComponent) * 2, 30);
+        const headwindAbs = Math.abs(headwindComponent);
+        const crosswindAbs = Math.abs(crosswindComponent);
+        const headwindLength = headwindAbs < 0.5 ? 0 : Math.max(minArrow, Math.min(headwindAbs * 2, maxArrow));
+        const crosswindLength = crosswindAbs < 0.5 ? 0 : Math.max(minArrow, Math.min(crosswindAbs * 2, maxArrow));
 
         // Update vertical arrow (headwind/tailwind)
-        if (headwindComponent >= 0) {
-          // Headwind (pointing up or neutral)
-          if (windHeadTailArrow) {
-            windHeadTailArrow.setAttribute('x2', '40');
-            windHeadTailArrow.setAttribute('y2', String(20 - headwindLength));
-          }
-        } else {
-          // Tailwind (pointing down)
-          if (windHeadTailArrow) {
-            windHeadTailArrow.setAttribute('x2', '40');
-            windHeadTailArrow.setAttribute('y2', String(20 + Math.abs(headwindLength)));
-          }
+        if (windHeadTailArrow) {
+          windHeadTailArrow.setAttribute('x1', String(centerX));
+          windHeadTailArrow.setAttribute('y1', String(centerY));
+          windHeadTailArrow.setAttribute('x2', String(centerX));
+          windHeadTailArrow.setAttribute(
+            'y2',
+            String(headwindComponent >= 0 ? centerY - headwindLength : centerY + headwindLength)
+          );
         }
 
         // Update horizontal arrow (crosswind)
-        if (crosswindComponent >= 0) {
-          // Crosswind right
-          if (windCrossArrow) {
-            windCrossArrow.setAttribute('x2', String(40 + crosswindLength));
-            windCrossArrow.setAttribute('y2', '20');
-          }
-        } else {
-          // Crosswind left
-          if (windCrossArrow) {
-            windCrossArrow.setAttribute('x2', String(40 - Math.abs(crosswindLength)));
-            windCrossArrow.setAttribute('y2', '20');
-          }
+        if (windCrossArrow) {
+          windCrossArrow.setAttribute('x1', String(centerX));
+          windCrossArrow.setAttribute('y1', String(centerY));
+          windCrossArrow.setAttribute(
+            'x2',
+            String(crosswindComponent >= 0 ? centerX + crosswindLength : centerX - crosswindLength)
+          );
+          windCrossArrow.setAttribute('y2', String(centerY));
         }
 
         // Update labels
         if (windHeadTailLabel) {
+          windHeadTailLabel.setAttribute('x', String(centerX - 16));
+          windHeadTailLabel.setAttribute(
+            'y',
+            String(headwindComponent >= 0 ? centerY - headwindLength - 6 : centerY + headwindLength + 18)
+          );
           windHeadTailLabel.textContent = Math.round(Math.abs(headwindComponent)).toString();
         }
         if (windCrossLabel) {
+          windCrossLabel.setAttribute(
+            'x',
+            String(crosswindComponent >= 0 ? centerX + crosswindLength + 6 : centerX - crosswindLength - 20)
+          );
+          windCrossLabel.setAttribute('y', String(centerY - 6));
           windCrossLabel.textContent = Math.round(Math.abs(crosswindComponent)).toString();
         }
       } else if (windComponentsDiagram) {
         windComponentsDiagram.classList.remove('right-position');
+
+        if (windHeadTailArrow) {
+          windHeadTailArrow.setAttribute('x1', '60');
+          windHeadTailArrow.setAttribute('y1', '58');
+          windHeadTailArrow.setAttribute('x2', '60');
+          windHeadTailArrow.setAttribute('y2', '50');
+        }
+        if (windCrossArrow) {
+          windCrossArrow.setAttribute('x1', '60');
+          windCrossArrow.setAttribute('y1', '58');
+          windCrossArrow.setAttribute('x2', '68');
+          windCrossArrow.setAttribute('y2', '58');
+        }
+        if (windHeadTailLabel) {
+          windHeadTailLabel.setAttribute('x', '44');
+          windHeadTailLabel.setAttribute('y', '42');
+          windHeadTailLabel.textContent = '0';
+        }
+        if (windCrossLabel) {
+          windCrossLabel.setAttribute('x', '74');
+          windCrossLabel.setAttribute('y', '52');
+          windCrossLabel.textContent = '0';
+        }
       }
 
       updateTakeoffIncompleteMessage();
