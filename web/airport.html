@@ -42,6 +42,16 @@
       -webkit-user-drag: none;
     }
 
+    button,
+    .key-btn,
+    .edit-key-btn,
+    .wind-key-btn,
+    .airport-option,
+    .rwy-option {
+      touch-action: manipulation;
+      -ms-touch-action: manipulation;
+    }
+
     :root {
       --bg:      #282c31;
       --panel:   #31353b;
@@ -687,8 +697,8 @@
     'use strict';
 
     (() => {
-      let lastTouchEnd = 0;
       const blockedKeys = new Set([' ', 'Spacebar', 'ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'PageUp', 'PageDown', 'Home', 'End']);
+      const interactiveSelector = 'button, input, select, textarea, a, [role="button"], .key-btn, .edit-key-btn, .wind-key-btn, .airport-option, .rwy-option';
 
       const preventGesture = (event) => {
         event.preventDefault();
@@ -705,11 +715,18 @@
       }, { passive: false });
 
       document.addEventListener('touchend', (event) => {
-        const now = Date.now();
-        if (now - lastTouchEnd <= 300) {
+        if (!event.cancelable) {
+          return;
+        }
+
+        const target = event.target;
+        if (target instanceof Element && target.closest(interactiveSelector)) {
+          return;
+        }
+
+        if (event.detail > 1) {
           event.preventDefault();
         }
-        lastTouchEnd = now;
       }, { passive: false });
 
       document.addEventListener('touchmove', preventGesture, { passive: false });
