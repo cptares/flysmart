@@ -251,7 +251,7 @@
       position: absolute;
       left: clamp(14px, 1.2vw, 26px);
       top: clamp(103px, 11%, 180px);
-      width: clamp(207px, 22%, 467px);
+      width: clamp(186px, 20%, 420px);
       transform: scale(0.75);
       transform-origin: top left;
       z-index: 3;
@@ -475,8 +475,19 @@
       display: none;
     }
 
+    .stage.rwy-open #rwyLabel,
     .stage.rwy-open #rwyBtn {
-      color: #e4dc2d;
+      color: inherit;
+    }
+
+    .stage.airport-open .airport-row,
+    .stage.rwy-open .rwy-row,
+    .stage.wind-open .wind-row,
+    .stage.oat-open .oat-row,
+    .stage.qnh-open .qnh-row,
+    .stage.rwycond-open .rwycond-row,
+    .stage.aice-open .aice-row {
+      background: linear-gradient(180deg, #7397ba 0%, #4d7398 100%);
     }
 
     .airport-backdrop {
@@ -1642,7 +1653,7 @@
       }
 
       .left-inputs {
-        width: min(48%, 317px);
+        width: min(43%, 285px);
       }
 
       .left-label {
@@ -1678,7 +1689,7 @@
       .left-inputs {
         left: clamp(8px, 0.8vw, 18px);
         top: clamp(80px, 9%, 150px);
-        width: clamp(202px, 22%, 447px);
+        width: clamp(182px, 20%, 402px);
         transform: scale(0.85);
         gap: clamp(10px, 1vw, 20px);
       }
@@ -1739,7 +1750,7 @@
       .left-inputs {
         left: clamp(10px, 1vw, 20px);
         top: clamp(90px, 10%, 160px);
-        width: clamp(212px, 23%, 467px);
+        width: clamp(191px, 21%, 420px);
         transform: scale(0.9);
         gap: clamp(10px, 1vw, 20px);
       }
@@ -1924,13 +1935,13 @@
 
     <section class="left-inputs" aria-label="Pannello dati takeoff">
       <article class="left-card">
-        <div class="left-row">
+        <div class="left-row airport-row">
           <span id="demiDeiLabel" class="left-label">DEMI/DEI</span>
           <button id="demiDeiBtn" type="button" class="demi-dei-btn left-value yellow arrow" aria-label="Modifica DEMI DEI">
             <span id="demiDeiValue"></span>
           </button>
         </div>
-        <div class="left-row">
+        <div class="left-row rwy-row">
           <span id="rwyLabel" class="left-label">RWY</span>
           <button id="rwyBtn" class="rwy-btn left-value" type="button" aria-label="Modifica RWY">
             <span id="rwyValue"></span>
@@ -1940,7 +1951,7 @@
       </article>
 
       <article class="left-card">
-        <div class="left-row">
+        <div class="left-row wind-row">
           <span class="left-label wind-open-trigger">WIND</span>
           <span class="left-sub wind-open-trigger">°/kt</span>
           <span id="windValue" class="left-value wind-open-trigger"></span>
@@ -1948,7 +1959,7 @@
             <img src="./pencil.png" alt="" aria-hidden="true">
           </button>
         </div>
-        <div class="left-row">
+        <div class="left-row oat-row">
           <span class="left-label oat-open-trigger">OAT</span>
           <span class="left-sub oat-open-trigger">°C</span>
           <span id="oatValue" class="left-value oat-open-trigger"></span>
@@ -1956,7 +1967,7 @@
             <img src="./pencil.png" alt="" aria-hidden="true">
           </button>
         </div>
-        <div class="left-row">
+        <div class="left-row qnh-row">
           <span class="left-label qnh-open-trigger">QNH</span>
           <span class="left-sub qnh-open-trigger">hPa</span>
           <span id="qnhValue" class="left-value qnh-open-trigger"></span>
@@ -1964,14 +1975,14 @@
             <img src="./pencil.png" alt="" aria-hidden="true">
           </button>
         </div>
-        <div class="left-row">
+        <div class="left-row rwycond-row">
           <span class="left-label rwycond-open-trigger">RWY COND</span>
           <span id="rwyCondValue" class="left-value rwycond-open-trigger"></span>
           <button id="rwyCondEditBtn" class="left-edit-btn" type="button" aria-label="Modifica RWY COND">
             <img src="./pencil.png" alt="" aria-hidden="true">
           </button>
         </div>
-        <div class="left-row">
+        <div class="left-row aice-row">
           <span class="left-label aice-open-trigger">A-ICE</span>
           <span id="aiceValue" class="left-value aice-open-trigger"></span>
           <button id="aiceEditBtn" class="left-edit-btn" type="button" aria-label="Modifica A-ICE">
