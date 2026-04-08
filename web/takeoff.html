@@ -1417,6 +1417,7 @@
       height: clamp(440px, 64vh, 920px);
       background: #0e0e0e;
       border-radius: 3px;
+      overflow: hidden;
       box-shadow: 0 4px 22px rgba(0, 0, 0, 0.7), inset 0 0 0 1px rgba(255, 255, 255, 0.06);
     }
 
@@ -1443,7 +1444,7 @@
       left: 0;
       right: 0;
       text-align: center;
-      font-size: clamp(16px, 1.3vw, 26px);
+      font-size: clamp(24px, 1.95vw, 40px);
       font-weight: 700;
       color: #ffffff;
       letter-spacing: 1.5px;
@@ -1466,45 +1467,56 @@
       background-size: 100% clamp(28px, 4vh, 52px);
     }
 
-    /* Lower segment: from just above number up to centre gap */
+    /* Lower segment: exactly 4 dashes above the number */
     .rwy-viz-cl-top {
-      top: 57%;
       bottom: 17%;
+      height: calc(4 * clamp(28px, 4vh, 52px) - 3px);
+      top: auto;
+      -webkit-mask-image: linear-gradient(to bottom, transparent 0px, black 14px);
+      mask-image: linear-gradient(to bottom, transparent 0px, black 14px);
     }
 
-    /* Upper segment: from centre gap to top of strip */
+    /* Upper segment: resumes 90px above the label gap */
     .rwy-viz-cl-bottom {
+      bottom: calc(17% + 4 * clamp(28px, 4vh, 52px) + clamp(24px, 3vh, 44px) + 90px);
       top: 3%;
-      bottom: 44%;
+      height: auto;
+      -webkit-mask-image: linear-gradient(to bottom, transparent 0px, black 14px);
+      mask-image: linear-gradient(to bottom, transparent 0px, black 14px);
     }
 
-    /* Length label in the centre gap */
+    /* Length label — sits centred in the gap between the two CL segments */
     .rwy-viz-length-block {
       position: absolute;
-      top: 44%;
-      bottom: 44%;
+      bottom: calc(17% + 4 * clamp(28px, 4vh, 52px) + 40px);
+      height: clamp(24px, 3vh, 44px);
+      top: auto;
       left: 0;
       right: 0;
       display: flex;
       align-items: center;
       justify-content: center;
+      text-align: center;
     }
 
     .rwy-viz-length {
-      font-size: clamp(7px, 0.58vw, 11px);
-      color: rgba(255, 255, 255, 0.55);
+      font-size: clamp(18px, 1.566vw, 29px);
+      font-weight: 700;
+      color: #ffffff;
+      position: relative;
+      left: -2px;
       writing-mode: vertical-rl;
-      transform: rotate(180deg);
+      transform: rotate(180deg) translateY(-5px);
       letter-spacing: 1px;
       white-space: nowrap;
-      text-transform: uppercase;
     }
 
     /* Scale bracket — right side, aligned with lower centerline */
     .rwy-viz-scale {
       position: absolute;
       left: calc(100% + 5px);
-      top: 57%;
+      bottom: 17%;
+      top: auto;
       height: clamp(28px, 4vh, 52px);
       display: flex;
       flex-direction: row;
