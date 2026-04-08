@@ -2,7 +2,13 @@
 <html lang="it">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="FlySmart">
+  <meta name="theme-color" content="#282c31">
+  <link rel="manifest" href="./manifest.json">
+  <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 180 180'><rect fill='%23282c31' width='180' height='180'/><text x='50%' y='50%' font-size='80' fill='%23e4dc2d' text-anchor='middle' dominant-baseline='central' font-weight='bold' font-family='Arial'>FS</text></svg>">
   <title>FlySmart - Takeoff</title>
   <style>
     @font-face {
@@ -54,7 +60,7 @@
       box-shadow: var(--shadow);
       background-image: url("./takeoffpage.png");
       background-position: center;
-      background-size: cover;
+      background-size: contain;
       background-repeat: no-repeat;
     }
 
@@ -1071,6 +1077,196 @@
 
       .left-value {
         font-size: clamp(12px, 3vw, 18px);
+      }
+    }
+
+    /* ────────────────────────────────────────────── */
+    /* iPad Portrait Optimization (max 1024px) */
+    /* ────────────────────────────────────────────── */
+    @media only screen and (max-width: 1024px) and (orientation: portrait) {
+      body {
+        padding: clamp(8px, 1.5vw, 16px);
+      }
+
+      .stage {
+        width: min(100%, calc((100vh - 32px) * (var(--base-width) / var(--base-height))));
+      }
+
+      .top-actions {
+        gap: clamp(6px, 0.6vw, 10px);
+      }
+
+      .round-btn {
+        width: clamp(24px, 1.8vw, 32px);
+        height: clamp(24px, 1.8vw, 32px);
+      }
+
+      .left-inputs {
+        left: clamp(8px, 0.8vw, 18px);
+        top: clamp(80px, 9%, 150px);
+        width: clamp(240px, 28%, 580px);
+        transform: scale(0.85);
+        gap: clamp(10px, 1vw, 20px);
+      }
+
+      .left-label {
+        font-size: clamp(20px, 1.5vw, 32px);
+      }
+
+      .left-sub {
+        font-size: clamp(16px, 1.1vw, 22px);
+      }
+
+      .left-value {
+        font-size: clamp(20px, 1.45vw, 31px);
+      }
+
+      .airport-panel,
+      .rwy-panel,
+      .wind-panel,
+      .oat-panel {
+        transform: scale(1.1);
+        width: auto;
+        max-width: 280px;
+      }
+
+      .takeoff-strip-title {
+        font-size: clamp(15px, 1.1vw, 24px);
+        width: min(85%, 1200px);
+      }
+
+      .nav-warning {
+        font-size: clamp(10px, 0.8vw, 16px);
+      }
+    }
+
+    /* ────────────────────────────────────────────── */
+    /* iPad Landscape Optimization (max 1366px) */
+    /* ────────────────────────────────────────────── */
+    @media only screen and (max-width: 1366px) and (orientation: landscape) {
+      body {
+        padding: clamp(8px, 1vw, 14px);
+      }
+
+      .stage {
+        width: min(100%, calc((100vh - 28px) * (var(--base-width) / var(--base-height))));
+      }
+
+      .top-actions {
+        top: clamp(10px, 1.5%, 20px);
+        right: clamp(12px, 1.5%, 22px);
+        gap: clamp(6px, 0.5vw, 10px);
+      }
+
+      .round-btn {
+        width: clamp(26px, 2vw, 36px);
+        height: clamp(26px, 2vw, 36px);
+      }
+
+      .left-inputs {
+        left: clamp(10px, 1vw, 20px);
+        top: clamp(90px, 10%, 160px);
+        width: clamp(250px, 28%, 600px);
+        transform: scale(0.9);
+        gap: clamp(10px, 1vw, 20px);
+      }
+
+      .left-label {
+        font-size: clamp(21px, 1.6vw, 33px);
+      }
+
+      .left-sub {
+        font-size: clamp(17px, 1.15vw, 23px);
+      }
+
+      .left-value {
+        font-size: clamp(21px, 1.5vw, 32px);
+      }
+
+      .airport-panel,
+      .rwy-panel,
+      .wind-panel,
+      .oat-panel {
+        transform: scale(1.15);
+        width: auto;
+        max-width: 290px;
+      }
+
+      .takeoff-strip-title {
+        font-size: clamp(16px, 1.2vw, 25px);
+        width: min(80%, 1250px);
+      }
+
+      .nav-warning {
+        font-size: clamp(11px, 0.9vw, 17px);
+      }
+    }
+
+    /* ────────────────────────────────────────────── */
+    /* General iPad Touch Optimization */
+    /* ────────────────────────────────────────────── */
+    @media only screen and (max-width: 1366px) {
+      /* Ensure touch targets are at least 44px × 44px */
+      .round-btn {
+        min-width: 44px;
+        min-height: 44px;
+      }
+
+      .left-edit-btn {
+        min-width: 40px;
+        min-height: 40px;
+      }
+
+      .rwy-option,
+      .airport-option {
+        padding: 8px 10px;
+        min-height: 44px;
+      }
+
+      /* Remove hover effects on touch devices */
+      .round-btn:hover {
+        transform: none;
+      }
+
+      .left-edit-btn:hover {
+        transform: none;
+      }
+
+      /* Better scrolling performance */
+      .rwy-suggestions,
+      .airport-suggestions {
+        -webkit-overflow-scrolling: touch;
+      }
+
+      /* Improve text visibility on iPad */
+      @supports (-webkit-touch-callout: none) {
+        body {
+          -webkit-font-smoothing: antialiased;
+          -webkit-text-size-adjust: 100%;
+        }
+      }
+
+      /* Prevent zooming on input focus */
+      input,
+      textarea,
+      select {
+        font-size: 16px;
+      }
+    }
+
+    /* ────────────────────────────────────────────── */
+    /* iPad Mini Landscape (1024px+) */
+    /* ────────────────────────────────────────────── */
+    @media only screen and (min-width: 1024px) and (max-width: 1366px) and (orientation: landscape) {
+      .left-inputs {
+        transform: scale(0.92);
+      }
+
+      .airport-panel,
+      .rwy-panel,
+      .wind-panel,
+      .oat-panel {
+        transform: scale(1.18);
       }
     }
   </style>

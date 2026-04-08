@@ -2,7 +2,13 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="FlySmart">
+  <meta name="theme-color" content="#282c31">
+  <link rel="manifest" href="./manifest.json">
+  <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 180 180'><rect fill='%23282c31' width='180' height='180'/><text x='50%' y='50%' font-size='80' fill='%23e4dc2d' text-anchor='middle' dominant-baseline='central' font-weight='bold' font-family='Arial'>FS</text></svg>">
   <title>FlySmart – Airport Database</title>
   <style>
     @font-face {
@@ -468,6 +474,159 @@
       text-transform: uppercase;
       letter-spacing: 0.5px;
       padding: 14px 0;
+    }
+
+    /* ────────────────────────────────────────────── */
+    /* iPad Portrait Optimization */
+    /* ────────────────────────────────────────────── */
+    @media only screen and (max-width: 1024px) and (orientation: portrait) {
+      body {
+        font-size: 14px;
+      }
+
+      .topbar {
+        padding: 0 12px;
+        height: 48px;
+        gap: 12px;
+      }
+
+      .btn-back {
+        height: 28px;
+        padding: 0 12px;
+        font-size: 10px;
+        min-width: 44px;
+      }
+
+      .topbar-title {
+        font-size: 15px;
+        letter-spacing: 2px;
+      }
+
+      .topbar-status {
+        font-size: 10px;
+      }
+
+      .content {
+        padding: 12px;
+      }
+
+      .search-bar {
+        padding: 8px 12px;
+        font-size: 16px;
+        min-height: 44px;
+      }
+
+      .list-row {
+        padding: 12px;
+        min-height: 48px;
+      }
+
+      .row-code {
+        font-size: clamp(11px, 2vw, 14px);
+      }
+
+      .row-name {
+        font-size: clamp(10px, 1.8vw, 13px);
+      }
+
+      .row-sub {
+        font-size: clamp(8px, 1.5vw, 11px);
+      }
+    }
+
+    /* ────────────────────────────────────────────── */
+    /* iPad Landscape Optimization */
+    /* ────────────────────────────────────────────── */
+    @media only screen and (max-width: 1366px) and (orientation: landscape) {
+      body {
+        font-size: 13px;
+      }
+
+      .topbar {
+        padding: 0 14px;
+        height: 46px;
+        gap: 14px;
+      }
+
+      .btn-back {
+        height: 30px;
+        padding: 0 14px;
+        font-size: 10px;
+        min-width: 44px;
+      }
+
+      .topbar-title {
+        font-size: 16px;
+        letter-spacing: 2px;
+      }
+
+      .topbar-status {
+        font-size: 10px;
+      }
+
+      .content {
+        padding: 12px;
+      }
+
+      .search-bar {
+        padding: 8px 14px;
+        font-size: 16px;
+        min-height: 44px;
+      }
+
+      .list-row {
+        padding: 10px 12px;
+        min-height: 46px;
+      }
+
+      .row-code {
+        font-size: clamp(12px, 1.8vw, 15px);
+      }
+
+      .row-name {
+        font-size: clamp(11px, 1.6vw, 14px);
+      }
+
+      .row-sub {
+        font-size: clamp(9px, 1.3vw, 12px);
+      }
+    }
+
+    /* ────────────────────────────────────────────── */
+    /* General iPad Touch Optimization */
+    /* ────────────────────────────────────────────── */
+    @media only screen and (max-width: 1366px) {
+      /* Improve touch target size */
+      .btn-back {
+        min-width: 44px;
+        min-height: 44px;
+      }
+
+      /* Better scrolling on touch devices */
+      .content {
+        -webkit-overflow-scrolling: touch;
+      }
+
+      /* Smooth font rendering */
+      @supports (-webkit-touch-callout: none) {
+        body {
+          -webkit-font-smoothing: antialiased;
+          -webkit-text-size-adjust: 100%;
+        }
+      }
+
+      /* Prevent zooming on input focus */
+      input,
+      select {
+        font-size: 16px;
+      }
+
+      /* Prevent text selection on long press */
+      .list-row,
+      .topbar {
+        -webkit-user-select: none;
+        user-select: none;
+      }
     }
   </style>
 </head>

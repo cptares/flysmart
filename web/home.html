@@ -2,7 +2,13 @@
 <html lang="it">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="FlySmart">
+  <meta name="theme-color" content="#282c31">
+  <link rel="manifest" href="./manifest.json">
+  <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 180 180'><rect fill='%23282c31' width='180' height='180'/><text x='50%' y='50%' font-size='80' fill='%23e4dc2d' text-anchor='middle' dominant-baseline='central' font-weight='bold' font-family='Arial'>FS</text></svg>">
   <title>FlySmart Replica - Home</title>
   <style>
     @font-face {
@@ -58,7 +64,7 @@
       box-shadow: var(--shadow);
       background-image: url("./home.png");
       background-position: center;
-      background-size: cover;
+      background-size: contain;
       background-repeat: no-repeat;
     }
 
@@ -558,6 +564,120 @@
         font-size: clamp(7.7px, 1.92vw, 9.6px);
       }
     }
+
+    /* ────────────────────────────────────────────── */
+    /* iPad Portrait Optimization (max 1024px) */
+    /* ────────────────────────────────────────────── */
+    @media only screen and (max-width: 1024px) and (orientation: portrait) {
+      body {
+        padding: clamp(8px, 1.5vw, 16px);
+      }
+
+      .stage {
+        width: min(100%, calc((100vh - 32px) * (var(--base-width) / var(--base-height))));
+      }
+
+      .top-actions {
+        top: clamp(10px, 2%, 28px);
+        right: clamp(12px, 1.8%, 32px);
+        gap: clamp(6px, 0.6vw, 10px);
+      }
+
+      .round-btn {
+        width: clamp(24px, 1.8vw, 32px);
+        height: clamp(24px, 1.8vw, 32px);
+      }
+
+      .home-panel {
+        width: clamp(280px, 45%, 720px);
+        padding: clamp(10px, 0.8vw, 14px);
+      }
+
+      .settings-panel {
+        width: 420px;
+        padding: 16px;
+      }
+
+      .nav-warning {
+        font-size: clamp(10px, 0.8vw, 16px);
+      }
+    }
+
+    /* ────────────────────────────────────────────── */
+    /* iPad Landscape Optimization (max 1366px) */
+    /* ────────────────────────────────────────────── */
+    @media only screen and (max-width: 1366px) and (orientation: landscape) {
+      body {
+        padding: clamp(8px, 1vw, 14px);
+      }
+
+      .stage {
+        width: min(100%, calc((100vh - 28px) * (var(--base-width) / var(--base-height))));
+      }
+
+      .top-actions {
+        top: clamp(10px, 1.5%, 20px);
+        right: clamp(12px, 1.5%, 22px);
+        gap: clamp(6px, 0.5vw, 10px);
+      }
+
+      .round-btn {
+        width: clamp(26px, 2vw, 36px);
+        height: clamp(26px, 2vw, 36px);
+      }
+
+      .home-panel {
+        width: clamp(300px, 42%, 740px);
+        padding: clamp(10px, 0.9vw, 15px);
+      }
+
+      .settings-panel {
+        width: 440px;
+        padding: 18px;
+      }
+
+      .nav-warning {
+        font-size: clamp(11px, 0.9vw, 17px);
+      }
+    }
+
+    /* ────────────────────────────────────────────── */
+    /* General iPad Touch Optimization */
+    /* ────────────────────────────────────────────── */
+    @media only screen and (max-width: 1366px) {
+      /* Ensure touch targets are at least 44px × 44px */
+      .round-btn {
+        min-width: 44px;
+        min-height: 44px;
+      }
+
+      /* Remove hover effects on touch devices */
+      .round-btn:hover {
+        transform: none;
+      }
+
+      /* Better scrolling performance */
+      @supports (-webkit-touch-callout: none) {
+        body {
+          -webkit-font-smoothing: antialiased;
+          -webkit-text-size-adjust: 100%;
+        }
+      }
+
+      /* Prevent zooming on input focus */
+      input,
+      textarea,
+      select {
+        font-size: 16px;
+      }
+
+      /* Improve touch interaction */
+      .home-panel,
+      .settings-panel {
+        -webkit-user-select: none;
+        user-select: none;
+      }
+    }
   </style>
 </head>
 <body>
@@ -587,7 +707,7 @@
         <div class="card-row">
           <div class="row-content">
             <div class="row-main">Aircraft Type</div>
-            <div id="aircraftTypeValue" class="row-value">--</div>
+            <div id="aircraftTypeValue" class="row-value"></div>
             <button type="button" class="row-edit-btn" data-edit-field="aircraftType" aria-label="Modifica Aircraft Type" title="Modifica Aircraft Type">
               <img src="./pencil.png" alt="" class="row-pencil" aria-hidden="true">
             </button>
@@ -596,7 +716,7 @@
         <div class="card-row">
           <div class="row-content">
             <div class="row-main">Aircraft Registration</div>
-            <div id="aircraftRegistrationValue" class="row-value">--</div>
+            <div id="aircraftRegistrationValue" class="row-value"></div>
             <button type="button" class="row-edit-btn" data-edit-field="aircraftRegistration" aria-label="Modifica Aircraft Registration" title="Modifica Aircraft Registration">
               <img src="./pencil.png" alt="" class="row-pencil" aria-hidden="true">
             </button>
@@ -608,7 +728,7 @@
               <span class="row-main">Weight Variant</span>
               <span class="row-sub">MTOW/MLW/MZFW</span>
             </div>
-            <div id="weightVariantValue" class="row-value">--</div>
+            <div id="weightVariantValue" class="row-value"></div>
             <button type="button" class="row-edit-btn" data-edit-field="weightVariant" aria-label="Modifica Weight Variant" title="Modifica Weight Variant">
               <img src="./pencil.png" alt="" class="row-pencil" aria-hidden="true">
             </button>
@@ -621,7 +741,7 @@
         <div class="card-row">
           <div class="row-content">
             <div class="row-main">Flight Number</div>
-            <div id="flightNumberValue" class="row-value">--</div>
+            <div id="flightNumberValue" class="row-value"></div>
             <button type="button" class="row-edit-btn" data-edit-field="flightNumber" aria-label="Modifica Flight Number" title="Modifica Flight Number">
               <img src="./pencil.png" alt="" class="row-pencil" aria-hidden="true">
             </button>
@@ -630,7 +750,7 @@
         <div class="card-row">
           <div class="row-content">
             <div class="row-main">From</div>
-            <div id="fromValue" class="row-value">--</div>
+            <div id="fromValue" class="row-value"></div>
             <button type="button" class="row-edit-btn" data-edit-field="from" aria-label="Modifica From" title="Modifica From">
               <img src="./pencil.png" alt="" class="row-pencil" aria-hidden="true">
             </button>
@@ -639,7 +759,7 @@
         <div class="card-row">
           <div class="row-content">
             <div class="row-main">To</div>
-            <div id="toValue" class="row-value">--</div>
+            <div id="toValue" class="row-value"></div>
             <button type="button" class="row-edit-btn" data-edit-field="to" aria-label="Modifica To" title="Modifica To">
               <img src="./pencil.png" alt="" class="row-pencil" aria-hidden="true">
             </button>
@@ -778,26 +898,26 @@
           continue;
         }
 
-        element.textContent = String(value || '--').trim() || '--';
+        element.textContent = (value || '').trim();
       }
     };
 
-    const setAircraftValues = ({ type = '--', registration = '--', weight = '--' }) => {
-      aircraftTypeValue.textContent = type || '--';
-      aircraftRegistrationValue.textContent = registration || '--';
-      weightVariantValue.textContent = weight || '--';
+    const setAircraftValues = ({ type = '', registration = '', weight = '' }) => {
+      aircraftTypeValue.textContent = type;
+      aircraftRegistrationValue.textContent = registration;
+      weightVariantValue.textContent = weight;
     };
 
-    const setFlightValues = ({ flightNumber = '--', from = '--', to = '--' }) => {
-      flightNumberValue.textContent = flightNumber || '--';
-      fromValue.textContent = from || '--';
-      toValue.textContent = to || '--';
+    const setFlightValues = ({ flightNumber = '', from = '', to = '' }) => {
+      flightNumberValue.textContent = flightNumber;
+      fromValue.textContent = from;
+      toValue.textContent = to;
     };
 
     const saveTakeoffHeaderData = () => {
-      const registration = (aircraftRegistrationValue?.textContent || '--').trim() || '--';
-      const type = (aircraftTypeValue?.textContent || '--').trim() || '--';
-      const from = (fromValue?.textContent || '--').trim() || '--';
+      const registration = (aircraftRegistrationValue?.textContent || '').trim();
+      const type = (aircraftTypeValue?.textContent || '').trim();
+      const from = (fromValue?.textContent || '').trim();
       localStorage.setItem(takeoffHeaderStorageKey, JSON.stringify({ registration, type, from }));
     };
 
@@ -817,7 +937,7 @@
       }
 
       const currentText = (element.textContent || '').trim();
-      const initialValue = currentText === '--' ? '' : currentText;
+      const initialValue = currentText;
       const nextValue = window.prompt(`Modifica ${label}:`, initialValue);
 
       if (nextValue === null) {
@@ -825,7 +945,7 @@
       }
 
       const normalized = nextValue.trim();
-      const finalValue = normalized || '--';
+      const finalValue = normalized;
 
       element.textContent = finalValue;
       manualOverrides[field] = finalValue;
@@ -834,7 +954,7 @@
 
     const toDisplayWeight = (value) => {
       if (value === undefined || value === null || value === '') {
-        return '--';
+        return '';
       }
 
       const number = Number(value);
@@ -1050,15 +1170,15 @@
         ]);
 
         setAircraftValues({
-          type: String(type || '--'),
-          registration: String(registration || '--'),
+          type: String(type || ''),
+          registration: String(registration || ''),
           weight: formatWeightVariant(mtow, mlw, mzfw)
         });
 
         setFlightValues({
-          flightNumber: String(flightNumber || '--'),
-          from: String(origin || '--'),
-          to: String(destination || '--')
+          flightNumber: String(flightNumber || ''),
+          from: String(origin || ''),
+          to: String(destination || '')
         });
 
         applyManualOverrides();
