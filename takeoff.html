@@ -1,0 +1,2707 @@
+<!doctype html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="FlySmart">
+  <meta name="theme-color" content="#282c31">
+  <link rel="manifest" href="./manifest.json">
+  <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 180 180'><rect fill='%23282c31' width='180' height='180'/><text x='50%' y='50%' font-size='80' fill='%23e4dc2d' text-anchor='middle' dominant-baseline='central' font-weight='bold' font-family='Arial'>FS</text></svg>">
+  <title>FlySmart - Takeoff</title>
+  <style>
+    @font-face {
+      font-family: "FF Aircraft";
+      src:
+        local("FF Aircraft"),
+        local("FFAircraft"),
+        url("./fonts/FF-Aircraft.woff2") format("woff2"),
+        url("./fonts/FF-Aircraft.woff") format("woff"),
+        url("./fonts/FF-Aircraft.otf") format("opentype"),
+        url("./fonts/FF-Aircraft.ttf") format("truetype");
+      font-weight: 400;
+      font-style: normal;
+      font-display: swap;
+    }
+
+    :root {
+      --base-width: 2360;
+      --base-height: 1640;
+      --edge-radius: 18px;
+      --shadow: 0 30px 90px rgba(0, 0, 0, 0.4);
+    }
+
+    * {
+      box-sizing: border-box;
+      font-family: "FF Aircraft", "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    html,
+    body {
+      margin: 0;
+      min-height: 100%;
+      background: radial-gradient(circle at top center, #d3d5d8 0%, #a5a8ad 42%, #90949a 100%);
+    }
+
+    body {
+      min-height: 100vh;
+      display: grid;
+      place-items: center;
+      padding: clamp(12px, 2vw, 24px);
+    }
+
+    .stage {
+      width: min(100%, calc((100vh - 48px) * (var(--base-width) / var(--base-height))));
+      aspect-ratio: calc(var(--base-width) / var(--base-height));
+      position: relative;
+      border-radius: var(--edge-radius);
+      overflow: hidden;
+      box-shadow: var(--shadow);
+      background-image: url("./takeoffpage.png");
+      background-position: center;
+      background-size: cover;
+      background-repeat: no-repeat;
+    }
+
+    .top-actions {
+      position: absolute;
+      top: clamp(12px, 2.3%, 34px);
+      right: clamp(14px, 2.2%, 42px);
+      display: flex;
+      gap: clamp(8px, 0.8vw, 14px);
+      z-index: 3;
+    }
+
+    .nav-warning {
+      position: absolute;
+      top: calc(clamp(17px, 2.3%, 39px) + 10px);
+      left: clamp(18px, 2.2%, 48px);
+      z-index: 3;
+      margin: 0;
+      color: #c51818;
+      font-size: clamp(11px, 0.9vw, 18px);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      text-shadow: 0 1px 1px rgba(255, 255, 255, 0.28);
+      font-weight: 700;
+      pointer-events: none;
+    }
+
+    .takeoff-strip-title {
+      position: absolute;
+      top: clamp(18px, 2.6%, 42px);
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 3;
+      margin: 0;
+      width: min(72%, 1400px);
+      text-align: center;
+      font-family: "FF Aircraft", "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      font-weight: 700;
+      color: #424449;
+      font-size: clamp(17.2px, 1.33vw, 28.1px);
+      letter-spacing: 0.25px;
+      text-transform: uppercase;
+      text-shadow: 0 1px 2px rgba(0, 0, 0, 0.55);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      pointer-events: none;
+    }
+
+    .round-btn {
+      width: clamp(28px, 2.1vw, 38px);
+      height: clamp(28px, 2.1vw, 38px);
+      border: 0;
+      border-radius: 999px;
+      display: grid;
+      place-items: center;
+      background: transparent;
+      cursor: pointer;
+      box-shadow: none;
+      transition: transform 120ms ease, filter 120ms ease;
+      padding: 0;
+      overflow: hidden;
+    }
+
+    .round-btn:hover {
+      transform: translateY(-1px);
+      filter: brightness(1.04);
+    }
+
+    .round-btn:active {
+      transform: translateY(0);
+      filter: brightness(0.95);
+    }
+
+    .round-btn img {
+      width: 74%;
+      height: 74%;
+      object-fit: contain;
+      pointer-events: none;
+      user-select: none;
+    }
+
+    .btn-light img {
+      width: 78%;
+      height: 78%;
+    }
+
+    .brightness-layer {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      background: rgba(0, 0, 0, 0);
+      z-index: 2;
+      transition: background 180ms ease;
+    }
+
+    .stage.dim .brightness-layer {
+      background: rgba(0, 0, 0, 0.24);
+    }
+
+    .grain {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      background-image: repeating-linear-gradient(
+        0deg,
+        rgba(255, 255, 255, 0.03),
+        rgba(255, 255, 255, 0.03) 1px,
+        transparent 1px,
+        transparent 3px
+      );
+      mix-blend-mode: overlay;
+    }
+
+    .top-glow {
+      position: absolute;
+      inset: 0 auto auto 0;
+      width: 100%;
+      height: 16%;
+      background: linear-gradient(to bottom, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0));
+      pointer-events: none;
+    }
+
+    .left-inputs {
+      position: absolute;
+      left: clamp(14px, 1.2vw, 26px);
+      top: clamp(103px, 11%, 180px);
+      width: clamp(260px, 30%, 620px);
+      transform: scale(0.75);
+      transform-origin: top left;
+      z-index: 3;
+      display: flex;
+      flex-direction: column;
+      gap: clamp(12px, 1.2vw, 24px);
+    }
+
+    .left-card {
+      border-radius: 14px;
+      overflow: hidden;
+      border: 1px solid rgba(82, 87, 95, 0.85);
+      background: #3f4146;
+      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.08);
+    }
+
+    .left-row {
+      min-height: clamp(48px, 3.2vw, 64px);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 0 clamp(12px, 1vw, 20px);
+      border-top: 1px solid rgba(164, 167, 173, 0.58);
+      color: #f0f3f6;
+      text-transform: uppercase;
+    }
+
+    .left-row:first-child {
+      border-top: 0;
+    }
+
+    .left-label {
+      font-size: clamp(22px, 1.7vw, 35px);
+      letter-spacing: 0.2px;
+      line-height: 1;
+      white-space: nowrap;
+      font-weight: 400;
+    }
+
+    .left-sub {
+      font-size: clamp(18px, 1.25vw, 25px);
+      color: #d8dce1;
+      text-transform: none;
+      margin-left: 5px;
+      line-height: 1;
+      white-space: nowrap;
+      font-weight: 400;
+    }
+
+    .left-value {
+      margin-left: auto;
+      font-size: clamp(22px, 1.62vw, 34px);
+      line-height: 1;
+      white-space: nowrap;
+      color: #f0f3f6;
+      font-weight: 400;
+    }
+
+    .left-value.yellow {
+      color: #e4dc2d;
+    }
+
+    .left-value.arrow::after {
+      content: " >";
+      color: #f0f3f6;
+    }
+
+    .left-edit-btn {
+      border: 0;
+      background: transparent;
+      width: clamp(26px, 1.7vw, 38px);
+      height: clamp(26px, 1.7vw, 38px);
+      padding: 0;
+      margin-left: auto;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      border-radius: 999px;
+      transition: transform 120ms ease, filter 120ms ease;
+    }
+
+    .left-edit-btn:hover {
+      transform: translateY(-1px);
+      filter: brightness(1.08);
+    }
+
+    .left-edit-btn:active {
+      transform: translateY(0);
+      filter: brightness(0.95);
+    }
+
+    .left-edit-btn img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      pointer-events: none;
+      user-select: none;
+    }
+
+    .demi-dei-btn {
+      border: 0;
+      background: transparent;
+      padding: 0;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      margin-left: auto;
+    }
+
+    .demi-dei-btn:hover {
+      filter: brightness(1.06);
+    }
+
+    .rwy-btn {
+      border: 0;
+      background: transparent;
+      padding: 0;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: flex-end;
+      margin-left: auto;
+      text-align: right;
+    }
+
+    .rwy-btn:hover {
+      filter: brightness(1.06);
+    }
+
+    #demiDeiLabel {
+      color: #e4dc2d;
+    }
+
+    #demiDeiLabel,
+    #demiDeiBtn {
+      color: #57c1eb;
+    }
+
+    .stage.airport-open #demiDeiLabel,
+    .stage.airport-open #demiDeiBtn {
+      color: #e4dc2d;
+    }
+
+    .left-value.yellow.arrow::after {
+      color: #f0f3f6;
+    }
+
+    #rwyLabel {
+      color: #f0f3f6;
+    }
+
+    #rwyBtn {
+      color: #57c1eb;
+    }
+
+    .stage.rwy-open #rwyBtn {
+      color: #e4dc2d;
+    }
+
+    .airport-backdrop {
+      position: absolute;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.22);
+      z-index: 4;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 140ms ease;
+    }
+
+    .airport-panel {
+      position: absolute;
+      left: var(--airport-panel-left, 0px);
+      top: var(--airport-panel-top, 0px);
+      width: 260px;
+      height: 280px;
+      transform: scale(1.25);
+      transform-origin: top left;
+      border-radius: 5px;
+      border: 2px solid rgba(95, 103, 112, 0.8);
+      background: linear-gradient(180deg, #8a919c 0%, #656d78 100%);
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+      z-index: 5;
+      padding: 7px;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 140ms ease;
+    }
+
+    .airport-panel::before {
+      content: '';
+      position: absolute;
+      top: var(--airport-arrow-y, 50%);
+      left: -14px;
+      transform: translateY(-50%);
+      border-top: 10px solid transparent;
+      border-bottom: 10px solid transparent;
+      border-right: 14px solid rgba(95, 103, 112, 0.85);
+      z-index: 1;
+    }
+
+    .airport-panel::after {
+      content: '';
+      position: absolute;
+      top: var(--airport-arrow-y, 50%);
+      left: -11px;
+      transform: translateY(-50%);
+      border-top: 8px solid transparent;
+      border-bottom: 8px solid transparent;
+      border-right: 11px solid #878e99;
+      z-index: 2;
+    }
+
+    .stage.airport-open .airport-backdrop,
+    .stage.airport-open .airport-panel {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .rwy-panel {
+      position: absolute;
+      left: var(--rwy-panel-left, 0px);
+      top: var(--rwy-panel-top, 0px);
+      width: 260px;
+      height: auto;
+      transform: scale(1.25);
+      transform-origin: top left;
+      border-radius: 5px;
+      border: 2px solid rgba(95, 103, 112, 0.8);
+      background: linear-gradient(180deg, #8a919c 0%, #656d78 100%);
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+      z-index: 5;
+      padding: 7px;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 140ms ease;
+    }
+
+    .rwy-panel::before {
+      content: '';
+      position: absolute;
+      top: var(--rwy-arrow-y, 50%);
+      left: -14px;
+      transform: translateY(-50%);
+      border-top: 10px solid transparent;
+      border-bottom: 10px solid transparent;
+      border-right: 14px solid rgba(95, 103, 112, 0.85);
+      z-index: 1;
+    }
+
+    .rwy-panel::after {
+      content: '';
+      position: absolute;
+      top: var(--rwy-arrow-y, 50%);
+      left: -11px;
+      transform: translateY(-50%);
+      border-top: 8px solid transparent;
+      border-bottom: 8px solid transparent;
+      border-right: 11px solid #878e99;
+      z-index: 2;
+    }
+
+    .stage.rwy-open .airport-backdrop,
+    .stage.rwy-open .rwy-panel {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .rwy-label {
+      color: #ffffff;
+      font-weight: 700;
+      font-size: clamp(12.35px, 0.7719vw, 17px);
+      letter-spacing: 0.5px;
+      margin: 0 0 4px;
+      text-transform: uppercase;
+      text-align: center;
+    }
+
+    .rwy-help {
+      margin: 0 0 5px;
+      color: #e7eaee;
+      font-size: clamp(9.26px, 0.5866vw, 12.35px);
+      letter-spacing: 0.2px;
+      text-align: center;
+      text-transform: none;
+    }
+
+    .rwy-suggestions {
+      margin-bottom: 6px;
+      max-height: 236px;
+      overflow-y: auto;
+      border: 1px solid rgba(186, 193, 204, 0.2);
+      border-radius: 4px;
+      background: rgba(57, 60, 66, 0.92);
+    }
+
+    .rwy-option {
+      width: 100%;
+      border: 0;
+      border-top: 1px solid rgba(186, 193, 204, 0.14);
+      background: transparent;
+      color: #f0f3f6;
+      font-size: clamp(10px, 0.65vw, 13px);
+      letter-spacing: 0.3px;
+      text-align: left;
+      padding: 6px 8px;
+      cursor: pointer;
+      text-transform: uppercase;
+      line-height: 1.2;
+    }
+
+    .rwy-option:first-child {
+      border-top: 0;
+    }
+
+    .rwy-option:hover,
+    .rwy-option:focus-visible {
+      background: rgba(228, 220, 45, 0.15);
+      color: #f0f3f6;
+      outline: none;
+    }
+
+    .rwy-option.disabled {
+      cursor: default;
+      opacity: 0.8;
+    }
+
+    .airport-label {
+      color: #ffffff;
+      font-weight: 700;
+      font-size: clamp(12.35px, 0.7719vw, 17px);
+      letter-spacing: 0.5px;
+      margin: 0 0 4px;
+      text-transform: uppercase;
+      text-align: center;
+    }
+
+    .airport-help {
+      margin: 0 0 5px;
+      color: #e7eaee;
+      font-size: clamp(9.26px, 0.5866vw, 12.35px);
+      letter-spacing: 0.2px;
+      text-align: center;
+      text-transform: none;
+    }
+
+    .airport-input {
+      width: 100%;
+      height: clamp(22px, 1.5vw, 28px);
+      border: 1px solid rgba(180, 186, 196, 0.24);
+      border-radius: 4px;
+      background: #424449;
+      box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.5);
+      color: #e8da32;
+      font-size: clamp(12px, 0.9vw, 15px);
+      letter-spacing: 0.5px;
+      padding: 0 6px;
+      outline: none;
+      text-transform: uppercase;
+      margin-bottom: 5px;
+    }
+
+    .airport-suggestions {
+      margin-bottom: 6px;
+      max-height: 215px;
+      overflow-y: auto;
+      border: 1px solid rgba(186, 193, 204, 0.2);
+      border-radius: 4px;
+      background: rgba(57, 60, 66, 0.92);
+    }
+
+    .airport-suggestions:empty {
+      display: none;
+    }
+
+    .airport-option {
+      width: 100%;
+      border: 0;
+      border-top: 1px solid rgba(186, 193, 204, 0.14);
+      background: transparent;
+      color: #f0f3f6;
+      font-size: clamp(9px, 0.58vw, 12px);
+      letter-spacing: 0.3px;
+      text-align: left;
+      padding: 5px 7px;
+      cursor: pointer;
+      text-transform: uppercase;
+      line-height: 1.2;
+    }
+
+    .airport-option:first-child {
+      border-top: 0;
+    }
+
+    .airport-option:hover,
+    .airport-option:focus-visible {
+      background: rgba(228, 220, 45, 0.15);
+      color: #f0f3f6;
+      outline: none;
+    }
+
+    .airport-option-code {
+      color: #f0f3f6;
+      font-weight: 700;
+      margin-right: 6px;
+    }
+
+    .wind-backdrop {
+      position: absolute;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.22);
+      z-index: 6;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 140ms ease;
+    }
+
+    .wind-panel {
+      position: absolute;
+      left: var(--wind-panel-left, 0px);
+      top: var(--wind-panel-top, 0px);
+      width: 280px;
+      transform: scale(1.25);
+      transform-origin: top left;
+      border-radius: 8px;
+      border: 2px solid rgba(95, 103, 112, 0.8);
+      background: linear-gradient(180deg, #8a919c 0%, #656d78 100%);
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+      z-index: 7;
+      padding: 8px;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 140ms ease;
+    }
+
+    .wind-panel::before {
+      content: '';
+      position: absolute;
+      top: var(--wind-arrow-y, 50%);
+      left: -14px;
+      transform: translateY(-50%);
+      border-top: 10px solid transparent;
+      border-bottom: 10px solid transparent;
+      border-right: 14px solid rgba(95, 103, 112, 0.85);
+      z-index: 1;
+    }
+
+    .wind-panel::after {
+      content: '';
+      position: absolute;
+      top: var(--wind-arrow-y, 50%);
+      left: -11px;
+      transform: translateY(-50%);
+      border-top: 8px solid transparent;
+      border-bottom: 8px solid transparent;
+      border-right: 11px solid #878e99;
+      z-index: 2;
+    }
+
+    .stage.wind-open .wind-backdrop,
+    .stage.wind-open .wind-panel {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .oat-backdrop {
+      position: absolute;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.22);
+      z-index: 6;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 140ms ease;
+    }
+
+    .oat-panel {
+      position: absolute;
+      left: var(--oat-panel-left, 0px);
+      top: var(--oat-panel-top, 0px);
+      width: 280px;
+      transform: scale(1.25);
+      transform-origin: top left;
+      border-radius: 8px;
+      border: 2px solid rgba(95, 103, 112, 0.8);
+      background: linear-gradient(180deg, #8a919c 0%, #656d78 100%);
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+      z-index: 7;
+      padding: 8px;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 140ms ease;
+    }
+
+    .oat-panel::before {
+      content: '';
+      position: absolute;
+      top: var(--oat-arrow-y, 50%);
+      left: -14px;
+      transform: translateY(-50%);
+      border-top: 10px solid transparent;
+      border-bottom: 10px solid transparent;
+      border-right: 14px solid rgba(95, 103, 112, 0.85);
+      z-index: 1;
+    }
+
+    .oat-panel::after {
+      content: '';
+      position: absolute;
+      top: var(--oat-arrow-y, 50%);
+      left: -11px;
+      transform: translateY(-50%);
+      border-top: 8px solid transparent;
+      border-bottom: 8px solid transparent;
+      border-right: 11px solid #878e99;
+      z-index: 2;
+    }
+
+    .stage.oat-open .oat-backdrop,
+    .stage.oat-open .oat-panel {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .oat-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 8px;
+    }
+
+    .oat-title {
+      margin: 0;
+      flex: 1;
+      text-align: center;
+      color: #ffffff;
+      font-size: clamp(13px, 0.8vw, 16px);
+      letter-spacing: 0.3px;
+      text-transform: uppercase;
+      font-weight: 700;
+    }
+
+    .oat-close {
+      border: 1px solid rgba(189, 196, 208, 0.7);
+      border-radius: 6px;
+      padding: 5px 10px;
+      background: linear-gradient(180deg, #8a919c 0%, #656d78 100%);
+      color: #f5f8ff;
+      font-size: 11px;
+      cursor: pointer;
+      text-transform: uppercase;
+      font-weight: 700;
+    }
+
+    .oat-main-field {
+      height: 42px;
+      border-radius: 10px;
+      border: 1px solid rgba(189, 196, 208, 0.55);
+      background: linear-gradient(180deg, #4f5258 0%, #32353b 100%);
+      display: flex;
+      align-items: center;
+      margin-bottom: 10px;
+      overflow: hidden;
+    }
+
+    .oat-field-btn {
+      flex: 1;
+      border: 0;
+      background: transparent;
+      color: #f2f5f8;
+      font-size: 22px;
+      font-weight: 700;
+      height: 100%;
+      cursor: pointer;
+      text-align: center;
+    }
+
+    .oat-unit-toggle {
+      width: 68px;
+      height: 100%;
+      border: 0;
+      border-left: 1px solid rgba(189, 196, 208, 0.35);
+      background: rgba(30, 33, 38, 0.4);
+      color: #f2f4f7;
+      font-size: 18px;
+      font-weight: 700;
+      cursor: pointer;
+      text-transform: uppercase;
+    }
+
+    .oat-unit-selector {
+      position: relative;
+      display: none;
+      width: calc(58% - 16px);
+      margin: 0 auto 10px;
+      padding: 7px 9px;
+      border: 2px solid rgba(22, 24, 28, 0.6);
+      border-radius: 4px;
+      background: rgba(57, 60, 66, 0.9);
+      justify-content: center;
+      gap: 25px;
+      --oat-unit-arrow-left: 78%;
+    }
+
+    .oat-unit-selector.visible {
+      display: flex;
+    }
+
+    .oat-unit-selector::before {
+      content: '';
+      position: absolute;
+      top: -7px;
+      left: var(--oat-unit-arrow-left);
+      transform: translateX(-50%);
+      border-left: 6px solid transparent;
+      border-right: 6px solid transparent;
+      border-bottom: 7px solid rgba(57, 60, 66, 0.9);
+    }
+
+    .oat-unit-btn {
+      border: 0;
+      background: transparent;
+      color: #f2f4f7;
+      font-size: 12px;
+      font-weight: 700;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      cursor: pointer;
+      padding: 0;
+      text-transform: uppercase;
+    }
+
+    .oat-unit-dot {
+      width: 21px;
+      height: 21px;
+      border-radius: 999px;
+      border: 2px solid rgba(204, 210, 220, 0.95);
+      background: radial-gradient(circle at 30% 30%, #f5f7f9 0%, #e1e5ea 80%);
+      box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.9);
+    }
+
+    .oat-unit-btn.active .oat-unit-dot {
+      background: radial-gradient(circle at 30% 30%, #3fa8d9 0%, #2480ae 80%);
+      border-color: rgba(218, 236, 248, 0.95);
+    }
+
+    .oat-help {
+      margin: 0 0 10px;
+      color: #edf1f5;
+      font-size: 10px;
+      text-align: center;
+      line-height: 1.3;
+      letter-spacing: 0.2px;
+    }
+
+    .oat-keypad {
+      width: 100%;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 8px;
+    }
+
+    .wind-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 8px;
+    }
+
+    .wind-title {
+      margin: 0;
+      flex: 1;
+      text-align: center;
+      color: #ffffff;
+      font-size: clamp(13px, 0.8vw, 16px);
+      letter-spacing: 0.3px;
+      text-transform: uppercase;
+      font-weight: 700;
+    }
+
+    .wind-close {
+      border: 1px solid rgba(189, 196, 208, 0.7);
+      border-radius: 6px;
+      padding: 5px 10px;
+      background: linear-gradient(180deg, #8a919c 0%, #656d78 100%);
+      color: #f5f8ff;
+      font-size: 11px;
+      cursor: pointer;
+      text-transform: uppercase;
+      font-weight: 700;
+    }
+
+    .wind-fields {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+      margin-bottom: 10px;
+    }
+
+    .wind-field {
+      height: 42px;
+      border-radius: 10px;
+      border: 1px solid rgba(189, 196, 208, 0.55);
+      background: linear-gradient(180deg, #4f5258 0%, #32353b 100%);
+      color: #f2f5f8;
+      font-size: 22px;
+      font-weight: 700;
+      display: grid;
+      place-items: center;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+
+    .wind-field.active {
+      background: linear-gradient(180deg, #7397ba 0%, #4d7398 100%);
+    }
+
+    .wind-unit-selector {
+      position: relative;
+      display: none;
+      width: calc(58% - 16px);
+      margin: 0 auto 10px;
+      padding: 7px 9px;
+      border: 2px solid rgba(22, 24, 28, 0.6);
+      border-radius: 4px;
+      background: rgba(57, 60, 66, 0.9);
+      justify-content: center;
+      gap: 25px;
+      --wind-unit-arrow-left: 50%;
+    }
+
+    .wind-unit-selector.visible {
+      display: flex;
+    }
+
+    .wind-unit-selector::before {
+      content: '';
+      position: absolute;
+      top: -7px;
+      left: var(--wind-unit-arrow-left);
+      transform: translateX(-50%);
+      border-left: 6px solid transparent;
+      border-right: 6px solid transparent;
+      border-bottom: 7px solid rgba(57, 60, 66, 0.9);
+    }
+
+    .wind-unit-btn {
+      border: 0;
+      background: transparent;
+      color: #f2f4f7;
+      font-size: 12px;
+      font-weight: 700;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      cursor: pointer;
+      padding: 0;
+    }
+
+    .wind-unit-dot {
+      width: 21px;
+      height: 21px;
+      border-radius: 999px;
+      border: 2px solid rgba(204, 210, 220, 0.95);
+      background: radial-gradient(circle at 30% 30%, #f5f7f9 0%, #e1e5ea 80%);
+      box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.9);
+    }
+
+    .wind-unit-btn.active .wind-unit-dot {
+      background: radial-gradient(circle at 30% 30%, #3fa8d9 0%, #2480ae 80%);
+      border-color: rgba(218, 236, 248, 0.95);
+    }
+
+    .wind-help {
+      margin: 0 0 10px;
+      color: #edf1f5;
+      font-size: 10px;
+      text-align: center;
+      line-height: 1.3;
+      letter-spacing: 0.2px;
+    }
+
+    .wind-keypad {
+      width: 100%;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 8px;
+    }
+
+    .wind-key-btn {
+      width: 100%;
+      height: 42px;
+      border: 1px solid rgba(189, 196, 208, 0.7);
+      border-radius: 8px;
+      background: linear-gradient(180deg, #ffffff 0%, #e8ebef 100%);
+      color: #42454b;
+      font-size: 18px;
+      font-weight: 700;
+      cursor: pointer;
+      line-height: 1;
+      text-shadow: 0 1px 0 rgba(255, 255, 255, 0.7);
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.8), 0 1px 1px rgba(0, 0, 0, 0.08);
+    }
+
+    .wind-key-btn:active {
+      transform: translateY(1px);
+      filter: brightness(0.96);
+    }
+
+    .wind-key-btn.action {
+      font-size: 16px;
+      letter-spacing: 0.1px;
+    }
+
+    .wind-key-btn.muted {
+      background: linear-gradient(180deg, #bcc2c9 0%, #a8afb8 100%);
+      color: #42454b;
+    }
+
+    .wind-key-btn.empty {
+      background: transparent;
+      border-color: transparent;
+      box-shadow: none;
+      pointer-events: none;
+    }
+
+    .wind-key-btn.sign {
+      font-size: 15px;
+    }
+
+    .stage.wind-filled #windValue {
+      color: #57c1eb;
+    }
+
+    .stage.wind-filled #windEditBtn {
+      visibility: hidden;
+      pointer-events: none;
+    }
+
+    #windValue {
+      transform: translateX(55px);
+    }
+
+    .stage.oat-filled #oatValue {
+      color: #57c1eb;
+    }
+
+    .stage.oat-filled #oatEditBtn {
+      visibility: hidden;
+      pointer-events: none;
+    }
+
+    #oatValue {
+      text-align: right;
+      transform: translateX(55px);
+    }
+
+    .wind-open-trigger {
+      cursor: pointer;
+    }
+
+    .oat-open-trigger {
+      cursor: pointer;
+    }
+
+    @media (max-width: 900px) {
+      body {
+        padding: 8px;
+      }
+
+      .stage {
+        width: 100%;
+      }
+
+      .left-inputs {
+        width: min(60%, 380px);
+      }
+
+      .left-label {
+        font-size: clamp(12px, 3.3vw, 18px);
+      }
+
+      .left-sub {
+        font-size: clamp(10px, 2.5vw, 14px);
+      }
+
+      .left-value {
+        font-size: clamp(12px, 3vw, 18px);
+      }
+    }
+
+    /* ────────────────────────────────────────────── */
+    /* iPad Portrait Optimization (max 1024px) */
+    /* ────────────────────────────────────────────── */
+    @media only screen and (max-width: 1024px) and (orientation: portrait) {
+      body {
+        padding: clamp(8px, 1.5vw, 16px);
+      }
+
+      .stage {
+        width: min(100%, calc((100vh - 32px) * (var(--base-width) / var(--base-height))));
+      }
+
+      .top-actions {
+        gap: clamp(6px, 0.6vw, 10px);
+      }
+
+      .round-btn {
+        width: clamp(24px, 1.8vw, 32px);
+        height: clamp(24px, 1.8vw, 32px);
+      }
+
+      .left-inputs {
+        left: clamp(8px, 0.8vw, 18px);
+        top: clamp(80px, 9%, 150px);
+        width: clamp(240px, 28%, 580px);
+        transform: scale(0.85);
+        gap: clamp(10px, 1vw, 20px);
+      }
+
+      .left-label {
+        font-size: clamp(20px, 1.5vw, 32px);
+      }
+
+      .left-sub {
+        font-size: clamp(16px, 1.1vw, 22px);
+      }
+
+      .left-value {
+        font-size: clamp(20px, 1.45vw, 31px);
+      }
+
+      .airport-panel,
+      .rwy-panel,
+      .wind-panel,
+      .oat-panel {
+        transform: scale(1.1);
+        width: auto;
+        max-width: 280px;
+      }
+
+      .takeoff-strip-title {
+        font-size: clamp(15px, 1.1vw, 24px);
+        width: min(85%, 1200px);
+      }
+
+      .nav-warning {
+        font-size: clamp(10px, 0.8vw, 16px);
+      }
+    }
+
+    /* ────────────────────────────────────────────── */
+    /* iPad Landscape Optimization (max 1366px) */
+    /* ────────────────────────────────────────────── */
+    @media only screen and (max-width: 1366px) and (orientation: landscape) {
+      body {
+        padding: clamp(8px, 1vw, 14px);
+      }
+
+      .stage {
+        width: min(100%, calc((100vh - 28px) * (var(--base-width) / var(--base-height))));
+      }
+
+      .top-actions {
+        top: clamp(10px, 1.5%, 20px);
+        right: clamp(12px, 1.5%, 22px);
+        gap: clamp(6px, 0.5vw, 10px);
+      }
+
+      .round-btn {
+        width: clamp(26px, 2vw, 36px);
+        height: clamp(26px, 2vw, 36px);
+      }
+
+      .left-inputs {
+        left: clamp(10px, 1vw, 20px);
+        top: clamp(90px, 10%, 160px);
+        width: clamp(250px, 28%, 600px);
+        transform: scale(0.9);
+        gap: clamp(10px, 1vw, 20px);
+      }
+
+      .left-label {
+        font-size: clamp(21px, 1.6vw, 33px);
+      }
+
+      .left-sub {
+        font-size: clamp(17px, 1.15vw, 23px);
+      }
+
+      .left-value {
+        font-size: clamp(21px, 1.5vw, 32px);
+      }
+
+      .airport-panel,
+      .rwy-panel,
+      .wind-panel,
+      .oat-panel {
+        transform: scale(1.15);
+        width: auto;
+        max-width: 290px;
+      }
+
+      .takeoff-strip-title {
+        font-size: clamp(16px, 1.2vw, 25px);
+        width: min(80%, 1250px);
+      }
+
+      .nav-warning {
+        font-size: clamp(11px, 0.9vw, 17px);
+      }
+    }
+
+    /* ────────────────────────────────────────────── */
+    /* General iPad Touch Optimization */
+    /* ────────────────────────────────────────────── */
+    @media only screen and (max-width: 1366px) {
+      /* Ensure touch targets are at least 44px × 44px */
+      .round-btn {
+        min-width: 44px;
+        min-height: 44px;
+      }
+
+      .left-edit-btn {
+        min-width: 40px;
+        min-height: 40px;
+      }
+
+      .rwy-option,
+      .airport-option {
+        padding: 8px 10px;
+        min-height: 44px;
+      }
+
+      /* Remove hover effects on touch devices */
+      .round-btn:hover {
+        transform: none;
+      }
+
+      .left-edit-btn:hover {
+        transform: none;
+      }
+
+      /* Better scrolling performance */
+      .rwy-suggestions,
+      .airport-suggestions {
+        -webkit-overflow-scrolling: touch;
+      }
+
+      /* Improve text visibility on iPad */
+      @supports (-webkit-touch-callout: none) {
+        body {
+          -webkit-font-smoothing: antialiased;
+          -webkit-text-size-adjust: 100%;
+        }
+      }
+
+      /* Prevent zooming on input focus */
+      input,
+      textarea,
+      select {
+        font-size: 16px;
+      }
+    }
+
+    /* ────────────────────────────────────────────── */
+    /* iPad Mini Landscape (1024px+) */
+    /* ────────────────────────────────────────────── */
+    @media only screen and (min-width: 1024px) and (max-width: 1366px) and (orientation: landscape) {
+      .left-inputs {
+        transform: scale(0.92);
+      }
+
+      .airport-panel,
+      .rwy-panel,
+      .wind-panel,
+      .oat-panel {
+        transform: scale(1.18);
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="stage" aria-label="Replica takeoff FlySmart">
+    <p class="nav-warning">NOT FOR NAVIGATIONAL USE</p>
+    <p id="takeoffStripTitle" class="takeoff-strip-title">TAKEOFF | -- | --</p>
+
+    <div class="top-actions" aria-label="Azioni rapide">
+      <button id="homeBtn" class="round-btn" type="button" aria-label="Torna alla Home" title="Home">
+        <img src="./refresh.png" alt="" aria-hidden="true">
+      </button>
+      <button id="brightnessBtn" class="round-btn btn-light" type="button" aria-label="Sole" title="Gestisci luminosita">
+        <img src="./light.png" alt="" aria-hidden="true">
+      </button>
+    </div>
+
+    <section class="left-inputs" aria-label="Pannello dati takeoff">
+      <article class="left-card">
+        <div class="left-row">
+          <span id="demiDeiLabel" class="left-label">DEMI/DEI</span>
+          <button id="demiDeiBtn" type="button" class="demi-dei-btn left-value yellow arrow" aria-label="Modifica DEMI DEI">
+            <span id="demiDeiValue"></span>
+          </button>
+        </div>
+        <div class="left-row">
+          <span id="rwyLabel" class="left-label">RWY</span>
+          <button id="rwyBtn" class="rwy-btn left-value arrow" type="button" aria-label="Modifica RWY">
+            <span id="rwyValue"></span>
+          </button>
+        </div>
+      </article>
+
+      <article class="left-card">
+        <div class="left-row">
+          <span class="left-label wind-open-trigger">WIND</span>
+          <span class="left-sub wind-open-trigger">°/kt</span>
+          <span id="windValue" class="left-value wind-open-trigger"></span>
+          <button id="windEditBtn" class="left-edit-btn" type="button" aria-label="Modifica WIND">
+            <img src="./pencil.png" alt="" aria-hidden="true">
+          </button>
+        </div>
+        <div class="left-row">
+          <span class="left-label oat-open-trigger">OAT</span>
+          <span class="left-sub oat-open-trigger">°C</span>
+          <span id="oatValue" class="left-value oat-open-trigger"></span>
+          <button id="oatEditBtn" class="left-edit-btn" type="button" aria-label="Modifica OAT">
+            <img src="./pencil.png" alt="" aria-hidden="true">
+          </button>
+        </div>
+        <div class="left-row">
+          <span class="left-label">QNH</span>
+          <span class="left-sub">hPa</span>
+          <button class="left-edit-btn" type="button" aria-label="Modifica QNH">
+            <img src="./pencil.png" alt="" aria-hidden="true">
+          </button>
+        </div>
+        <div class="left-row">
+          <span class="left-label">RWY COND</span>
+          <button class="left-edit-btn" type="button" aria-label="Modifica RWY COND">
+            <img src="./pencil.png" alt="" aria-hidden="true">
+          </button>
+        </div>
+        <div class="left-row">
+          <span class="left-label">A-ICE</span>
+          <button class="left-edit-btn" type="button" aria-label="Modifica A-ICE">
+            <img src="./pencil.png" alt="" aria-hidden="true">
+          </button>
+        </div>
+      </article>
+
+      <article class="left-card">
+        <div class="left-row">
+          <span class="left-label">TOW</span>
+          <span class="left-sub">T</span>
+          <span class="left-value">68.0</span>
+        </div>
+        <div class="left-row">
+          <span class="left-label">T.O. THRUST</span>
+          <span class="left-value arrow">FLEX (STD) °C</span>
+        </div>
+        <div class="left-row">
+          <span class="left-label">CONF</span>
+          <span class="left-value arrow">OPT CONF (STD)</span>
+        </div>
+        <div class="left-row">
+          <span class="left-label">AIR COND</span>
+          <span class="left-value arrow">On (STD)</span>
+        </div>
+      </article>
+    </section>
+
+    <div id="airportBackdrop" class="airport-backdrop" aria-hidden="true"></div>
+    <section id="airportPanel" class="airport-panel" aria-label="Inserimento aeroporto">
+      <p class="airport-label">Airport</p>
+      <p class="airport-help">Select ARPT from the list.</p>
+      <input id="airportInput" class="airport-input" type="text" maxlength="8" autocomplete="off" spellcheck="false" placeholder="ICAO">
+      <div id="airportSuggestions" class="airport-suggestions" aria-label="Lista aeroporti"></div>
+    </section>
+
+    <section id="rwyPanel" class="rwy-panel" aria-label="Selezione pista">
+      <p class="rwy-label">RWY</p>
+      <p class="rwy-help">Select RWY from the list.</p>
+      <div id="rwySuggestions" class="rwy-suggestions" aria-label="Lista piste"></div>
+    </section>
+
+    <div id="windBackdrop" class="wind-backdrop" aria-hidden="true"></div>
+    <section id="windPanel" class="wind-panel" aria-label="Inserimento vento">
+      <div class="wind-header">
+        <span></span>
+        <p class="wind-title">WIND</p>
+        <button id="windCloseBtn" class="wind-close" type="button">Close</button>
+      </div>
+      <div class="wind-fields">
+        <button id="windDirField" class="wind-field active" type="button"></button>
+        <button id="windSpeedField" class="wind-field" type="button"></button>
+        <button id="windGustField" class="wind-field" type="button"></button>
+      </div>
+      <div id="windUnitSelector" class="wind-unit-selector" aria-label="Selettore unita vento">
+        <button id="windUnitKt" class="wind-unit-btn active" type="button">
+          <span class="wind-unit-dot" aria-hidden="true"></span>
+          <span>kt</span>
+        </button>
+        <button id="windUnitMs" class="wind-unit-btn" type="button">
+          <span class="wind-unit-dot" aria-hidden="true"></span>
+          <span>m/s</span>
+        </button>
+      </div>
+      <p class="wind-help"><strong>WIND format: XXX/XX or XXX/XX/GXX</strong><br><strong>Wind Force entered in m/s is converted into kt</strong></p>
+      <div id="windKeypad" class="wind-keypad" aria-label="Tastierino wind">
+        <button type="button" class="wind-key-btn" data-key="1">1</button>
+        <button type="button" class="wind-key-btn" data-key="2">2</button>
+        <button type="button" class="wind-key-btn" data-key="3">3</button>
+        <button type="button" class="wind-key-btn empty" data-disabled="true" aria-hidden="true" tabindex="-1"></button>
+
+        <button type="button" class="wind-key-btn" data-key="4">4</button>
+        <button type="button" class="wind-key-btn" data-key="5">5</button>
+        <button type="button" class="wind-key-btn" data-key="6">6</button>
+        <button type="button" class="wind-key-btn action" data-action="backspace">&#10006;</button>
+
+        <button type="button" class="wind-key-btn" data-key="7">7</button>
+        <button type="button" class="wind-key-btn" data-key="8">8</button>
+        <button type="button" class="wind-key-btn" data-key="9">9</button>
+        <button type="button" class="wind-key-btn action" data-action="done">Done</button>
+
+        <button type="button" class="wind-key-btn muted" data-disabled="true">.</button>
+        <button type="button" class="wind-key-btn" data-key="0">0</button>
+        <button type="button" class="wind-key-btn muted sign" data-disabled="true">+/-</button>
+        <button type="button" class="wind-key-btn action" data-action="next">Next</button>
+      </div>
+    </section>
+
+    <div id="oatBackdrop" class="oat-backdrop" aria-hidden="true"></div>
+    <section id="oatPanel" class="oat-panel" aria-label="Inserimento temperatura OAT">
+      <div class="oat-header">
+        <span></span>
+        <p class="oat-title">OAT</p>
+        <button id="oatCloseBtn" class="oat-close" type="button">Close</button>
+      </div>
+      <div class="oat-main-field">
+        <button id="oatTempField" class="oat-field-btn" type="button"></button>
+        <button id="oatUnitToggle" class="oat-unit-toggle" type="button">°C</button>
+      </div>
+      <div id="oatUnitSelector" class="oat-unit-selector" aria-label="Selettore unita temperatura">
+        <button id="oatUnitC" class="oat-unit-btn active" type="button">
+          <span class="oat-unit-dot" aria-hidden="true"></span>
+          <span>°C</span>
+        </button>
+        <button id="oatUnitF" class="oat-unit-btn" type="button">
+          <span class="oat-unit-dot" aria-hidden="true"></span>
+          <span>°F</span>
+        </button>
+      </div>
+      <p class="oat-help"><strong>OAT format: +/- XX.X</strong><br><strong>OAT Range: from -54.0 to 55.0 C</strong><br><strong>value entered in F is converted into C</strong></p>
+      <div id="oatKeypad" class="oat-keypad" aria-label="Tastierino OAT">
+        <button type="button" class="wind-key-btn" data-key="1">1</button>
+        <button type="button" class="wind-key-btn" data-key="2">2</button>
+        <button type="button" class="wind-key-btn" data-key="3">3</button>
+        <button type="button" class="wind-key-btn empty" data-disabled="true" aria-hidden="true" tabindex="-1"></button>
+
+        <button type="button" class="wind-key-btn" data-key="4">4</button>
+        <button type="button" class="wind-key-btn" data-key="5">5</button>
+        <button type="button" class="wind-key-btn" data-key="6">6</button>
+        <button type="button" class="wind-key-btn action" data-action="backspace">&#10006;</button>
+
+        <button type="button" class="wind-key-btn" data-key="7">7</button>
+        <button type="button" class="wind-key-btn" data-key="8">8</button>
+        <button type="button" class="wind-key-btn" data-key="9">9</button>
+        <button type="button" class="wind-key-btn action" data-action="done">Done</button>
+
+        <button type="button" class="wind-key-btn" data-key=".">.</button>
+        <button type="button" class="wind-key-btn" data-key="0">0</button>
+        <button type="button" class="wind-key-btn sign" data-action="sign">+/-</button>
+        <button type="button" class="wind-key-btn action" data-action="next">Next</button>
+      </div>
+    </section>
+
+    <div class="brightness-layer" aria-hidden="true"></div>
+    <div class="grain" aria-hidden="true"></div>
+    <div class="top-glow" aria-hidden="true"></div>
+  </main>
+
+  <script>
+    const stage = document.querySelector('.stage');
+    const homeBtn = document.querySelector('#homeBtn');
+    const brightnessBtn = document.querySelector('#brightnessBtn');
+    const takeoffStripTitle = document.querySelector('#takeoffStripTitle');
+    const demiDeiLabel = document.querySelector('#demiDeiLabel');
+    const demiDeiBtn = document.querySelector('#demiDeiBtn');
+    const demiDeiValue = document.querySelector('#demiDeiValue');
+    const rwyLabel = document.querySelector('#rwyLabel');
+    const rwyValue = document.querySelector('#rwyValue');
+    const rwyBtn = document.querySelector('#rwyBtn');
+    const windValue = document.querySelector('#windValue');
+    const windEditBtn = document.querySelector('#windEditBtn');
+    const windOpenTriggers = document.querySelectorAll('.wind-open-trigger');
+    const oatValue = document.querySelector('#oatValue');
+    const oatEditBtn = document.querySelector('#oatEditBtn');
+    const oatOpenTriggers = document.querySelectorAll('.oat-open-trigger');
+    const airportBackdrop = document.querySelector('#airportBackdrop');
+    const airportPanel = document.querySelector('#airportPanel');
+    const airportInput = document.querySelector('#airportInput');
+    const airportSuggestions = document.querySelector('#airportSuggestions');
+    const rwyPanel = document.querySelector('#rwyPanel');
+    const rwySuggestions = document.querySelector('#rwySuggestions');
+    const windBackdrop = document.querySelector('#windBackdrop');
+    const windPanel = document.querySelector('#windPanel');
+    const windCloseBtn = document.querySelector('#windCloseBtn');
+    const windDirField = document.querySelector('#windDirField');
+    const windSpeedField = document.querySelector('#windSpeedField');
+    const windGustField = document.querySelector('#windGustField');
+    const windUnitSelector = document.querySelector('#windUnitSelector');
+    const windUnitKt = document.querySelector('#windUnitKt');
+    const windUnitMs = document.querySelector('#windUnitMs');
+    const windKeypadButtons = document.querySelectorAll('#windKeypad .wind-key-btn');
+    const oatBackdrop = document.querySelector('#oatBackdrop');
+    const oatPanel = document.querySelector('#oatPanel');
+    const oatCloseBtn = document.querySelector('#oatCloseBtn');
+    const oatTempField = document.querySelector('#oatTempField');
+    const oatUnitToggle = document.querySelector('#oatUnitToggle');
+    const oatUnitSelector = document.querySelector('#oatUnitSelector');
+    const oatUnitC = document.querySelector('#oatUnitC');
+    const oatUnitF = document.querySelector('#oatUnitF');
+    const oatKeypadButtons = document.querySelectorAll('#oatKeypad .wind-key-btn');
+    const takeoffHeaderStorageKey = 'flysmart-takeoff-header';
+    const takeoffAirportStorageKey = 'flysmart-takeoff-airport';
+    const takeoffRunwayStorageKey = 'flysmart-takeoff-rwy';
+    const takeoffWindStorageKey = 'flysmart-takeoff-wind';
+    const takeoffOatStorageKey = 'flysmart-takeoff-oat';
+    const airportsDataUrl = 'https://raw.githubusercontent.com/davidmegginson/ourairports-data/main/airports.csv';
+    const runwaysDataUrl = 'https://raw.githubusercontent.com/davidmegginson/ourairports-data/main/runways.csv';
+    const airportsIndex = new Map();
+    const airportsSearchData = [];
+    const iataToIcao = new Map();
+    const runwaysByAirport = new Map();
+    let airportsDataLoaded = false;
+    let runwaysDataLoaded = false;
+    let selectedAirportIcao = 'NIL';
+    let selectedRunway = 'NIL';
+    let activeWindField = 'dir';
+    let windInputUnit = 'kt';
+    let windDraft = { dir: '', speed: '', gust: '' };
+    let windMsDraft = { speed: '', gust: '' };
+    let oatDraftC = '';
+    let oatInputUnit = 'c';
+    let oatInputRaw = '';
+    let oatStoredUnit = 'c';
+    let oatStoredRaw = '';
+    let oatUnitSelectorOpen = false;
+    const popupTransitionMs = 480;
+
+    const normalizeAirportCode = (value) => String(value || '').trim().toUpperCase();
+    const isTruthyFlag = (value) => {
+      const normalized = String(value || '').trim().toLowerCase();
+      return normalized === '1' || normalized === 'true' || normalized === 'yes';
+    };
+    const wait = (ms) => new Promise((resolve) => {
+      window.setTimeout(resolve, ms);
+    });
+    const formatUiValue = (value) => {
+      const normalized = String(value || '').trim().toUpperCase();
+      return normalized === 'NIL' ? '' : String(value || '');
+    };
+    const clamp = (value, min, max) => Math.min(Math.max(value, min), max);
+
+    const firstAirportNameWord = (name) => {
+      const cleanName = String(name || '').trim();
+      if (!cleanName) {
+        return 'NIL';
+      }
+
+      const firstWord = cleanName.split(/\s+/)[0] || cleanName;
+      return firstWord.toUpperCase();
+    };
+
+    const parseCsvLine = (line) => {
+      const cols = [];
+      let current = '';
+      let inQuotes = false;
+
+      for (let i = 0; i < line.length; i += 1) {
+        const char = line[i];
+
+        if (char === '"') {
+          if (inQuotes && line[i + 1] === '"') {
+            current += '"';
+            i += 1;
+          } else {
+            inQuotes = !inQuotes;
+          }
+          continue;
+        }
+
+        if (char === ',' && !inQuotes) {
+          cols.push(current);
+          current = '';
+          continue;
+        }
+
+        current += char;
+      }
+
+      cols.push(current);
+      return cols;
+    };
+
+    const ensureAirportDataLoaded = async () => {
+      if (airportsDataLoaded) {
+        return;
+      }
+
+      try {
+        const response = await fetch(airportsDataUrl);
+        if (!response.ok) {
+          throw new Error(`HTTP ${response.status}`);
+        }
+
+        const csvText = await response.text();
+        const lines = csvText.split('\n');
+        if (!lines.length) {
+          airportsDataLoaded = true;
+          return;
+        }
+
+        const headers = parseCsvLine(lines[0]).map((header) => header.trim());
+        const identIndex = headers.indexOf('ident');
+        const iataIndex = headers.indexOf('iata_code');
+        const nameIndex = headers.indexOf('name');
+
+        if (identIndex === -1 || nameIndex === -1) {
+          airportsDataLoaded = true;
+          return;
+        }
+
+        for (let i = 1; i < lines.length; i += 1) {
+          const line = lines[i].trim();
+          if (!line) {
+            continue;
+          }
+
+          const cols = parseCsvLine(line);
+          const ident = normalizeAirportCode(cols[identIndex]);
+          if (!ident) {
+            continue;
+          }
+
+          airportsIndex.set(ident, {
+            icao: ident,
+            iata: normalizeAirportCode(cols[iataIndex] || ''),
+            name: String(cols[nameIndex] || '').trim()
+          });
+
+          const airport = airportsIndex.get(ident);
+          const firstName = firstAirportNameWord(airport.name);
+          airportsSearchData.push({
+            icao: airport.icao,
+            iata: airport.iata,
+            firstName,
+            searchName: String(airport.name || '').toUpperCase()
+          });
+
+          if (airport.iata && !iataToIcao.has(airport.iata)) {
+            iataToIcao.set(airport.iata, airport.icao);
+          }
+        }
+
+        airportsDataLoaded = true;
+      } catch (error) {
+        console.warn('Impossibile caricare database aeroporti:', error);
+        airportsDataLoaded = true;
+      }
+    };
+
+    const ensureRunwaysDataLoaded = async () => {
+      if (runwaysDataLoaded) {
+        return;
+      }
+
+      try {
+        const response = await fetch(runwaysDataUrl);
+        if (!response.ok) {
+          throw new Error(`HTTP ${response.status}`);
+        }
+
+        const csvText = await response.text();
+        const lines = csvText.split('\n');
+        if (!lines.length) {
+          runwaysDataLoaded = true;
+          return;
+        }
+
+        const headers = parseCsvLine(lines[0]).map((header) => header.trim());
+        const airportIdentIndex = headers.indexOf('airport_ident');
+        const leIdentIndex = headers.indexOf('le_ident');
+        const heIdentIndex = headers.indexOf('he_ident');
+        const closedIndex = headers.indexOf('closed');
+        const leClosedIndex = headers.indexOf('le_closed');
+        const heClosedIndex = headers.indexOf('he_closed');
+
+        if (airportIdentIndex === -1 || leIdentIndex === -1 || heIdentIndex === -1) {
+          runwaysDataLoaded = true;
+          return;
+        }
+
+        for (let i = 1; i < lines.length; i += 1) {
+          const line = lines[i].trim();
+          if (!line) {
+            continue;
+          }
+
+          const cols = parseCsvLine(line);
+          const airportIcao = normalizeAirportCode(cols[airportIdentIndex]);
+          if (!airportIcao) {
+            continue;
+          }
+
+          if (closedIndex !== -1 && isTruthyFlag(cols[closedIndex])) {
+            continue;
+          }
+
+          if (!runwaysByAirport.has(airportIcao)) {
+            runwaysByAirport.set(airportIcao, new Set());
+          }
+
+          const runwaySet = runwaysByAirport.get(airportIcao);
+          const le = normalizeAirportCode(cols[leIdentIndex]);
+          const he = normalizeAirportCode(cols[heIdentIndex]);
+          const leClosed = leClosedIndex !== -1 && isTruthyFlag(cols[leClosedIndex]);
+          const heClosed = heClosedIndex !== -1 && isTruthyFlag(cols[heClosedIndex]);
+
+          if (le && !leClosed) {
+            runwaySet.add(le);
+          }
+
+          if (he && !heClosed) {
+            runwaySet.add(he);
+          }
+        }
+
+        runwaysDataLoaded = true;
+      } catch (error) {
+        console.warn('Impossibile caricare database piste:', error);
+        runwaysDataLoaded = true;
+      }
+    };
+
+    const getRunwaysForAirport = (icaoCode) => {
+      const icao = normalizeAirportCode(icaoCode);
+      if (!icao || icao === 'NIL' || icao === '--') {
+        return [];
+      }
+
+      const runwaySet = runwaysByAirport.get(icao);
+      if (!runwaySet) {
+        return [];
+      }
+
+      return Array.from(runwaySet).sort((a, b) => a.localeCompare(b, undefined, { numeric: true }));
+    };
+
+    const applyRunwaySelection = (runway) => {
+      const value = normalizeAirportCode(runway) || 'NIL';
+      selectedRunway = value;
+
+      if (rwyLabel) {
+        rwyLabel.textContent = 'RWY';
+      }
+
+      if (rwyValue) {
+        rwyValue.textContent = formatUiValue(value);
+      }
+
+      localStorage.setItem(takeoffRunwayStorageKey, value);
+    };
+
+    const syncRunwayAfterAirportChange = async () => {
+      await ensureRunwaysDataLoaded();
+      const availableRunways = getRunwaysForAirport(selectedAirportIcao);
+
+      if (!availableRunways.length) {
+        applyRunwaySelection('NIL');
+        return;
+      }
+
+      if (!availableRunways.includes(selectedRunway)) {
+        applyRunwaySelection('NIL');
+      }
+    };
+
+    const renderRunwaySuggestions = async () => {
+      if (!rwySuggestions) {
+        return;
+      }
+
+      rwySuggestions.innerHTML = '';
+      await ensureRunwaysDataLoaded();
+      const availableRunways = getRunwaysForAirport(selectedAirportIcao);
+
+      if (!availableRunways.length) {
+        const emptyOption = document.createElement('button');
+        emptyOption.type = 'button';
+        emptyOption.className = 'rwy-option disabled';
+        emptyOption.textContent = 'NO RUNWAYS';
+        rwySuggestions.appendChild(emptyOption);
+        return;
+      }
+
+      availableRunways.forEach((runway) => {
+        const option = document.createElement('button');
+        option.type = 'button';
+        option.className = 'rwy-option';
+        option.textContent = runway;
+        option.addEventListener('click', () => {
+          applyRunwaySelection(runway);
+          void openWindAfterRwyClose();
+        });
+        rwySuggestions.appendChild(option);
+      });
+    };
+
+    const resolveAirportCode = (typedValue) => {
+      const value = normalizeAirportCode(typedValue);
+      if (!value) {
+        return 'NIL';
+      }
+
+      if (airportsIndex.has(value)) {
+        return value;
+      }
+
+      if (iataToIcao.has(value)) {
+        return iataToIcao.get(value);
+      }
+
+      return value;
+    };
+
+    const getAirportMatches = (typedValue) => {
+      const value = normalizeAirportCode(typedValue);
+      if (!value) {
+        return [];
+      }
+
+      const exact = [];
+      const starts = [];
+      const contains = [];
+
+      for (let i = 0; i < airportsSearchData.length; i += 1) {
+        const airport = airportsSearchData[i];
+        const matchIcao = airport.icao.includes(value);
+        const matchIata = airport.iata && airport.iata.includes(value);
+
+        if (!matchIcao && !matchIata) {
+          continue;
+        }
+
+        if (airport.icao === value || airport.iata === value) {
+          exact.push(airport);
+          continue;
+        }
+
+        if (airport.icao.startsWith(value) || airport.iata.startsWith(value)) {
+          starts.push(airport);
+          continue;
+        }
+
+        contains.push(airport);
+      }
+
+      return [...exact, ...starts, ...contains].slice(0, 7);
+    };
+
+    const renderAirportSuggestions = (typedValue) => {
+      if (!airportSuggestions) {
+        return;
+      }
+
+      airportSuggestions.innerHTML = '';
+      const matches = getAirportMatches(typedValue);
+
+      matches.forEach((airport) => {
+        const option = document.createElement('button');
+        option.type = 'button';
+        option.className = 'airport-option';
+        option.innerHTML = `<span class="airport-option-code">${airport.icao}</span> ${airport.firstName}`;
+        option.addEventListener('click', () => {
+          if (airportInput) {
+            airportInput.value = airport.icao;
+          }
+          void applyAirportSelection(airport.icao).then(() => {
+            void openRwyAfterAirportClose();
+          });
+        });
+        airportSuggestions.appendChild(option);
+      });
+    };
+
+    const applyAirportSelection = async (inputCode) => {
+      const code = resolveAirportCode(inputCode);
+      selectedAirportIcao = code || 'NIL';
+
+      if (!code || code === 'NIL' || code === '--') {
+        if (demiDeiLabel) {
+          demiDeiLabel.textContent = 'DEMI/DEI';
+        }
+        if (demiDeiValue) {
+          demiDeiValue.textContent = '';
+        }
+        localStorage.setItem(takeoffAirportStorageKey, 'NIL');
+        await syncRunwayAfterAirportChange();
+        return;
+      }
+
+      await ensureAirportDataLoaded();
+      const airport = airportsIndex.get(code);
+      const iataCode = airport?.iata || '---';
+      const firstName = airport?.name ? firstAirportNameWord(airport.name) : code;
+
+      if (demiDeiLabel) {
+        demiDeiLabel.textContent = `${code}/${iataCode}`;
+      }
+
+      if (demiDeiValue) {
+        demiDeiValue.textContent = firstName;
+      }
+
+      localStorage.setItem(takeoffAirportStorageKey, code);
+      await syncRunwayAfterAirportChange();
+    };
+
+    const loadTakeoffHeaderData = () => {
+      try {
+        const raw = localStorage.getItem(takeoffHeaderStorageKey);
+        if (!raw) {
+          return { registration: '--', type: '--', from: '--' };
+        }
+
+        const parsed = JSON.parse(raw);
+        const registration = String(parsed?.registration || '--').trim() || '--';
+        const type = String(parsed?.type || '--').trim() || '--';
+        const from = String(parsed?.from || '--').trim() || '--';
+        return { registration, type, from };
+      } catch {
+        return { registration: '--', type: '--', from: '--' };
+      }
+    };
+
+    const headerData = loadTakeoffHeaderData();
+    if (takeoffStripTitle) {
+      takeoffStripTitle.textContent = `TAKEOFF | ${headerData.registration} | ${headerData.type}`;
+    }
+
+    const closeAirportPopup = () => {
+      stage.classList.remove('airport-open');
+    };
+
+    const closeRwyPopup = () => {
+      stage.classList.remove('rwy-open');
+    };
+
+    const closeWindPopup = () => {
+      saveWindData();
+      stage.classList.remove('wind-open');
+    };
+
+    const closeOatPopup = () => {
+      saveOatData();
+      oatUnitSelectorOpen = false;
+      stage.classList.remove('oat-open');
+    };
+
+    const closeActivePopup = () => {
+      closeAirportPopup();
+      closeRwyPopup();
+      closeWindPopup();
+      closeOatPopup();
+    };
+
+    const positionAirportPanel = () => {
+      if (!stage || !demiDeiBtn || !airportPanel) {
+        return;
+      }
+
+      const stageRect = stage.getBoundingClientRect();
+      const btnRect = demiDeiBtn.getBoundingClientRect();
+      const panelWidth = airportPanel.offsetWidth || 240;
+      const panelHeight = airportPanel.offsetHeight || 120;
+
+      const minLeft = 8;
+      const maxLeft = Math.max(minLeft, stageRect.width - panelWidth - 8);
+      let panelLeft = (btnRect.right - stageRect.left) + 33;
+      panelLeft = Math.min(Math.max(panelLeft, minLeft), maxLeft);
+
+      const minTop = 8;
+      const maxTop = Math.max(minTop, stageRect.height - panelHeight - 8);
+      const btnCenterY = btnRect.top - stageRect.top + (btnRect.height / 2);
+      const panelTopOffset = 65;
+      let panelTop = btnCenterY - panelTopOffset;
+      panelTop = Math.min(Math.max(panelTop, minTop), maxTop);
+
+      airportPanel.style.setProperty('--airport-panel-left', `${panelLeft}px`);
+      airportPanel.style.setProperty('--airport-panel-top', `${panelTop}px`);
+      const arrowY = (btnCenterY - panelTop) / 1.25;
+      airportPanel.style.setProperty('--airport-arrow-y', `${arrowY}px`);
+    };
+
+    const openAirportPopup = () => {
+      closeWindPopup();
+      closeOatPopup();
+      closeRwyPopup();
+      if (airportInput) {
+        airportInput.value = selectedAirportIcao !== 'NIL' ? selectedAirportIcao : '';
+      }
+
+      stage.classList.add('airport-open');
+      positionAirportPanel();
+      void ensureAirportDataLoaded().then(() => {
+        renderAirportSuggestions(airportInput?.value || '');
+      });
+      airportInput?.focus();
+      airportInput?.select();
+    };
+
+    const positionRwyPanel = () => {
+      if (!stage || !rwyBtn || !rwyPanel) {
+        return;
+      }
+
+      const stageRect = stage.getBoundingClientRect();
+      const btnRect = rwyBtn.getBoundingClientRect();
+      const panelWidth = rwyPanel.offsetWidth || 240;
+      const panelHeight = rwyPanel.offsetHeight || 120;
+
+      const minLeft = 8;
+      const maxLeft = Math.max(minLeft, stageRect.width - panelWidth - 8);
+      let panelLeft = (btnRect.right - stageRect.left) + 33;
+      panelLeft = Math.min(Math.max(panelLeft, minLeft), maxLeft);
+
+      const minTop = 8;
+      const maxTop = Math.max(minTop, stageRect.height - panelHeight - 8);
+      const btnCenterY = btnRect.top - stageRect.top + (btnRect.height / 2);
+      const panelTopOffset = 85;
+      let panelTop = btnCenterY - panelTopOffset;
+      panelTop = Math.min(Math.max(panelTop, minTop), maxTop);
+
+      rwyPanel.style.setProperty('--rwy-panel-left', `${panelLeft}px`);
+      rwyPanel.style.setProperty('--rwy-panel-top', `${panelTop}px`);
+      const arrowY = (btnCenterY - panelTop) / 1.25;
+      rwyPanel.style.setProperty('--rwy-arrow-y', `${arrowY}px`);
+    };
+
+    const openRwyPopup = async () => {
+      closeOatPopup();
+      closeWindPopup();
+      closeAirportPopup();
+      stage.classList.add('rwy-open');
+      await renderRunwaySuggestions();
+      positionRwyPanel();
+    };
+
+    const positionWindPanel = () => {
+      if (!stage || !windEditBtn || !windPanel) {
+        return;
+      }
+
+      const stageRect = stage.getBoundingClientRect();
+      const btnRect = windEditBtn.getBoundingClientRect();
+      const panelWidth = windPanel.offsetWidth || 280;
+      const panelHeight = windPanel.offsetHeight || 300;
+
+      const minLeft = 8;
+      const maxLeft = Math.max(minLeft, stageRect.width - panelWidth - 8);
+      let panelLeft = (btnRect.right - stageRect.left) + 33;
+      panelLeft = Math.min(Math.max(panelLeft, minLeft), maxLeft);
+
+      const minTop = 8;
+      const maxTop = Math.max(minTop, stageRect.height - panelHeight - 8);
+      const btnCenterY = btnRect.top - stageRect.top + (btnRect.height / 2);
+      const panelTopOffset = 120;
+      let panelTop = btnCenterY - panelTopOffset;
+      panelTop = Math.min(Math.max(panelTop, minTop), maxTop);
+
+      windPanel.style.setProperty('--wind-panel-left', `${panelLeft}px`);
+      windPanel.style.setProperty('--wind-panel-top', `${panelTop}px`);
+      const arrowY = (btnCenterY - panelTop) / 1.25;
+      windPanel.style.setProperty('--wind-arrow-y', `${arrowY}px`);
+    };
+
+    const normalizeWindFieldValue = (field, value) => {
+      const digitsOnly = String(value || '').replace(/\D/g, '');
+      const maxLen = field === 'dir' ? 3 : 3;
+      const limited = digitsOnly.slice(0, maxLen);
+      return limited || '';
+    };
+
+    const normalizeWindDirectionRange = (value) => {
+      const digitsOnly = String(value || '').replace(/\D/g, '').slice(0, 3);
+      if (!digitsOnly) {
+        return '';
+      }
+      const parsed = Number.parseInt(digitsOnly || '0', 10);
+      if (!Number.isFinite(parsed) || parsed <= 0) {
+        return '';
+      }
+      if (parsed > 360) {
+        return '360';
+      }
+      return String(parsed).padStart(3, '0');
+    };
+
+    const convertMsToKt = (value) => {
+      if (value === '') {
+        return '';
+      }
+      const ms = Number.parseInt(String(value || '0'), 10);
+      if (!Number.isFinite(ms) || ms <= 0) {
+        return '0';
+      }
+      return String(Math.round(ms * 1.94384));
+    };
+
+    const convertKtToMs = (value) => {
+      if (value === '') {
+        return '';
+      }
+      const kt = Number.parseInt(String(value || '0'), 10);
+      if (!Number.isFinite(kt) || kt <= 0) {
+        return '0';
+      }
+      return String(Math.round(kt / 1.94384));
+    };
+
+    const syncMsDraftFromKt = () => {
+      windMsDraft.speed = convertKtToMs(windDraft.speed);
+      windMsDraft.gust = convertKtToMs(windDraft.gust);
+    };
+
+    const formatWindSummary = () => {
+      const hasDir = windDraft.dir !== '';
+      const hasSpeed = windDraft.speed !== '';
+      const hasGust = windDraft.gust !== '';
+      if (!hasDir || (!hasSpeed && !hasGust)) {
+        return '';
+      }
+      const dirText = windDraft.dir.padStart(3, '0');
+      const speedText = hasSpeed ? String(Number(windDraft.speed)) : '0';
+      const gustNumber = hasGust ? Number(windDraft.gust) : 0;
+      return `(${dirText}/${speedText}${hasGust && gustNumber > 0 ? `/G${gustNumber}` : ''})`;
+    };
+
+    const updateWindUi = () => {
+      windDirField?.classList.toggle('active', activeWindField === 'dir');
+      windSpeedField?.classList.toggle('active', activeWindField === 'speed');
+      windGustField?.classList.toggle('active', activeWindField === 'gust');
+      windUnitSelector?.classList.toggle('visible', activeWindField === 'speed' || activeWindField === 'gust');
+      windUnitKt?.classList.toggle('active', windInputUnit === 'kt');
+      windUnitMs?.classList.toggle('active', windInputUnit === 'ms');
+
+      if (windUnitSelector) {
+        const arrowLeft = activeWindField === 'gust' ? 'calc(72% + 25px)' : '50%';
+        windUnitSelector.style.setProperty('--wind-unit-arrow-left', arrowLeft);
+      }
+
+      if (windDirField) {
+        windDirField.textContent = windDraft.dir ? `${windDraft.dir}°` : '';
+      }
+      if (windSpeedField) {
+        const speedText = windDraft.speed === '' ? '' : String(Number(windDraft.speed));
+        windSpeedField.textContent = speedText ? `${speedText} kt` : '';
+      }
+      if (windGustField) {
+        const gustText = windDraft.gust === '' ? '' : String(Number(windDraft.gust));
+        windGustField.textContent = gustText ? `G ${gustText} kt` : '';
+      }
+      if (windValue) {
+        const windSummary = formatWindSummary();
+        windValue.textContent = windSummary;
+        stage?.classList.toggle('wind-filled', windSummary !== '');
+      }
+    };
+
+    const loadWindData = () => {
+      try {
+        const raw = localStorage.getItem(takeoffWindStorageKey);
+        if (!raw) {
+          syncMsDraftFromKt();
+          return;
+        }
+        const parsed = JSON.parse(raw);
+        windDraft = {
+          dir: normalizeWindDirectionRange(parsed?.dir),
+          speed: normalizeWindFieldValue('speed', parsed?.speed),
+          gust: normalizeWindFieldValue('gust', parsed?.gust)
+        };
+        windInputUnit = parsed?.unit === 'ms' ? 'ms' : 'kt';
+        syncMsDraftFromKt();
+      } catch {
+        windInputUnit = 'kt';
+        windDraft = { dir: '', speed: '', gust: '' };
+        windMsDraft = { speed: '', gust: '' };
+      }
+    };
+
+    const saveWindData = () => {
+      windDraft.dir = normalizeWindDirectionRange(windDraft.dir);
+      localStorage.setItem(takeoffWindStorageKey, JSON.stringify({
+        dir: windDraft.dir,
+        speed: windDraft.speed,
+        gust: windDraft.gust,
+        unit: windInputUnit
+      }));
+    };
+
+    const openWindPopup = () => {
+      closeOatPopup();
+      closeAirportPopup();
+      closeRwyPopup();
+      stage.classList.add('wind-open');
+      activeWindField = 'dir';
+      updateWindUi();
+      positionWindPanel();
+    };
+
+    const positionOatPanel = () => {
+      if (!stage || !oatEditBtn || !oatPanel) {
+        return;
+      }
+
+      const stageRect = stage.getBoundingClientRect();
+      const btnRect = oatEditBtn.getBoundingClientRect();
+      const panelWidth = oatPanel.offsetWidth || 280;
+      const panelHeight = oatPanel.offsetHeight || 300;
+
+      const minLeft = 8;
+      const maxLeft = Math.max(minLeft, stageRect.width - panelWidth - 8);
+      let panelLeft = (btnRect.right - stageRect.left) + 33;
+      panelLeft = Math.min(Math.max(panelLeft, minLeft), maxLeft);
+
+      const minTop = 8;
+      const maxTop = Math.max(minTop, stageRect.height - panelHeight - 8);
+      const btnCenterY = btnRect.top - stageRect.top + (btnRect.height / 2);
+      const panelTopOffset = 95;
+      let panelTop = btnCenterY - panelTopOffset;
+      panelTop = Math.min(Math.max(panelTop, minTop), maxTop);
+
+      oatPanel.style.setProperty('--oat-panel-left', `${panelLeft}px`);
+      oatPanel.style.setProperty('--oat-panel-top', `${panelTop}px`);
+      const arrowY = (btnCenterY - panelTop) / 1.25;
+      oatPanel.style.setProperty('--oat-arrow-y', `${arrowY}px`);
+    };
+
+    const convertCToF = (celsius) => ((celsius * 9) / 5) + 32;
+    const convertFToC = (fahrenheit) => ((fahrenheit - 32) * 5) / 9;
+
+    const normalizeOatRaw = (raw) => {
+      let text = String(raw || '');
+      let sign = '';
+      if (text.startsWith('-')) {
+        sign = '-';
+        text = text.slice(1);
+      }
+      text = text.replace(/[^\d.]/g, '');
+      const hasDot = text.includes('.');
+      const parts = text.split('.');
+      let intPart = (parts[0] || '').slice(0, 3);
+      const fracPart = (parts[1] || '').slice(0, 1);
+
+      if (hasDot && intPart === '') {
+        intPart = '0';
+      }
+
+      let normalized = `${sign}${intPart}`;
+      if (hasDot) {
+        normalized += `.${fracPart}`;
+      }
+
+      if (normalized === '-') {
+        return normalized;
+      }
+
+      return normalized;
+    };
+
+    const formatOatDisplay = () => {
+      const celsiusValue = Number.parseFloat(oatDraftC);
+      if (!Number.isFinite(celsiusValue)) {
+        return '';
+      }
+
+      const celsiusText = `${Math.round(celsiusValue)}`;
+      if (oatStoredUnit === 'f') {
+        const fahrenheitValue = Number.parseFloat(oatStoredRaw);
+        const fahrenheitText = Number.isFinite(fahrenheitValue)
+          ? `${Math.round(fahrenheitValue)}°F`
+          : `${Math.round(convertCToF(celsiusValue))}°F`;
+        return `${celsiusValue.toFixed(1)} (${fahrenheitText})`;
+      }
+
+      return celsiusText;
+    };
+
+    const updateOatFromInputRaw = () => {
+      const numeric = Number.parseFloat(oatInputRaw);
+      if (!Number.isFinite(numeric)) {
+        oatDraftC = '';
+        return;
+      }
+
+      const celsius = oatInputUnit === 'f' ? convertFToC(numeric) : numeric;
+      const clamped = clamp(celsius, -54, 55);
+      oatDraftC = clamped.toFixed(1);
+      oatStoredUnit = oatInputUnit;
+      oatStoredRaw = oatInputRaw;
+    };
+
+    const refreshOatInputRawFromDraft = () => {
+      const numericC = Number.parseFloat(oatDraftC);
+      if (!Number.isFinite(numericC)) {
+        oatInputRaw = '';
+        return;
+      }
+
+      const source = oatInputUnit === 'f' ? convertCToF(numericC) : numericC;
+      oatInputRaw = source.toFixed(1);
+    };
+
+    const updateOatUi = () => {
+      const unitLabel = oatInputUnit === 'f' ? '°F' : '°C';
+      if (oatTempField) {
+        oatTempField.textContent = oatInputRaw ? `${oatInputRaw}` : '';
+      }
+      if (oatUnitToggle) {
+        oatUnitToggle.textContent = unitLabel;
+      }
+      oatUnitSelector?.classList.toggle('visible', oatUnitSelectorOpen);
+      oatUnitC?.classList.toggle('active', oatInputUnit === 'c');
+      oatUnitF?.classList.toggle('active', oatInputUnit === 'f');
+      if (oatValue) {
+        oatValue.textContent = formatOatDisplay();
+      }
+      stage?.classList.toggle('oat-filled', formatOatDisplay() !== '');
+    };
+
+    const loadOatData = () => {
+      try {
+        const raw = localStorage.getItem(takeoffOatStorageKey);
+        if (!raw) {
+          oatDraftC = '';
+          oatInputUnit = 'c';
+          oatInputRaw = '';
+          oatStoredUnit = 'c';
+          oatStoredRaw = '';
+          return;
+        }
+
+        const parsed = JSON.parse(raw);
+        const parsedValue = Number.parseFloat(parsed?.valueC);
+        oatDraftC = Number.isFinite(parsedValue) ? clamp(parsedValue, -54, 55).toFixed(1) : '';
+        oatInputUnit = parsed?.unit === 'f' ? 'f' : 'c';
+        oatStoredUnit = parsed?.displayUnit === 'f' ? 'f' : 'c';
+        oatStoredRaw = String(parsed?.displayRaw || '').trim();
+        if (!oatStoredRaw && oatDraftC !== '') {
+          oatStoredUnit = oatInputUnit;
+        }
+        refreshOatInputRawFromDraft();
+      } catch {
+        oatDraftC = '';
+        oatInputUnit = 'c';
+        oatInputRaw = '';
+        oatStoredUnit = 'c';
+        oatStoredRaw = '';
+      }
+    };
+
+    const saveOatData = () => {
+      localStorage.setItem(takeoffOatStorageKey, JSON.stringify({
+        valueC: oatDraftC,
+        unit: oatInputUnit,
+        displayUnit: oatStoredUnit,
+        displayRaw: oatStoredRaw
+      }));
+    };
+
+    const openOatPopup = () => {
+      closeAirportPopup();
+      closeRwyPopup();
+      closeWindPopup();
+      stage.classList.add('oat-open');
+      oatUnitSelectorOpen = false;
+      refreshOatInputRawFromDraft();
+      updateOatUi();
+      positionOatPanel();
+    };
+
+    const openRwyAfterAirportClose = async () => {
+      closeAirportPopup();
+      await wait(popupTransitionMs);
+      await openRwyPopup();
+    };
+
+    const openWindAfterRwyClose = async () => {
+      closeRwyPopup();
+      await wait(popupTransitionMs);
+      openWindPopup();
+    };
+
+    const openOatAfterWindClose = async () => {
+      closeWindPopup();
+      await wait(popupTransitionMs);
+      openOatPopup();
+    };
+
+    const saveAirportValue = async () => {
+      const value = normalizeAirportCode(airportInput?.value || '');
+      const finalValue = value || 'NIL';
+      await applyAirportSelection(finalValue);
+      await openRwyAfterAirportClose();
+    };
+
+    const savedAirport = localStorage.getItem(takeoffAirportStorageKey);
+    const savedRunway = normalizeAirportCode(localStorage.getItem(takeoffRunwayStorageKey));
+    if (savedRunway) {
+      selectedRunway = savedRunway;
+    }
+
+    if (rwyValue) {
+      rwyValue.textContent = formatUiValue(selectedRunway);
+    }
+
+    loadWindData();
+    updateWindUi();
+    loadOatData();
+    updateOatUi();
+
+    if (headerData.from && headerData.from !== '--') {
+      void applyAirportSelection(headerData.from);
+    } else if (savedAirport && savedAirport !== 'NIL') {
+      void applyAirportSelection(savedAirport);
+    } else {
+      void applyAirportSelection('NIL');
+    }
+
+    homeBtn?.addEventListener('click', () => {
+      window.location.href = './home.html';
+    });
+
+    brightnessBtn?.addEventListener('click', () => {
+      stage.classList.toggle('dim');
+    });
+
+    demiDeiBtn?.addEventListener('click', openAirportPopup);
+    rwyBtn?.addEventListener('click', () => {
+      void openRwyPopup();
+    });
+    windEditBtn?.addEventListener('click', openWindPopup);
+    windOpenTriggers.forEach((trigger) => {
+      trigger.addEventListener('click', openWindPopup);
+    });
+    windCloseBtn?.addEventListener('click', closeWindPopup);
+    windBackdrop?.addEventListener('click', closeWindPopup);
+
+    oatEditBtn?.addEventListener('click', openOatPopup);
+    oatOpenTriggers.forEach((trigger) => {
+      trigger.addEventListener('click', openOatPopup);
+    });
+    oatCloseBtn?.addEventListener('click', closeOatPopup);
+    oatBackdrop?.addEventListener('click', closeOatPopup);
+    oatUnitToggle?.addEventListener('click', () => {
+      oatUnitSelectorOpen = !oatUnitSelectorOpen;
+      updateOatUi();
+    });
+
+    oatUnitC?.addEventListener('click', () => {
+      oatInputUnit = 'c';
+      oatDraftC = '';
+      oatInputRaw = '';
+      oatStoredUnit = 'c';
+      oatStoredRaw = '';
+      oatUnitSelectorOpen = false;
+      updateOatUi();
+    });
+
+    oatUnitF?.addEventListener('click', () => {
+      oatInputUnit = 'f';
+      oatDraftC = '';
+      oatInputRaw = '';
+      oatStoredUnit = 'f';
+      oatStoredRaw = '';
+      oatUnitSelectorOpen = false;
+      updateOatUi();
+    });
+
+    oatTempField?.addEventListener('click', () => {
+      oatUnitSelectorOpen = false;
+      updateOatUi();
+    });
+
+    oatKeypadButtons.forEach((button) => {
+      button.addEventListener('click', () => {
+        if (button.dataset.disabled === 'true') {
+          return;
+        }
+
+        const key = button.dataset.key;
+        const action = button.dataset.action;
+
+        if (key) {
+          if (key === '.') {
+            if (oatInputRaw.includes('.')) {
+              return;
+            }
+            oatInputRaw = oatInputRaw === '' || oatInputRaw === '-' ? `${oatInputRaw}0.` : `${oatInputRaw}.`;
+          } else {
+            oatInputRaw = `${oatInputRaw}${key}`;
+          }
+          oatInputRaw = normalizeOatRaw(oatInputRaw);
+          updateOatFromInputRaw();
+          updateOatUi();
+          return;
+        }
+
+        if (action === 'backspace') {
+          oatInputRaw = oatInputRaw.slice(0, -1);
+          oatInputRaw = normalizeOatRaw(oatInputRaw);
+          updateOatFromInputRaw();
+          if (oatInputRaw === '') {
+            oatStoredRaw = '';
+          }
+          updateOatUi();
+          return;
+        }
+
+        if (action === 'sign') {
+          if (oatInputRaw.startsWith('-')) {
+            oatInputRaw = oatInputRaw.slice(1);
+          } else {
+            oatInputRaw = `-${oatInputRaw}`;
+          }
+          oatInputRaw = normalizeOatRaw(oatInputRaw);
+          updateOatFromInputRaw();
+          if (oatInputRaw === '') {
+            oatStoredRaw = '';
+          }
+          updateOatUi();
+          return;
+        }
+
+        if (action === 'next') {
+          oatUnitSelectorOpen = !oatUnitSelectorOpen;
+          updateOatUi();
+          return;
+        }
+
+        if (action === 'done') {
+          closeOatPopup();
+        }
+      });
+    });
+
+    windDirField?.addEventListener('click', () => {
+      windDraft.dir = '';
+      activeWindField = 'dir';
+      updateWindUi();
+    });
+
+    windSpeedField?.addEventListener('click', () => {
+      windDraft.speed = '';
+      windMsDraft.speed = '';
+      activeWindField = 'speed';
+      updateWindUi();
+    });
+
+    windGustField?.addEventListener('click', () => {
+      windDraft.gust = '';
+      windMsDraft.gust = '';
+      activeWindField = 'gust';
+      updateWindUi();
+    });
+
+    windUnitKt?.addEventListener('click', () => {
+      windInputUnit = 'kt';
+      updateWindUi();
+    });
+
+    windUnitMs?.addEventListener('click', () => {
+      windDraft.speed = '';
+      windDraft.gust = '';
+      windMsDraft.speed = '';
+      windMsDraft.gust = '';
+      windInputUnit = 'ms';
+      updateWindUi();
+    });
+
+    windKeypadButtons.forEach((button) => {
+      button.addEventListener('click', () => {
+        if (button.dataset.disabled === 'true') {
+          return;
+        }
+
+        const key = button.dataset.key;
+        const action = button.dataset.action;
+
+        if (key) {
+          if (activeWindField === 'dir') {
+            const nextDir = `${windDraft.dir}${key}`.replace(/\D/g, '').slice(0, 3);
+            windDraft.dir = nextDir;
+            if (nextDir.length >= 3) {
+              const normalizedDir = normalizeWindDirectionRange(windDraft.dir);
+              windDraft.dir = normalizedDir;
+              if (normalizedDir !== '') {
+                activeWindField = 'speed';
+              }
+            }
+          } else {
+            const windField = activeWindField === 'speed' ? 'speed' : 'gust';
+            if (windInputUnit === 'ms') {
+              const currentMs = windMsDraft[windField] || '';
+              const nextMs = currentMs === '' ? key : `${currentMs}${key}`;
+              const normalizedMs = String(nextMs).replace(/\D/g, '').slice(0, 3) || '';
+              windMsDraft[windField] = normalizedMs;
+              const convertedKt = normalizeWindFieldValue(windField, convertMsToKt(normalizedMs));
+              windDraft[windField] = convertedKt;
+            } else {
+              const currentKt = windDraft[windField] || '';
+              const nextKt = currentKt === '' ? key : `${currentKt}${key}`;
+              const normalizedKt = normalizeWindFieldValue(windField, nextKt);
+              windDraft[windField] = normalizedKt;
+            }
+          }
+          updateWindUi();
+          return;
+        }
+
+        if (action === 'backspace') {
+          if (activeWindField === 'dir') {
+            windDraft.dir = windDraft.dir.slice(0, -1);
+          } else {
+            const windField = activeWindField === 'speed' ? 'speed' : 'gust';
+            if (windInputUnit === 'ms') {
+              const currentMs = windMsDraft[windField] || '';
+              const trimmedMs = currentMs.slice(0, -1);
+              const normalizedMs = String(trimmedMs).replace(/\D/g, '').slice(0, 3) || '';
+              windMsDraft[windField] = normalizedMs;
+              const convertedKt = normalizeWindFieldValue(windField, convertMsToKt(normalizedMs));
+              windDraft[windField] = convertedKt;
+            } else {
+              const currentKt = windDraft[windField] || '';
+              const trimmedKt = currentKt.slice(0, -1);
+              const normalizedKt = normalizeWindFieldValue(windField, trimmedKt);
+              windDraft[windField] = normalizedKt;
+            }
+          }
+          updateWindUi();
+          return;
+        }
+
+        if (action === 'next') {
+          if (activeWindField === 'dir') {
+            activeWindField = 'speed';
+          } else if (activeWindField === 'speed') {
+            activeWindField = 'gust';
+          } else {
+            activeWindField = 'dir';
+          }
+          updateWindUi();
+          return;
+        }
+
+        if (action === 'done') {
+          void openOatAfterWindClose();
+        }
+      });
+    });
+
+    airportBackdrop?.addEventListener('click', closeActivePopup);
+
+    airportInput?.addEventListener('keydown', (event) => {
+      if (event.key === 'Enter') {
+        event.preventDefault();
+        void saveAirportValue();
+      }
+
+      if (event.key === 'Escape') {
+        closeActivePopup();
+      }
+    });
+
+    airportInput?.addEventListener('input', () => {
+      renderAirportSuggestions(airportInput.value);
+    });
+
+    window.addEventListener('resize', () => {
+      if (stage?.classList.contains('airport-open')) {
+        positionAirportPanel();
+      }
+
+      if (stage?.classList.contains('rwy-open')) {
+        positionRwyPanel();
+      }
+
+      if (stage?.classList.contains('wind-open')) {
+        positionWindPanel();
+      }
+
+      if (stage?.classList.contains('oat-open')) {
+        positionOatPanel();
+      }
+    });
+
+    window.addEventListener('keydown', (event) => {
+      if (event.key === 'Escape') {
+        closeActivePopup();
+      }
+    });
+  </script>
+</body>
+</html>
