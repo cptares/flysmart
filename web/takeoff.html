@@ -1707,7 +1707,7 @@
     }
 
     .wind-sock-overlay.right-position {
-      left: calc(50% + 70px - var(--wind-axis-offset-x));
+      left: calc(50% + 90px - var(--wind-axis-offset-x));
       right: auto;
     }
 
@@ -1717,20 +1717,17 @@
 
     .wind-components-diagram {
       position: absolute;
-      left: -70px;
-      bottom: calc(75% - 120px);
-      width: clamp(90px, 6.5vw, 130px);
-      height: clamp(110px, 8.2vw, 170px);
+      left: 0;
+      top: 0;
+      width: 84px !important;
+      height: 84px !important;
+      transform: scale(1.25);
+      transform-origin: center center;
       opacity: 0;
-      transition: opacity 480ms ease;
+      transition: none;
       pointer-events: none;
       z-index: 9;
       overflow: visible;
-    }
-
-    .wind-components-diagram.right-position {
-      left: auto;
-      right: -70px;
     }
 
     .stage.rwy-filled.wind-filled .wind-components-diagram {
@@ -1782,15 +1779,8 @@
       }
 
       .wind-components-diagram {
-        left: -80px;
-        bottom: calc(75% - 130px);
-        width: clamp(96px, 7vw, 140px);
-        height: clamp(118px, 9vw, 186px);
-      }
-
-      .wind-components-diagram.right-position {
-        left: auto;
-        right: -80px;
+        width: 84px !important;
+        height: 84px !important;
       }
 
       .top-actions {
@@ -1867,15 +1857,8 @@
       }
 
       .wind-components-diagram {
-        left: -85px;
-        bottom: calc(75% - 140px);
-        width: clamp(104px, 7.4vw, 150px);
-        height: clamp(126px, 9.5vw, 194px);
-      }
-
-      .wind-components-diagram.right-position {
-        left: auto;
-        right: -85px;
+        width: 84px !important;
+        height: 84px !important;
       }
 
       .top-actions {
@@ -2079,15 +2062,8 @@
       }
 
       .wind-components-diagram {
-        left: -85px;
-        bottom: calc(75% - 140px);
-        width: clamp(104px, 7.4vw, 150px);
-        height: clamp(126px, 9.5vw, 194px);
-      }
-
-      .wind-components-diagram.right-position {
-        left: auto;
-        right: -85px;
+        width: 84px !important;
+        height: 84px !important;
       }
 
       .top-actions {
@@ -2542,15 +2518,15 @@
         </div>
       </div>
       <img src="wind.png" alt="Wind sock" class="wind-sock-overlay" aria-hidden="true" />
-      <svg class="wind-components-diagram" viewBox="0 0 120 140" aria-hidden="true">
-        <circle id="windComponentCenter" cx="60" cy="58" r="4" fill="#55ff55" />
-        <line id="windHeadTailArrow" x1="60" y1="58" x2="60" y2="28" stroke="#55ff55" stroke-width="3" marker-end="url(#arrowgreen)" />
-        <text id="windHeadTailLabel" x="44" y="24" fill="#55ff55" font-size="16" font-weight="700">0</text>
-        <line id="windCrossArrow" x1="60" y1="58" x2="90" y2="58" stroke="#55ff55" stroke-width="3" marker-end="url(#arrowgreen)" />
-        <text id="windCrossLabel" x="94" y="52" fill="#55ff55" font-size="16" font-weight="700">0</text>
+      <svg class="wind-components-diagram" viewBox="0 0 84 84" aria-hidden="true">
+        <circle id="windComponentCenter" cx="42" cy="42" r="4" fill="#55ff55" />
+        <line id="windHeadTailArrow" x1="42" y1="42" x2="42" y2="26" stroke="#55ff55" stroke-width="2" marker-end="url(#arrowgreen)" />
+        <text id="windHeadTailLabel" x="33" y="22" fill="#55ff55" font-size="14" font-weight="700" text-anchor="middle" dominant-baseline="middle">0</text>
+        <line id="windCrossArrow" x1="42" y1="42" x2="58" y2="42" stroke="#55ff55" stroke-width="2" marker-end="url(#arrowgreen)" />
+        <text id="windCrossLabel" x="61" y="39" fill="#55ff55" font-size="14" font-weight="700" text-anchor="middle" dominant-baseline="middle">0</text>
         <defs>
-          <marker id="arrowgreen" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto" markerUnits="strokeWidth">
-            <path d="M0,0 L8,4 L0,8 z" fill="#55ff55" />
+          <marker id="arrowgreen" markerWidth="3" markerHeight="3" refX="2.5" refY="1.5" orient="auto" markerUnits="strokeWidth">
+            <path d="M0,0 L3,1.5 L0,3 z" fill="#55ff55" />
           </marker>
         </defs>
       </svg>
@@ -2656,6 +2632,7 @@
     const rwyVisualization = document.querySelector('#rwyVisualization');
     const rwyVizTrack = document.querySelector('.rwy-viz-track');
     const windSockOverlayEl = document.querySelector('.wind-sock-overlay');
+    const windComponentsDiagramEl = document.querySelector('.wind-components-diagram');
     const airportBackdrop = document.querySelector('#airportBackdrop');
     const airportPanel = document.querySelector('#airportPanel');
     const airportInput = document.querySelector('#airportInput');
@@ -2750,6 +2727,21 @@
       return normalized === 'NIL' ? '' : String(value || '');
     };
     const clamp = (value, min, max) => Math.min(Math.max(value, min), max);
+    const roundWindComponentValue = (value) => {
+      const absValue = Math.abs(Number(value) || 0);
+      const whole = Math.floor(absValue);
+      const fraction = absValue - whole;
+
+      if (fraction >= 0.5) {
+        return whole + 1;
+      }
+
+      if (fraction < 0.4) {
+        return whole;
+      }
+
+      return Math.round(absValue);
+    };
 
     const updateWindSockAnchor = (windFromRight) => {
       if (!rwyVisualization || !rwyVizTrack || !windSockOverlayEl) {
@@ -2769,12 +2761,19 @@
       const pivotY = sockRect.height * pivotYRatio;
 
       const runwayCenterlineX = (trackRect.left - vizRect.left) + (trackRect.width / 2);
-      const axisX = runwayCenterlineX + (windFromRight ? 70 : -70);
+      const axisX = runwayCenterlineX + (windFromRight ? 90 : -70);
       const axisY = (trackRect.top - vizRect.top) + (trackRect.height * 0.20);
 
       windSockOverlayEl.style.left = `${axisX - pivotX}px`;
       windSockOverlayEl.style.top = `${axisY - pivotY}px`;
       windSockOverlayEl.style.right = 'auto';
+
+      if (windComponentsDiagramEl) {
+        const vectorCenterX = axisX + (windFromRight ? 30 : -30);
+        const vectorCenterY = axisY + 150;
+        windComponentsDiagramEl.style.left = `${vectorCenterX - 42}px`;
+        windComponentsDiagramEl.style.top = `${vectorCenterY - 42}px`;
+      }
     };
 
     const updateTakeoffIncompleteMessage = () => {
@@ -3550,9 +3549,9 @@
       const windCrossLabel = document.querySelector('#windCrossLabel');
 
       if (windComponentsDiagram && windDraft.dir && windDraft.speed && selectedRunway !== 'NIL') {
-        const centerX = 60;
-        const centerY = 58;
-        const fullArrow = 34;
+        const centerX = 42;
+        const centerY = 42;
+        const arrowLen = 30;
 
         const windDir = Number.parseInt(windDraft.dir, 10);
         const windSpeed = Number(windDraft.speed) || 0;
@@ -3565,82 +3564,98 @@
         // Calculate components
         const headwindComponent = windSpeed * Math.cos(angleRad);
         const crosswindComponent = windSpeed * Math.sin(angleRad);
-
-        // Update diagram
-        if (windDirRelativeToRunway > 0 && windDirRelativeToRunway < 180) {
-          windComponentsDiagram.classList.add('right-position');
-        } else {
-          windComponentsDiagram.classList.remove('right-position');
-        }
+        const crosswindFlowComponent = -crosswindComponent;
 
         const headwindAbs = Math.abs(headwindComponent);
         const crosswindAbs = Math.abs(crosswindComponent);
-        const headwindLength = headwindAbs < 0.5 ? 0 : fullArrow;
-        const crosswindLength = crosswindAbs < 0.5 ? 0 : fullArrow;
+        const headwindLength = headwindAbs < 0.1 ? 0 : arrowLen;
+        const crosswindLength = crosswindAbs < 0.1 ? 0 : arrowLen;
 
         // Update vertical arrow (headwind/tailwind)
         if (windHeadTailArrow) {
           windHeadTailArrow.setAttribute('x1', String(centerX));
           windHeadTailArrow.setAttribute('y1', String(centerY));
           windHeadTailArrow.setAttribute('x2', String(centerX));
-          windHeadTailArrow.setAttribute(
-            'y2',
-            String(headwindComponent >= 0 ? centerY - headwindLength : centerY + headwindLength)
-          );
+          if (headwindLength === 0) {
+            windHeadTailArrow.setAttribute('y2', String(centerY));
+            windHeadTailArrow.setAttribute('visibility', 'hidden');
+          } else {
+            // Requested behavior: headwind -> down, tailwind -> up
+            windHeadTailArrow.setAttribute('y2', String(headwindComponent > 0 ? centerY + headwindLength : centerY - headwindLength));
+            windHeadTailArrow.setAttribute('visibility', 'visible');
+          }
         }
+
+        const headTipX = centerX;
+        const headTipY = headwindComponent > 0 ? centerY + headwindLength : centerY - headwindLength;
 
         // Update horizontal arrow (crosswind)
         if (windCrossArrow) {
           windCrossArrow.setAttribute('x1', String(centerX));
           windCrossArrow.setAttribute('y1', String(centerY));
-          windCrossArrow.setAttribute(
-            'x2',
-            String(crosswindComponent >= 0 ? centerX + crosswindLength : centerX - crosswindLength)
-          );
+          if (crosswindLength === 0) {
+            windCrossArrow.setAttribute('x2', String(centerX));
+            windCrossArrow.setAttribute('visibility', 'hidden');
+          } else {
+            // Show where the wind is going across runway axis
+            windCrossArrow.setAttribute('x2', String(crosswindFlowComponent > 0 ? centerX + crosswindLength : centerX - crosswindLength));
+            windCrossArrow.setAttribute('visibility', 'visible');
+          }
           windCrossArrow.setAttribute('y2', String(centerY));
         }
 
+        const crossTipX = crosswindFlowComponent > 0 ? centerX + crosswindLength : centerX - crosswindLength;
+        const crossTipY = centerY;
+
         // Update labels
         if (windHeadTailLabel) {
-          windHeadTailLabel.setAttribute('x', String(centerX - 16));
-          windHeadTailLabel.setAttribute(
-            'y',
-            String(headwindComponent >= 0 ? centerY - headwindLength - 6 : centerY + headwindLength + 18)
-          );
-          windHeadTailLabel.textContent = Math.round(Math.abs(headwindComponent)).toString();
+          if (headwindLength === 0) {
+            windHeadTailLabel.textContent = '';
+            windHeadTailLabel.setAttribute('visibility', 'hidden');
+          } else {
+            windHeadTailLabel.setAttribute('x', String(headTipX));
+            windHeadTailLabel.setAttribute('y', String(headwindComponent > 0 ? headTipY + 10 : headTipY - 10));
+            windHeadTailLabel.textContent = String(roundWindComponentValue(headwindComponent));
+            windHeadTailLabel.setAttribute('visibility', 'visible');
+          }
         }
         if (windCrossLabel) {
-          windCrossLabel.setAttribute(
-            'x',
-            String(crosswindComponent >= 0 ? centerX + crosswindLength + 6 : centerX - crosswindLength - 20)
-          );
-          windCrossLabel.setAttribute('y', String(centerY - 6));
-          windCrossLabel.textContent = Math.round(Math.abs(crosswindComponent)).toString();
+          if (crosswindLength === 0) {
+            windCrossLabel.textContent = '';
+            windCrossLabel.setAttribute('visibility', 'hidden');
+          } else {
+            windCrossLabel.setAttribute('x', String(crosswindFlowComponent > 0 ? crossTipX + 10 : crossTipX - 10));
+            windCrossLabel.setAttribute('y', String(crossTipY));
+            windCrossLabel.textContent = String(roundWindComponentValue(crosswindComponent));
+            windCrossLabel.setAttribute('visibility', 'visible');
+          }
         }
       } else if (windComponentsDiagram) {
-        windComponentsDiagram.classList.remove('right-position');
-
         if (windHeadTailArrow) {
-          windHeadTailArrow.setAttribute('x1', '60');
-          windHeadTailArrow.setAttribute('y1', '58');
-          windHeadTailArrow.setAttribute('x2', '60');
-          windHeadTailArrow.setAttribute('y2', '50');
+          windHeadTailArrow.setAttribute('x1', '42');
+          windHeadTailArrow.setAttribute('y1', '42');
+          windHeadTailArrow.setAttribute('x2', '42');
+          windHeadTailArrow.setAttribute('y2', '42');
+          windHeadTailArrow.setAttribute('visibility', 'hidden');
         }
         if (windCrossArrow) {
-          windCrossArrow.setAttribute('x1', '60');
-          windCrossArrow.setAttribute('y1', '58');
-          windCrossArrow.setAttribute('x2', '68');
-          windCrossArrow.setAttribute('y2', '58');
+          windCrossArrow.setAttribute('x1', '42');
+          windCrossArrow.setAttribute('y1', '42');
+          windCrossArrow.setAttribute('x2', '42');
+          windCrossArrow.setAttribute('y2', '42');
+          windCrossArrow.setAttribute('visibility', 'hidden');
         }
         if (windHeadTailLabel) {
-          windHeadTailLabel.setAttribute('x', '44');
-          windHeadTailLabel.setAttribute('y', '42');
-          windHeadTailLabel.textContent = '0';
+          windHeadTailLabel.setAttribute('x', '32');
+          windHeadTailLabel.setAttribute('y', '25');
+          windHeadTailLabel.textContent = '';
+          windHeadTailLabel.setAttribute('visibility', 'hidden');
         }
         if (windCrossLabel) {
-          windCrossLabel.setAttribute('x', '74');
-          windCrossLabel.setAttribute('y', '52');
-          windCrossLabel.textContent = '0';
+          windCrossLabel.setAttribute('x', '58');
+          windCrossLabel.setAttribute('y', '39');
+          windCrossLabel.textContent = '';
+          windCrossLabel.setAttribute('visibility', 'hidden');
         }
       }
 
