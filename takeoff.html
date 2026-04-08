@@ -1684,6 +1684,30 @@
       transform: rotate(180deg);
     }
 
+    .wind-sock-overlay {
+      position: absolute;
+      left: -70px;
+      bottom: 75%;
+      width: clamp(40px, 3vw, 70px);
+      height: clamp(50px, 4vw, 90px);
+      object-fit: contain;
+      z-index: 10;
+      opacity: 0;
+      transition: opacity 480ms ease, transform 600ms ease;
+      pointer-events: none;
+      transform-origin: 50% 6%;
+      transform: rotate(0deg);
+    }
+
+    .wind-sock-overlay.right-position {
+      left: auto;
+      right: -70px;
+    }
+
+    .stage.rwy-filled.wind-filled .wind-sock-overlay {
+      opacity: 1;
+    }
+
     @media (max-width: 900px) {
       body {
         padding: 0;
@@ -1712,6 +1736,22 @@
     @media only screen and (min-width: 700px) and (max-width: 1100px) and (orientation: portrait) and (pointer: coarse) {
       body {
         padding: 0;
+      }
+
+      .rwy-viz-track {
+        margin-left: -50px;
+      }
+
+      .wind-sock-overlay {
+        left: -80px;
+        bottom: 75%;
+        width: clamp(45px, 3.5vw, 75px);
+        height: clamp(55px, 4.5vw, 95px);
+      }
+
+      .wind-sock-overlay.right-position {
+        left: auto;
+        right: -80px;
       }
 
       .top-actions {
@@ -1773,6 +1813,22 @@
         padding: 0;
       }
 
+      .rwy-viz-track {
+        margin-left: -50px;
+      }
+
+      .wind-sock-overlay {
+        left: -85px;
+        bottom: 75%;
+        width: clamp(50px, 3.8vw, 80px);
+        height: clamp(60px, 4.8vw, 100px);
+      }
+
+      .wind-sock-overlay.right-position {
+        left: auto;
+        right: -85px;
+      }
+
       .top-actions {
         top: clamp(10px, 1.5%, 20px);
         right: clamp(12px, 1.5%, 22px);
@@ -1830,6 +1886,10 @@
     /* General iPad Touch Optimization */
     /* ────────────────────────────────────────────── */
     @media only screen and (min-width: 700px) and (max-width: 1400px) and (pointer: coarse) {
+      .rwy-viz-track {
+        margin-left: -50px;
+      }
+
       :root {
         --ipad-popup-width: 320px;
         --ipad-popup-scale: 1.25;
@@ -2293,6 +2353,7 @@
           <span id="rwyVizScaleLabel" class="rwy-viz-scale-text"></span>
         </div>
       </div>
+      <img src="wind.png" alt="Wind sock" class="wind-sock-overlay" aria-hidden="true" />
     </div>
 
     <div class="brightness-layer" aria-hidden="true"></div>
@@ -3227,6 +3288,27 @@
         windValue.textContent = windSummary;
         stage?.classList.toggle('wind-filled', windSummary !== '');
       }
+
+      // Rotate wind sock based on wind direction relative to runway heading
+      const windSockOverlay = document.querySelector('.wind-sock-overlay');
+      if (windSockOverlay && windDraft.dir && selectedRunway !== 'NIL') {
+        const windDir = parseInt(windDraft.dir, 10);
+        const runwayHeading = parseInt(selectedRunway, 10) * 10; // Runway number to degrees (e.g., 30 -> 300)
+        const windDirRelativeToRunway = (windDir - runwayHeading + 360) % 360;
+        const rotationDegrees = windDirRelativeToRunway;
+        windSockOverlay.style.transform = `rotate(${rotationDegrees}deg)`;
+
+        // Position wind sock: left for headwind/tailwind/left-side wind, right for right-side wind
+        if (windDirRelativeToRunway > 0 && windDirRelativeToRunway < 180) {
+          windSockOverlay.classList.add('right-position');
+        } else {
+          windSockOverlay.classList.remove('right-position');
+        }
+      } else if (windSockOverlay) {
+        windSockOverlay.style.transform = 'rotate(0deg)';
+        windSockOverlay.classList.remove('right-position');
+      }
+
       updateTakeoffIncompleteMessage();
     };
 
