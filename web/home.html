@@ -33,6 +33,28 @@
       font-display: swap;
     }
 
+    @font-face {
+      font-family: "Bahnschrift Condensed";
+      src:
+        local("Bahnschrift Condensed"),
+        local("Bahnschrift"),
+        url("./fonts/BahnschriftCondensed-Regular.ttf") format("truetype");
+      font-weight: 400;
+      font-style: normal;
+      font-display: swap;
+    }
+
+    @font-face {
+      font-family: "Bahnschrift Condensed";
+      src:
+        local("Bahnschrift Condensed"),
+        local("Bahnschrift"),
+        url("./fonts/BahnschriftCondensed-Bold.ttf") format("truetype");
+      font-weight: 700;
+      font-style: normal;
+      font-display: swap;
+    }
+
     :root {
       --base-width: 2360;
       --base-height: 1640;
@@ -42,6 +64,7 @@
       --text-color: #f2f4f7;
       --shadow: 0 30px 90px rgba(0, 0, 0, 0.4);
       --panel-dark: #424449;
+      --pencil-size: clamp(26px, 1.7vw, 38px);
     }
 
     * {
@@ -169,6 +192,10 @@
       user-select: none;
     }
 
+    #settingsBtn img {
+      transform: translateY(1.5px);
+    }
+
     .brightness-layer {
       position: absolute;
       inset: 0;
@@ -242,6 +269,13 @@
     .stage.settings-open .settings-panel {
       opacity: 1;
       pointer-events: auto;
+    }
+
+    .settings-panel,
+    .settings-panel *,
+    .edit-modal-content,
+    .edit-modal-content * {
+      font-family: "Bahnschrift Condensed", "Arial Narrow", "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
     }
 
     .simbrief-field {
@@ -459,8 +493,8 @@
     }
 
     .row-edit-btn {
-      width: clamp(26px, 1.5vw, 30px);
-      height: clamp(26px, 1.5vw, 30px);
+      width: var(--pencil-size);
+      height: var(--pencil-size);
       border: 0;
       background: transparent;
       border-radius: 6px;
@@ -486,8 +520,8 @@
     }
 
     .row-pencil {
-      width: clamp(24.15px, 1.44vw, 28.75px);
-      height: clamp(24.15px, 1.44vw, 28.75px);
+      width: var(--pencil-size);
+      height: var(--pencil-size);
       object-fit: contain;
       flex: 0 0 auto;
       pointer-events: none;
