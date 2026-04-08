@@ -8,19 +8,27 @@
   <meta name="apple-mobile-web-app-title" content="FlySmart">
   <meta name="theme-color" content="#282c31">
   <link rel="manifest" href="./manifest.json">
-  <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 180 180'><rect fill='%23282c31' width='180' height='180'/><text x='50%' y='50%' font-size='80' fill='%23e4dc2d' text-anchor='middle' dominant-baseline='central' font-weight='bold' font-family='Arial'>FS</text></svg>">
+  <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 180 180'><rect fill='%23282c31' width='180' height='180'/><text x='50%' y='50%' font-size='80' fill='%23e4dc2d' text-anchor='middle' dominant-baseline='central' font-weight='bold' font-family='Gill Sans MT Condensed'>FS</text></svg>">
   <title>FlySmart Replica - Home</title>
   <style>
     @font-face {
-      font-family: "FF Aircraft";
+      font-family: "Gill Sans MT Condensed";
       src:
-        local("FF Aircraft"),
-        local("FFAircraft"),
-        url("./fonts/FF-Aircraft.woff2") format("woff2"),
-        url("./fonts/FF-Aircraft.woff") format("woff"),
-        url("./fonts/FF-Aircraft.otf") format("opentype"),
-        url("./fonts/FF-Aircraft.ttf") format("truetype");
+        local("Gill Sans MT Condensed"),
+        local("GillSansMTCondensed"),
+        url("./fonts/GillSansMTCondensed-Regular.ttf") format("truetype");
       font-weight: 400;
+      font-style: normal;
+      font-display: swap;
+    }
+
+    @font-face {
+      font-family: "Gill Sans MT Condensed";
+      src:
+        local("Gill Sans MT Condensed"),
+        local("GillSansMTCondensed"),
+        url("./fonts/GillSansMTCondensed-Bold.ttf") format("truetype");
+      font-weight: 700;
       font-style: normal;
       font-display: swap;
     }
@@ -38,7 +46,7 @@
 
     * {
       box-sizing: border-box;
-      font-family: "FF Aircraft", "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      font-family: "Gill Sans MT Condensed", "Arial Narrow", "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
       -webkit-user-select: none;
       user-select: none;
       -webkit-touch-callout: none;
@@ -859,7 +867,7 @@
       align-items: center;
       justify-content: center;
       gap: 18px;
-      font-family: -apple-system, BlinkMacSystemFont, 'Helvetica Neue', sans-serif;
+      font-family: "Gill Sans MT Condensed", "Arial Narrow", "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
       text-align: center;
       padding: 32px;
       touch-action: none;
