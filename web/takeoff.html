@@ -148,7 +148,7 @@
 
     .takeoff-strip-title {
       position: absolute;
-      top: clamp(18px, 2.6%, 42px);
+      top: calc(clamp(18px, 2.6%, 42px) + 5px);
       left: 50%;
       transform: translateX(-50%) scaleX(0.88);
       transform-origin: center center;
@@ -159,7 +159,7 @@
       font-family: "Gill Sans MT Condensed", "Arial Narrow", "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
       font-weight: 700;
       color: #424449;
-      font-size: clamp(17.2px, 1.33vw, 28.1px);
+      font-size: clamp(25.8px, 1.995vw, 42.15px);
       letter-spacing: 0.25px;
       text-transform: uppercase;
       text-shadow: none;
@@ -200,6 +200,10 @@
       object-fit: contain;
       pointer-events: none;
       user-select: none;
+    }
+
+    #homeBtn img {
+      transform: translateY(1.5px);
     }
 
     .btn-light img {
@@ -247,7 +251,7 @@
       position: absolute;
       left: clamp(14px, 1.2vw, 26px);
       top: clamp(103px, 11%, 180px);
-      width: clamp(190px, 20%, 450px);
+      width: clamp(207px, 22%, 467px);
       transform: scale(0.75);
       transform-origin: top left;
       z-index: 3;
@@ -1638,7 +1642,7 @@
       }
 
       .left-inputs {
-        width: min(46%, 300px);
+        width: min(48%, 317px);
       }
 
       .left-label {
@@ -1674,7 +1678,7 @@
       .left-inputs {
         left: clamp(8px, 0.8vw, 18px);
         top: clamp(80px, 9%, 150px);
-        width: clamp(185px, 20%, 430px);
+        width: clamp(202px, 22%, 447px);
         transform: scale(0.85);
         gap: clamp(10px, 1vw, 20px);
       }
@@ -1704,7 +1708,7 @@
       }
 
       .takeoff-strip-title {
-        font-size: clamp(15px, 1.1vw, 24px);
+        font-size: clamp(22.5px, 1.65vw, 36px);
         width: min(85%, 1200px);
       }
 
@@ -1735,7 +1739,7 @@
       .left-inputs {
         left: clamp(10px, 1vw, 20px);
         top: clamp(90px, 10%, 160px);
-        width: clamp(195px, 21%, 450px);
+        width: clamp(212px, 23%, 467px);
         transform: scale(0.9);
         gap: clamp(10px, 1vw, 20px);
       }
@@ -1765,7 +1769,7 @@
       }
 
       .takeoff-strip-title {
-        font-size: clamp(16px, 1.2vw, 25px);
+        font-size: clamp(24px, 1.8vw, 37.5px);
         width: min(80%, 1250px);
       }
 
