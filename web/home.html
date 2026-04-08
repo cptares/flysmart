@@ -28,6 +28,8 @@
     :root {
       --base-width: 2360;
       --base-height: 1640;
+      --viewport-width: 100vw;
+      --viewport-height: 100vh;
       --edge-radius: 18px;
       --text-color: #f2f4f7;
       --shadow: 0 30px 90px rgba(0, 0, 0, 0.4);
@@ -62,16 +64,14 @@
       left: 0;
       right: 0;
       bottom: 0;
-      width: 100vw;
-      width: 100dvw;
-      height: 100vh;
-      height: 100dvh;
+      width: var(--viewport-width);
+      height: var(--viewport-height);
       overflow: hidden;
       margin: 0;
       transform: none;
       background-image: url("./home.png");
-      background-position: center top;
-      background-size: 100% 100%;
+      background-position: center center;
+      background-size: cover;
       background-repeat: no-repeat;
     }
 
@@ -568,8 +568,8 @@
       }
 
       .stage {
-        width: 100dvw;
-        height: 100dvh;
+        width: var(--viewport-width);
+        height: var(--viewport-height);
       }
 
       .top-actions {
@@ -607,8 +607,8 @@
       }
 
       .stage {
-        width: 100dvw;
-        height: 100dvh;
+        width: var(--viewport-width);
+        height: var(--viewport-height);
       }
 
       .top-actions {
@@ -677,8 +677,8 @@
 
     @supports (height: 100dvh) {
       .stage {
-        width: 100dvw;
-        height: 100dvh;
+        width: var(--viewport-width);
+        height: var(--viewport-height);
       }
     }
 
@@ -1027,6 +1027,21 @@
   </main>
 
   <script>
+    const syncViewportBounds = () => {
+      const viewport = window.visualViewport;
+      const width = viewport ? viewport.width : window.innerWidth;
+      const height = viewport ? viewport.height : window.innerHeight;
+
+      document.documentElement.style.setProperty('--viewport-width', `${Math.round(width)}px`);
+      document.documentElement.style.setProperty('--viewport-height', `${Math.round(height)}px`);
+    };
+
+    syncViewportBounds();
+    window.visualViewport?.addEventListener('resize', syncViewportBounds);
+    window.visualViewport?.addEventListener('scroll', syncViewportBounds);
+    window.addEventListener('resize', syncViewportBounds);
+    window.addEventListener('orientationchange', syncViewportBounds);
+
     const stage = document.querySelector('.stage');
     const brightnessBtn = document.querySelector('#brightnessBtn');
     const settingsBtn = document.querySelector('#settingsBtn');
