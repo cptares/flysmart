@@ -251,7 +251,7 @@
       position: absolute;
       left: clamp(14px, 1.2vw, 26px);
       top: clamp(103px, 11%, 180px);
-      width: clamp(192px, 23%, 433px);
+      width: clamp(142px, 23%, 383px);
       transform: scale(0.75);
       transform-origin: top left;
       z-index: 3;
@@ -1515,6 +1515,28 @@
       opacity: 1;
     }
 
+    #takeoffIncompleteMessage {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, calc(-50% + 50px));
+      z-index: 3;
+      width: min(56vw, 980px);
+      margin: 0;
+      color: #000000;
+      text-align: center;
+      font-family: "Bahnschrift Condensed", "Arial Narrow", sans-serif;
+      font-size: clamp(12px, 0.95vw, 18px);
+      font-weight: 700;
+      line-height: 1.08;
+      letter-spacing: 0;
+      pointer-events: none;
+    }
+
+    #takeoffIncompleteMessage[hidden] {
+      display: none;
+    }
+
     .rwy-viz-track {
       position: relative;
       width: clamp(56px, 4.4vw, 92px);
@@ -1653,7 +1675,7 @@
       }
 
       .left-inputs {
-        width: min(46%, 294px);
+        width: min(46%, 244px);
       }
 
       .left-label {
@@ -1689,7 +1711,7 @@
       .left-inputs {
         left: clamp(8px, 0.8vw, 18px);
         top: clamp(80px, 9%, 150px);
-        width: clamp(187px, 23%, 414px);
+        width: clamp(137px, 23%, 364px);
         transform: scale(0.85);
         gap: clamp(10px, 1vw, 20px);
       }
@@ -1750,7 +1772,7 @@
       .left-inputs {
         left: clamp(10px, 1vw, 20px);
         top: clamp(90px, 10%, 160px);
-        width: clamp(197px, 24%, 433px);
+        width: clamp(147px, 24%, 383px);
         transform: scale(0.9);
         gap: clamp(10px, 1vw, 20px);
       }
@@ -2011,6 +2033,8 @@
         </div>
       </article>
     </section>
+
+    <p id="takeoffIncompleteMessage" hidden>All fields must be completed to compute your take-off performance data</p>
 
     <div id="airportBackdrop" class="airport-backdrop" aria-hidden="true"></div>
     <section id="airportPanel" class="airport-panel" aria-label="Inserimento aeroporto">
@@ -2306,6 +2330,7 @@
     const aiceValue = document.querySelector('#aiceValue');
     const aiceEditBtn = document.querySelector('#aiceEditBtn');
     const aiceOpenTriggers = document.querySelectorAll('.aice-open-trigger');
+    const takeoffIncompleteMessage = document.querySelector('#takeoffIncompleteMessage');
     const airportBackdrop = document.querySelector('#airportBackdrop');
     const airportPanel = document.querySelector('#airportPanel');
     const airportInput = document.querySelector('#airportInput');
@@ -2400,6 +2425,23 @@
       return normalized === 'NIL' ? '' : String(value || '');
     };
     const clamp = (value, min, max) => Math.min(Math.max(value, min), max);
+
+    const updateTakeoffIncompleteMessage = () => {
+      if (!takeoffIncompleteMessage) {
+        return;
+      }
+
+      const allRequiredFieldsComplete = (
+        selectedRunway !== 'NIL' &&
+        formatWindSummary() !== '' &&
+        formatOatDisplay() !== '' &&
+        formatQnhDisplay() !== '' &&
+        rwyCondSelection !== '' &&
+        aiceSelection !== ''
+      );
+
+      takeoffIncompleteMessage.hidden = allRequiredFieldsComplete;
+    };
 
     const firstAirportNameWord = (name) => {
       const cleanName = String(name || '').trim();
@@ -2686,6 +2728,7 @@
 
       localStorage.setItem(takeoffRunwayStorageKey, value);
       updateRunwayVisualization();
+      updateTakeoffIncompleteMessage();
     };
 
     const syncRunwayAfterAirportChange = async () => {
@@ -3123,6 +3166,7 @@
         windValue.textContent = windSummary;
         stage?.classList.toggle('wind-filled', windSummary !== '');
       }
+      updateTakeoffIncompleteMessage();
     };
 
     const loadWindData = () => {
@@ -3288,6 +3332,7 @@
         oatValue.textContent = formatOatDisplay();
       }
       stage?.classList.toggle('oat-filled', formatOatDisplay() !== '');
+      updateTakeoffIncompleteMessage();
     };
 
     const loadOatData = () => {
@@ -3495,6 +3540,7 @@
         qnhValue.textContent = formatQnhDisplay();
       }
       stage?.classList.toggle('qnh-filled', formatQnhDisplay() !== '');
+      updateTakeoffIncompleteMessage();
     };
 
     const loadQnhData = () => {
@@ -3559,6 +3605,7 @@
       rwyCondOptionButtons.forEach((button) => {
         button.classList.toggle('active', button.dataset.value === rwyCondSelection);
       });
+      updateTakeoffIncompleteMessage();
     };
 
     const normalizeRwyCondSelection = (value) => String(value || '').trim().replace(/\\"/g, '"');
@@ -3572,6 +3619,7 @@
       aiceOptionButtons.forEach((button) => {
         button.classList.toggle('active', button.dataset.value === aiceSelection);
       });
+      updateTakeoffIncompleteMessage();
     };
 
     const loadRwyCondData = () => {
