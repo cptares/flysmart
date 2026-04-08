@@ -2,7 +2,7 @@
 <html lang="it">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="FlySmart">
@@ -46,6 +46,9 @@
       height: 100%;
       overflow: hidden;
       background: #000;
+      overscroll-behavior: none;
+      touch-action: none;
+      -ms-touch-action: none;
     }
 
     body {
@@ -1489,6 +1492,42 @@
   </main>
 
   <script>
+    (() => {
+      let lastTouchEnd = 0;
+      const blockedKeys = new Set([' ', 'Spacebar', 'ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'PageUp', 'PageDown', 'Home', 'End']);
+
+      const preventGesture = (event) => {
+        event.preventDefault();
+      };
+
+      document.addEventListener('gesturestart', preventGesture, { passive: false });
+      document.addEventListener('gesturechange', preventGesture, { passive: false });
+      document.addEventListener('gestureend', preventGesture, { passive: false });
+
+      document.addEventListener('touchstart', (event) => {
+        if (event.touches.length > 1) {
+          event.preventDefault();
+        }
+      }, { passive: false });
+
+      document.addEventListener('touchend', (event) => {
+        const now = Date.now();
+        if (now - lastTouchEnd <= 300) {
+          event.preventDefault();
+        }
+        lastTouchEnd = now;
+      }, { passive: false });
+
+      document.addEventListener('touchmove', preventGesture, { passive: false });
+      document.addEventListener('wheel', preventGesture, { passive: false });
+
+      document.addEventListener('keydown', (event) => {
+        if (blockedKeys.has(event.key)) {
+          event.preventDefault();
+        }
+      }, { passive: false });
+    })();
+
     const syncViewportBounds = () => {
       const viewport = window.visualViewport;
       const width = viewport ? viewport.width : window.innerWidth;
