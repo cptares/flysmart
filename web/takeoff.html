@@ -235,6 +235,7 @@
 
     .left-row {
       min-height: clamp(48px, 3.2vw, 64px);
+      position: relative;
       display: flex;
       align-items: center;
       gap: 8px;
@@ -343,6 +344,14 @@
       text-align: right;
     }
 
+    .rwy-btn img {
+      width: clamp(26px, 1.7vw, 38px);
+      height: clamp(26px, 1.7vw, 38px);
+      object-fit: contain;
+      pointer-events: none;
+      user-select: none;
+    }
+
     .rwy-btn:hover {
       filter: brightness(1.06);
     }
@@ -371,6 +380,27 @@
 
     #rwyBtn {
       color: #57c1eb;
+    }
+
+    #rwyPencil {
+      display: inline-flex;
+    }
+
+    #rwyBtn::after {
+      content: "";
+    }
+
+    .stage.rwy-filled #rwyBtn::after {
+      content: " >";
+      color: #f0f3f6;
+    }
+
+    .stage.rwy-filled #rwyPencil {
+      display: none;
+    }
+
+    .stage:not(.rwy-filled) #rwyValue {
+      display: none;
     }
 
     .stage.rwy-open #rwyBtn {
@@ -740,6 +770,79 @@
       pointer-events: auto;
     }
 
+    .qnh-backdrop {
+      position: absolute;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.22);
+      z-index: 6;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 140ms ease;
+    }
+
+    .qnh-panel {
+      position: absolute;
+      left: var(--qnh-panel-left, 0px);
+      top: var(--qnh-panel-top, 0px);
+      width: 280px;
+      transform: scale(1.25);
+      transform-origin: top left;
+      border-radius: 8px;
+      border: 2px solid rgba(95, 103, 112, 0.8);
+      background: linear-gradient(180deg, #8a919c 0%, #656d78 100%);
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+      z-index: 7;
+      padding: 8px;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 140ms ease;
+    }
+
+    .qnh-panel::before {
+      content: '';
+      position: absolute;
+      top: var(--qnh-arrow-y, 50%);
+      left: -14px;
+      transform: translateY(-50%);
+      border-top: 10px solid transparent;
+      border-bottom: 10px solid transparent;
+      border-right: 14px solid rgba(95, 103, 112, 0.85);
+      z-index: 1;
+    }
+
+    .qnh-panel::after {
+      content: '';
+      position: absolute;
+      top: var(--qnh-arrow-y, 50%);
+      left: -11px;
+      transform: translateY(-50%);
+      border-top: 8px solid transparent;
+      border-bottom: 8px solid transparent;
+      border-right: 11px solid #878e99;
+      z-index: 2;
+    }
+
+    .stage.qnh-open .qnh-backdrop,
+    .stage.qnh-open .qnh-panel {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    #qnhPanel .oat-unit-toggle,
+    #qnhPanel .oat-unit-btn {
+      text-transform: none;
+    }
+
+    #qnhPanel .oat-unit-toggle {
+      background: transparent;
+      border-left: 0;
+      box-shadow: none;
+    }
+
+    #qnhUnitSelector {
+      width: calc(68% - 16px);
+    }
+
     .oat-header {
       display: flex;
       align-items: center;
@@ -797,8 +900,8 @@
       width: 68px;
       height: 100%;
       border: 0;
-      border-left: 1px solid rgba(189, 196, 208, 0.35);
-      background: rgba(30, 33, 38, 0.4);
+      border-left: 0;
+      background: transparent;
       color: #f2f4f7;
       font-size: 18px;
       font-weight: 700;
@@ -940,9 +1043,9 @@
       width: calc(58% - 16px);
       margin: 0 auto 10px;
       padding: 7px 9px;
-      border: 2px solid rgba(22, 24, 28, 0.6);
+      border: 1px solid rgba(189, 196, 208, 0.55);
       border-radius: 4px;
-      background: rgba(57, 60, 66, 0.9);
+      background: linear-gradient(180deg, #4f5258 0%, #32353b 100%);
       justify-content: center;
       gap: 25px;
       --wind-unit-arrow-left: 50%;
@@ -960,7 +1063,7 @@
       transform: translateX(-50%);
       border-left: 6px solid transparent;
       border-right: 6px solid transparent;
-      border-bottom: 7px solid rgba(57, 60, 66, 0.9);
+      border-bottom: 7px solid #4f5258;
     }
 
     .wind-unit-btn {
@@ -1056,8 +1159,33 @@
       pointer-events: none;
     }
 
-    #windValue {
-      transform: translateX(55px);
+    #windValue,
+    #oatValue,
+    #qnhValue,
+    #rwyCondValue,
+    #aiceValue {
+      position: absolute;
+      right: clamp(22px, 3.2vw, 40px);
+      top: 50%;
+      width: clamp(140px, 12vw, 210px);
+      margin: 0;
+      padding: 0;
+      text-align: right;
+      transform: translateY(-50%);
+    }
+
+    #rwyCondValue,
+    #aiceValue {
+      right: calc(clamp(22px, 3.2vw, 40px) - 25px);
+    }
+
+    #aiceValue {
+      right: calc(clamp(22px, 3.2vw, 40px) - 25px);
+      width: clamp(170px, 15vw, 250px);
+    }
+
+    .stage.aice-engine-wing #aiceValue {
+      right: calc(clamp(22px, 3.2vw, 40px) - 20px);
     }
 
     .stage.oat-filled #oatValue {
@@ -1069,16 +1197,201 @@
       pointer-events: none;
     }
 
-    #oatValue {
-      text-align: right;
-      transform: translateX(55px);
-    }
-
     .wind-open-trigger {
       cursor: pointer;
     }
 
     .oat-open-trigger {
+      cursor: pointer;
+    }
+
+    .stage.qnh-filled #qnhValue {
+      color: #57c1eb;
+    }
+
+    .stage.qnh-filled #qnhEditBtn {
+      visibility: hidden;
+      pointer-events: none;
+    }
+
+    .qnh-open-trigger {
+      cursor: pointer;
+    }
+
+    .rwycond-backdrop,
+    .aice-backdrop {
+      position: absolute;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.22);
+      z-index: 6;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 140ms ease;
+    }
+
+    .rwycond-panel,
+    .aice-panel {
+      position: absolute;
+      left: var(--rwycond-panel-left, 0px);
+      top: var(--rwycond-panel-top, 0px);
+      width: 280px;
+      transform: scale(1.25);
+      transform-origin: top left;
+      border-radius: 8px;
+      border: 2px solid rgba(95, 103, 112, 0.8);
+      background: linear-gradient(180deg, #8a919c 0%, #656d78 100%);
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+      z-index: 7;
+      padding: 8px;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 140ms ease;
+    }
+
+    .aice-panel {
+      left: var(--aice-panel-left, 0px);
+      top: var(--aice-panel-top, 0px);
+    }
+
+    .rwycond-panel::before,
+    .aice-panel::before {
+      content: '';
+      position: absolute;
+      top: var(--rwycond-arrow-y, 50%);
+      left: -14px;
+      transform: translateY(-50%);
+      border-top: 10px solid transparent;
+      border-bottom: 10px solid transparent;
+      border-right: 14px solid rgba(95, 103, 112, 0.85);
+      z-index: 1;
+    }
+
+    .aice-panel::before {
+      top: var(--aice-arrow-y, 50%);
+    }
+
+    .rwycond-panel::after,
+    .aice-panel::after {
+      content: '';
+      position: absolute;
+      top: var(--rwycond-arrow-y, 50%);
+      left: -11px;
+      transform: translateY(-50%);
+      border-top: 8px solid transparent;
+      border-bottom: 8px solid transparent;
+      border-right: 11px solid #878e99;
+      z-index: 2;
+    }
+
+    .aice-panel::after {
+      top: var(--aice-arrow-y, 50%);
+    }
+
+    .stage.rwycond-open .rwycond-backdrop,
+    .stage.rwycond-open .rwycond-panel,
+    .stage.aice-open .aice-backdrop,
+    .stage.aice-open .aice-panel {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .setting-help {
+      margin: 0 0 8px;
+      color: #edf1f5;
+      font-size: 10px;
+      text-align: center;
+      line-height: 1.3;
+      letter-spacing: 0.2px;
+    }
+
+    .setting-options {
+      margin-bottom: 8px;
+      max-height: 180px;
+      overflow-y: auto;
+      border: 1px solid rgba(186, 193, 204, 0.2);
+      border-radius: 6px;
+      background: rgba(57, 60, 66, 0.92);
+    }
+
+    .setting-option {
+      width: 100%;
+      border: 0;
+      border-top: 1px solid rgba(186, 193, 204, 0.14);
+      background: transparent;
+      color: #f0f3f6;
+      font-size: 12px;
+      letter-spacing: 0.3px;
+      text-align: left;
+      padding: 8px 10px;
+      cursor: pointer;
+      line-height: 1.2;
+    }
+
+    .setting-option:first-child {
+      border-top: 0;
+    }
+
+    .setting-option:hover,
+    .setting-option:focus-visible {
+      background: rgba(228, 220, 45, 0.15);
+      outline: none;
+    }
+
+    .setting-option.active {
+      background: rgba(87, 193, 235, 0.2);
+      color: #eaf3f9;
+    }
+
+    .setting-actions {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+
+    .setting-action-btn {
+      width: 100%;
+      height: 38px;
+      border: 1px solid rgba(189, 196, 208, 0.7);
+      border-radius: 8px;
+      background: linear-gradient(180deg, #ffffff 0%, #e8ebef 100%);
+      color: #42454b;
+      font-size: 15px;
+      font-weight: 700;
+      cursor: pointer;
+      line-height: 1;
+      text-shadow: 0 1px 0 rgba(255, 255, 255, 0.7);
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.8), 0 1px 1px rgba(0, 0, 0, 0.08);
+    }
+
+    .setting-action-btn:active {
+      transform: translateY(1px);
+      filter: brightness(0.96);
+    }
+
+    .stage.rwycond-filled #rwyCondValue,
+    .stage.aice-filled #aiceValue {
+      color: #57c1eb;
+    }
+
+    .stage.rwycond-filled #rwyCondValue::after,
+    .stage.aice-filled #aiceValue::after {
+      content: ">";
+      margin-left: 2px;
+      color: #f0f3f6;
+    }
+
+    .stage.aice-filled #aiceValue::after {
+      margin-left: 4px;
+    }
+
+    .stage.rwycond-filled #rwyCondEditBtn,
+    .stage.aice-filled #aiceEditBtn {
+      visibility: hidden;
+      pointer-events: none;
+    }
+
+    .rwycond-open-trigger,
+    .aice-open-trigger {
       cursor: pointer;
     }
 
@@ -1144,7 +1457,10 @@
       .airport-panel,
       .rwy-panel,
       .wind-panel,
-      .oat-panel {
+      .oat-panel,
+      .qnh-panel,
+      .rwycond-panel,
+      .aice-panel {
         transform: scale(1.1);
         width: auto;
         max-width: 280px;
@@ -1202,7 +1518,10 @@
       .airport-panel,
       .rwy-panel,
       .wind-panel,
-      .oat-panel {
+      .oat-panel,
+      .qnh-panel,
+      .rwycond-panel,
+      .aice-panel {
         transform: scale(1.15);
         width: auto;
         max-width: 290px;
@@ -1283,7 +1602,10 @@
       .airport-panel,
       .rwy-panel,
       .wind-panel,
-      .oat-panel {
+      .oat-panel,
+      .qnh-panel,
+      .rwycond-panel,
+      .aice-panel {
         transform: scale(1.18);
       }
     }
@@ -1369,8 +1691,9 @@
         </div>
         <div class="left-row">
           <span id="rwyLabel" class="left-label">RWY</span>
-          <button id="rwyBtn" class="rwy-btn left-value arrow" type="button" aria-label="Modifica RWY">
+          <button id="rwyBtn" class="rwy-btn left-value" type="button" aria-label="Modifica RWY">
             <span id="rwyValue"></span>
+            <img id="rwyPencil" src="./pencil.png" alt="" aria-hidden="true">
           </button>
         </div>
       </article>
@@ -1393,21 +1716,24 @@
           </button>
         </div>
         <div class="left-row">
-          <span class="left-label">QNH</span>
-          <span class="left-sub">hPa</span>
-          <button class="left-edit-btn" type="button" aria-label="Modifica QNH">
+          <span class="left-label qnh-open-trigger">QNH</span>
+          <span class="left-sub qnh-open-trigger">hPa</span>
+          <span id="qnhValue" class="left-value qnh-open-trigger"></span>
+          <button id="qnhEditBtn" class="left-edit-btn" type="button" aria-label="Modifica QNH">
             <img src="./pencil.png" alt="" aria-hidden="true">
           </button>
         </div>
         <div class="left-row">
-          <span class="left-label">RWY COND</span>
-          <button class="left-edit-btn" type="button" aria-label="Modifica RWY COND">
+          <span class="left-label rwycond-open-trigger">RWY COND</span>
+          <span id="rwyCondValue" class="left-value rwycond-open-trigger"></span>
+          <button id="rwyCondEditBtn" class="left-edit-btn" type="button" aria-label="Modifica RWY COND">
             <img src="./pencil.png" alt="" aria-hidden="true">
           </button>
         </div>
         <div class="left-row">
-          <span class="left-label">A-ICE</span>
-          <button class="left-edit-btn" type="button" aria-label="Modifica A-ICE">
+          <span class="left-label aice-open-trigger">A-ICE</span>
+          <span id="aiceValue" class="left-value aice-open-trigger"></span>
+          <button id="aiceEditBtn" class="left-edit-btn" type="button" aria-label="Modifica A-ICE">
             <img src="./pencil.png" alt="" aria-hidden="true">
           </button>
         </div>
@@ -1539,6 +1865,82 @@
       </div>
     </section>
 
+    <div id="qnhBackdrop" class="qnh-backdrop" aria-hidden="true"></div>
+    <section id="qnhPanel" class="qnh-panel" aria-label="Inserimento QNH">
+      <div class="oat-header">
+        <span></span>
+        <p class="oat-title">QNH</p>
+        <button id="qnhCloseBtn" class="oat-close" type="button">Close</button>
+      </div>
+      <div class="oat-main-field">
+        <button id="qnhPressureField" class="oat-field-btn" type="button"></button>
+        <button id="qnhUnitToggle" class="oat-unit-toggle" type="button">hPa</button>
+      </div>
+      <div id="qnhUnitSelector" class="oat-unit-selector" aria-label="Selettore unita QNH">
+        <button id="qnhUnitHpa" class="oat-unit-btn active" type="button">
+          <span class="oat-unit-dot" aria-hidden="true"></span>
+          <span>hPa</span>
+        </button>
+        <button id="qnhUnitInhg" class="oat-unit-btn" type="button">
+          <span class="oat-unit-dot" aria-hidden="true"></span>
+          <span>inHg</span>
+        </button>
+      </div>
+      <p class="oat-help"><strong>QNH format: XXXX hPa</strong><br><strong>QNH Range: from 950.0 to 1080.0 hPa</strong><br><strong>QNH entered in inHg is converted into hPa</strong></p>
+      <div id="qnhKeypad" class="oat-keypad" aria-label="Tastierino QNH">
+        <button type="button" class="wind-key-btn" data-key="1">1</button>
+        <button type="button" class="wind-key-btn" data-key="2">2</button>
+        <button type="button" class="wind-key-btn" data-key="3">3</button>
+        <button type="button" class="wind-key-btn empty" data-disabled="true" aria-hidden="true" tabindex="-1"></button>
+
+        <button type="button" class="wind-key-btn" data-key="4">4</button>
+        <button type="button" class="wind-key-btn" data-key="5">5</button>
+        <button type="button" class="wind-key-btn" data-key="6">6</button>
+        <button type="button" class="wind-key-btn action" data-action="backspace">&#10006;</button>
+
+        <button type="button" class="wind-key-btn" data-key="7">7</button>
+        <button type="button" class="wind-key-btn" data-key="8">8</button>
+        <button type="button" class="wind-key-btn" data-key="9">9</button>
+        <button type="button" class="wind-key-btn action" data-action="done">Done</button>
+
+        <button type="button" class="wind-key-btn" data-key=".">.</button>
+        <button type="button" class="wind-key-btn" data-key="0">0</button>
+        <button type="button" class="wind-key-btn muted sign" data-disabled="true">+/-</button>
+        <button type="button" class="wind-key-btn action" data-action="next">Next</button>
+      </div>
+    </section>
+
+    <div id="rwyCondBackdrop" class="rwycond-backdrop" aria-hidden="true"></div>
+    <section id="rwyCondPanel" class="rwycond-panel" aria-label="Inserimento RWY COND">
+      <div class="wind-header">
+        <span></span>
+        <p class="wind-title">RWY COND</p>
+        <button id="rwyCondCloseBtn" class="wind-close" type="button">Close</button>
+      </div>
+      <p class="setting-help">Select RWY COND setting from the list.</p>
+      <div id="rwyCondOptions" class="setting-options" aria-label="Lista RWY COND">
+        <button type="button" class="setting-option" data-value="Dry">Dry</button>
+        <button type="button" class="setting-option" data-value="Wet">Wet</button>
+        <button type="button" class="setting-option" data-value="Water 1/4&quot;">Water 1/4"</button>
+        <button type="button" class="setting-option" data-value="Slush 1/4&quot;">Slush 1/4"</button>
+      </div>
+    </section>
+
+    <div id="aiceBackdrop" class="aice-backdrop" aria-hidden="true"></div>
+    <section id="aicePanel" class="aice-panel" aria-label="Inserimento A-ICE">
+      <div class="wind-header">
+        <span></span>
+        <p class="wind-title">A-ICE</p>
+        <button id="aiceCloseBtn" class="wind-close" type="button">Close</button>
+      </div>
+      <p class="setting-help">Select A-ICE setting from the list.</p>
+      <div id="aiceOptions" class="setting-options" aria-label="Lista A-ICE">
+        <button type="button" class="setting-option" data-value="Off">Off</button>
+        <button type="button" class="setting-option" data-value="Engine only">Engine only</button>
+        <button type="button" class="setting-option" data-value="Engine &amp; Wing">Engine &amp; Wing</button>
+      </div>
+    </section>
+
     <div class="brightness-layer" aria-hidden="true"></div>
     <div class="grain" aria-hidden="true"></div>
     <div class="top-glow" aria-hidden="true"></div>
@@ -1626,6 +2028,15 @@
     const oatValue = document.querySelector('#oatValue');
     const oatEditBtn = document.querySelector('#oatEditBtn');
     const oatOpenTriggers = document.querySelectorAll('.oat-open-trigger');
+    const qnhValue = document.querySelector('#qnhValue');
+    const qnhEditBtn = document.querySelector('#qnhEditBtn');
+    const qnhOpenTriggers = document.querySelectorAll('.qnh-open-trigger');
+    const rwyCondValue = document.querySelector('#rwyCondValue');
+    const rwyCondEditBtn = document.querySelector('#rwyCondEditBtn');
+    const rwyCondOpenTriggers = document.querySelectorAll('.rwycond-open-trigger');
+    const aiceValue = document.querySelector('#aiceValue');
+    const aiceEditBtn = document.querySelector('#aiceEditBtn');
+    const aiceOpenTriggers = document.querySelectorAll('.aice-open-trigger');
     const airportBackdrop = document.querySelector('#airportBackdrop');
     const airportPanel = document.querySelector('#airportPanel');
     const airportInput = document.querySelector('#airportInput');
@@ -1651,11 +2062,31 @@
     const oatUnitC = document.querySelector('#oatUnitC');
     const oatUnitF = document.querySelector('#oatUnitF');
     const oatKeypadButtons = document.querySelectorAll('#oatKeypad .wind-key-btn');
+    const qnhBackdrop = document.querySelector('#qnhBackdrop');
+    const qnhPanel = document.querySelector('#qnhPanel');
+    const qnhCloseBtn = document.querySelector('#qnhCloseBtn');
+    const qnhPressureField = document.querySelector('#qnhPressureField');
+    const qnhUnitToggle = document.querySelector('#qnhUnitToggle');
+    const qnhUnitSelector = document.querySelector('#qnhUnitSelector');
+    const qnhUnitHpa = document.querySelector('#qnhUnitHpa');
+    const qnhUnitInhg = document.querySelector('#qnhUnitInhg');
+    const qnhKeypadButtons = document.querySelectorAll('#qnhKeypad .wind-key-btn');
+    const rwyCondBackdrop = document.querySelector('#rwyCondBackdrop');
+    const rwyCondPanel = document.querySelector('#rwyCondPanel');
+    const rwyCondCloseBtn = document.querySelector('#rwyCondCloseBtn');
+    const rwyCondOptionButtons = document.querySelectorAll('#rwyCondOptions .setting-option');
+    const aiceBackdrop = document.querySelector('#aiceBackdrop');
+    const aicePanel = document.querySelector('#aicePanel');
+    const aiceCloseBtn = document.querySelector('#aiceCloseBtn');
+    const aiceOptionButtons = document.querySelectorAll('#aiceOptions .setting-option');
     const takeoffHeaderStorageKey = 'flysmart-takeoff-header';
     const takeoffAirportStorageKey = 'flysmart-takeoff-airport';
     const takeoffRunwayStorageKey = 'flysmart-takeoff-rwy';
     const takeoffWindStorageKey = 'flysmart-takeoff-wind';
     const takeoffOatStorageKey = 'flysmart-takeoff-oat';
+    const takeoffQnhStorageKey = 'flysmart-takeoff-qnh';
+    const takeoffRwyCondStorageKey = 'flysmart-takeoff-rwy-cond';
+    const takeoffAIceStorageKey = 'flysmart-takeoff-aice';
     const airportsDataUrl = 'https://raw.githubusercontent.com/davidmegginson/ourairports-data/main/airports.csv';
     const runwaysDataUrl = 'https://raw.githubusercontent.com/davidmegginson/ourairports-data/main/runways.csv';
     const airportsIndex = new Map();
@@ -1676,6 +2107,14 @@
     let oatStoredUnit = 'c';
     let oatStoredRaw = '';
     let oatUnitSelectorOpen = false;
+    let qnhDraftHpa = '';
+    let qnhInputUnit = 'hpa';
+    let qnhInputRaw = '';
+    let qnhStoredUnit = 'hpa';
+    let qnhStoredRaw = '';
+    let qnhUnitSelectorOpen = false;
+    let rwyCondSelection = '';
+    let aiceSelection = '';
     const popupTransitionMs = 480;
 
     const normalizeAirportCode = (value) => String(value || '').trim().toUpperCase();
@@ -1887,6 +2326,42 @@
       return Array.from(runwaySet).sort((a, b) => a.localeCompare(b, undefined, { numeric: true }));
     };
 
+    const resetTakeoffDependentData = () => {
+      applyRunwaySelection('NIL');
+
+      windInputUnit = 'kt';
+      windDraft = { dir: '', speed: '', gust: '' };
+      windMsDraft = { speed: '', gust: '' };
+      localStorage.removeItem(takeoffWindStorageKey);
+      updateWindUi();
+
+      oatDraftC = '';
+      oatInputUnit = 'c';
+      oatInputRaw = '';
+      oatStoredUnit = 'c';
+      oatStoredRaw = '';
+      oatUnitSelectorOpen = false;
+      localStorage.removeItem(takeoffOatStorageKey);
+      updateOatUi();
+
+      qnhDraftHpa = '';
+      qnhInputUnit = 'hpa';
+      qnhInputRaw = '';
+      qnhStoredUnit = 'hpa';
+      qnhStoredRaw = '';
+      qnhUnitSelectorOpen = false;
+      localStorage.removeItem(takeoffQnhStorageKey);
+      updateQnhUi();
+
+      rwyCondSelection = '';
+      localStorage.removeItem(takeoffRwyCondStorageKey);
+      updateRwyCondUi();
+
+      aiceSelection = '';
+      localStorage.removeItem(takeoffAIceStorageKey);
+      updateAiceUi();
+    };
+
     const applyRunwaySelection = (runway) => {
       const value = normalizeAirportCode(runway) || 'NIL';
       selectedRunway = value;
@@ -1898,6 +2373,8 @@
       if (rwyValue) {
         rwyValue.textContent = formatUiValue(value);
       }
+
+      stage?.classList.toggle('rwy-filled', value !== 'NIL');
 
       localStorage.setItem(takeoffRunwayStorageKey, value);
     };
@@ -2024,9 +2501,15 @@
       });
     };
 
-    const applyAirportSelection = async (inputCode) => {
+    const applyAirportSelection = async (inputCode, options = {}) => {
+      const { resetDependent = true } = options;
       const code = resolveAirportCode(inputCode);
+      const previousAirport = selectedAirportIcao;
       selectedAirportIcao = code || 'NIL';
+
+      if (resetDependent && previousAirport !== selectedAirportIcao) {
+        resetTakeoffDependentData();
+      }
 
       if (!code || code === 'NIL' || code === '--') {
         if (demiDeiLabel) {
@@ -2098,11 +2581,30 @@
       stage.classList.remove('oat-open');
     };
 
+    const closeQnhPopup = () => {
+      saveQnhData();
+      qnhUnitSelectorOpen = false;
+      stage.classList.remove('qnh-open');
+    };
+
+    const closeRwyCondPopup = () => {
+      saveRwyCondData();
+      stage.classList.remove('rwycond-open');
+    };
+
+    const closeAicePopup = () => {
+      saveAiceData();
+      stage.classList.remove('aice-open');
+    };
+
     const closeActivePopup = () => {
       closeAirportPopup();
       closeRwyPopup();
       closeWindPopup();
       closeOatPopup();
+      closeQnhPopup();
+      closeRwyCondPopup();
+      closeAicePopup();
     };
 
     const positionAirportPanel = () => {
@@ -2136,6 +2638,9 @@
     const openAirportPopup = () => {
       closeWindPopup();
       closeOatPopup();
+      closeQnhPopup();
+      closeRwyCondPopup();
+      closeAicePopup();
       closeRwyPopup();
       if (airportInput) {
         airportInput.value = selectedAirportIcao !== 'NIL' ? selectedAirportIcao : '';
@@ -2180,6 +2685,9 @@
 
     const openRwyPopup = async () => {
       closeOatPopup();
+      closeQnhPopup();
+      closeRwyCondPopup();
+      closeAicePopup();
       closeWindPopup();
       closeAirportPopup();
       stage.classList.add('rwy-open');
@@ -2342,6 +2850,9 @@
 
     const openWindPopup = () => {
       closeOatPopup();
+      closeQnhPopup();
+      closeRwyCondPopup();
+      closeAicePopup();
       closeAirportPopup();
       closeRwyPopup();
       stage.classList.add('wind-open');
@@ -2511,6 +3022,9 @@
     };
 
     const openOatPopup = () => {
+      closeQnhPopup();
+      closeRwyCondPopup();
+      closeAicePopup();
       closeAirportPopup();
       closeRwyPopup();
       closeWindPopup();
@@ -2539,6 +3053,328 @@
       openOatPopup();
     };
 
+    const openQnhAfterOatClose = async () => {
+      closeOatPopup();
+      await wait(popupTransitionMs);
+      openQnhPopup();
+    };
+
+    const positionQnhPanel = () => {
+      if (!stage || !qnhEditBtn || !qnhPanel) {
+        return;
+      }
+
+      const stageRect = stage.getBoundingClientRect();
+      const btnRect = qnhEditBtn.getBoundingClientRect();
+      const panelWidth = qnhPanel.offsetWidth || 280;
+      const panelHeight = qnhPanel.offsetHeight || 300;
+
+      const minLeft = 8;
+      const maxLeft = Math.max(minLeft, stageRect.width - panelWidth - 8);
+      let panelLeft = (btnRect.right - stageRect.left) + 33;
+      panelLeft = Math.min(Math.max(panelLeft, minLeft), maxLeft);
+
+      const minTop = 8;
+      const maxTop = Math.max(minTop, stageRect.height - panelHeight - 8);
+      const btnCenterY = btnRect.top - stageRect.top + (btnRect.height / 2);
+      const panelTopOffset = 95;
+      let panelTop = btnCenterY - panelTopOffset;
+      panelTop = Math.min(Math.max(panelTop, minTop), maxTop);
+
+      qnhPanel.style.setProperty('--qnh-panel-left', `${panelLeft}px`);
+      qnhPanel.style.setProperty('--qnh-panel-top', `${panelTop}px`);
+      const arrowY = (btnCenterY - panelTop) / 1.25;
+      qnhPanel.style.setProperty('--qnh-arrow-y', `${arrowY}px`);
+    };
+
+    const convertHpaToInhg = (hpa) => hpa * 0.0295299830714;
+    const convertInhgToHpa = (inhg) => inhg / 0.0295299830714;
+
+    const normalizeQnhRaw = (raw, unit = qnhInputUnit) => {
+      const text = String(raw || '');
+
+      if (unit === 'inhg') {
+        const digits = text.replace(/\D/g, '').slice(0, 4);
+        if (!digits) {
+          return '';
+        }
+
+        if (digits.length <= 2) {
+          return digits;
+        }
+
+        return `${digits.slice(0, 2)}.${digits.slice(2, 4)}`;
+      }
+
+      const clean = text.replace(/[^\d.]/g, '');
+      const hasDot = clean.includes('.');
+      const parts = clean.split('.');
+      let intPart = (parts[0] || '').slice(0, 4);
+      const fracPart = (parts[1] || '').slice(0, 1);
+
+      if (hasDot && intPart === '') {
+        intPart = '0';
+      }
+
+      let normalized = intPart;
+      if (hasDot) {
+        normalized += `.${fracPart}`;
+      }
+
+      return normalized;
+    };
+
+    const formatQnhDisplay = () => {
+      const hpaValue = Number.parseFloat(qnhDraftHpa);
+      if (!Number.isFinite(hpaValue)) {
+        return '';
+      }
+
+      const hpaText = Number.isInteger(hpaValue) ? String(hpaValue) : hpaValue.toFixed(1);
+      if (qnhStoredUnit === 'inhg') {
+        const inhgValue = Number.parseFloat(qnhStoredRaw);
+        if (Number.isFinite(inhgValue)) {
+          return `${hpaText} (${inhgValue.toFixed(2)} inHg)`;
+        }
+      }
+
+      return hpaText;
+    };
+
+    const updateQnhFromInputRaw = () => {
+      if (qnhInputUnit === 'inhg' && !/^\d{2}\.\d{2}$/.test(qnhInputRaw)) {
+        qnhDraftHpa = '';
+        return;
+      }
+
+      const numeric = Number.parseFloat(qnhInputRaw);
+      if (!Number.isFinite(numeric)) {
+        qnhDraftHpa = '';
+        return;
+      }
+
+      const hpa = qnhInputUnit === 'inhg' ? convertInhgToHpa(numeric) : numeric;
+      const clamped = clamp(hpa, 950, 1080);
+      qnhDraftHpa = clamped.toFixed(1);
+      qnhStoredUnit = qnhInputUnit;
+      qnhStoredRaw = qnhInputRaw;
+    };
+
+    const refreshQnhInputRawFromDraft = () => {
+      const numericHpa = Number.parseFloat(qnhDraftHpa);
+      if (!Number.isFinite(numericHpa)) {
+        qnhInputRaw = '';
+        return;
+      }
+
+      const source = qnhInputUnit === 'inhg' ? convertHpaToInhg(numericHpa) : numericHpa;
+      qnhInputRaw = qnhInputUnit === 'inhg' ? source.toFixed(2) : source.toFixed(1);
+    };
+
+    const updateQnhUi = () => {
+      const unitLabel = qnhInputUnit === 'inhg' ? 'inHg' : 'hPa';
+      if (qnhPressureField) {
+        qnhPressureField.textContent = qnhInputRaw ? `${qnhInputRaw}` : '';
+      }
+      if (qnhUnitToggle) {
+        qnhUnitToggle.textContent = unitLabel;
+      }
+      qnhUnitSelector?.classList.toggle('visible', qnhUnitSelectorOpen);
+      qnhUnitHpa?.classList.toggle('active', qnhInputUnit === 'hpa');
+      qnhUnitInhg?.classList.toggle('active', qnhInputUnit === 'inhg');
+      if (qnhValue) {
+        qnhValue.textContent = formatQnhDisplay();
+      }
+      stage?.classList.toggle('qnh-filled', formatQnhDisplay() !== '');
+    };
+
+    const loadQnhData = () => {
+      try {
+        const raw = localStorage.getItem(takeoffQnhStorageKey);
+        if (!raw) {
+          qnhDraftHpa = '';
+          qnhInputUnit = 'hpa';
+          qnhInputRaw = '';
+          qnhStoredUnit = 'hpa';
+          qnhStoredRaw = '';
+          return;
+        }
+
+        const parsed = JSON.parse(raw);
+        const parsedValue = Number.parseFloat(parsed?.valueHpa);
+        qnhDraftHpa = Number.isFinite(parsedValue) ? clamp(parsedValue, 950, 1080).toFixed(1) : '';
+        qnhInputUnit = parsed?.unit === 'inhg' ? 'inhg' : 'hpa';
+        qnhStoredUnit = parsed?.displayUnit === 'inhg' ? 'inhg' : 'hpa';
+        qnhStoredRaw = String(parsed?.displayRaw || '').trim();
+        if (!qnhStoredRaw && qnhDraftHpa !== '') {
+          qnhStoredUnit = qnhInputUnit;
+        }
+        refreshQnhInputRawFromDraft();
+      } catch {
+        qnhDraftHpa = '';
+        qnhInputUnit = 'hpa';
+        qnhInputRaw = '';
+        qnhStoredUnit = 'hpa';
+        qnhStoredRaw = '';
+      }
+    };
+
+    const saveQnhData = () => {
+      localStorage.setItem(takeoffQnhStorageKey, JSON.stringify({
+        valueHpa: qnhDraftHpa,
+        unit: qnhInputUnit,
+        displayUnit: qnhStoredUnit,
+        displayRaw: qnhStoredRaw
+      }));
+    };
+
+    const openQnhPopup = () => {
+      closeAirportPopup();
+      closeRwyPopup();
+      closeWindPopup();
+      closeOatPopup();
+      closeRwyCondPopup();
+      closeAicePopup();
+      stage.classList.add('qnh-open');
+      qnhUnitSelectorOpen = false;
+      refreshQnhInputRawFromDraft();
+      updateQnhUi();
+      positionQnhPanel();
+    };
+
+    const updateRwyCondUi = () => {
+      if (rwyCondValue) {
+        rwyCondValue.textContent = rwyCondSelection;
+      }
+      stage?.classList.toggle('rwycond-filled', rwyCondSelection !== '');
+      rwyCondOptionButtons.forEach((button) => {
+        button.classList.toggle('active', button.dataset.value === rwyCondSelection);
+      });
+    };
+
+    const normalizeRwyCondSelection = (value) => String(value || '').trim().replace(/\\"/g, '"');
+
+    const updateAiceUi = () => {
+      if (aiceValue) {
+        aiceValue.textContent = aiceSelection;
+      }
+      stage?.classList.toggle('aice-filled', aiceSelection !== '');
+      stage?.classList.toggle('aice-engine-wing', aiceSelection === 'Engine & Wing');
+      aiceOptionButtons.forEach((button) => {
+        button.classList.toggle('active', button.dataset.value === aiceSelection);
+      });
+    };
+
+    const loadRwyCondData = () => {
+      rwyCondSelection = normalizeRwyCondSelection(localStorage.getItem(takeoffRwyCondStorageKey) || '');
+      updateRwyCondUi();
+    };
+
+    const saveRwyCondData = () => {
+      localStorage.setItem(takeoffRwyCondStorageKey, rwyCondSelection);
+    };
+
+    const loadAiceData = () => {
+      aiceSelection = String(localStorage.getItem(takeoffAIceStorageKey) || '').trim();
+      updateAiceUi();
+    };
+
+    const saveAiceData = () => {
+      localStorage.setItem(takeoffAIceStorageKey, aiceSelection);
+    };
+
+    const positionRwyCondPanel = () => {
+      if (!stage || !rwyCondEditBtn || !rwyCondPanel) {
+        return;
+      }
+
+      const stageRect = stage.getBoundingClientRect();
+      const btnRect = rwyCondEditBtn.getBoundingClientRect();
+      const panelWidth = rwyCondPanel.offsetWidth || 280;
+      const panelHeight = rwyCondPanel.offsetHeight || 260;
+
+      const minLeft = 8;
+      const maxLeft = Math.max(minLeft, stageRect.width - panelWidth - 8);
+      let panelLeft = (btnRect.right - stageRect.left) + 33;
+      panelLeft = Math.min(Math.max(panelLeft, minLeft), maxLeft);
+
+      const minTop = 8;
+      const maxTop = Math.max(minTop, stageRect.height - panelHeight - 8);
+      const btnCenterY = btnRect.top - stageRect.top + (btnRect.height / 2);
+      const panelTopOffset = 95;
+      let panelTop = btnCenterY - panelTopOffset;
+      panelTop = Math.min(Math.max(panelTop, minTop), maxTop);
+
+      rwyCondPanel.style.setProperty('--rwycond-panel-left', `${panelLeft}px`);
+      rwyCondPanel.style.setProperty('--rwycond-panel-top', `${panelTop}px`);
+      const arrowY = (btnCenterY - panelTop) / 1.25;
+      rwyCondPanel.style.setProperty('--rwycond-arrow-y', `${arrowY}px`);
+    };
+
+    const positionAicePanel = () => {
+      if (!stage || !aiceEditBtn || !aicePanel) {
+        return;
+      }
+
+      const stageRect = stage.getBoundingClientRect();
+      const btnRect = aiceEditBtn.getBoundingClientRect();
+      const panelWidth = aicePanel.offsetWidth || 280;
+      const panelHeight = aicePanel.offsetHeight || 250;
+
+      const minLeft = 8;
+      const maxLeft = Math.max(minLeft, stageRect.width - panelWidth - 8);
+      let panelLeft = (btnRect.right - stageRect.left) + 33;
+      panelLeft = Math.min(Math.max(panelLeft, minLeft), maxLeft);
+
+      const minTop = 8;
+      const maxTop = Math.max(minTop, stageRect.height - panelHeight - 8);
+      const btnCenterY = btnRect.top - stageRect.top + (btnRect.height / 2);
+      const panelTopOffset = 95;
+      let panelTop = btnCenterY - panelTopOffset;
+      panelTop = Math.min(Math.max(panelTop, minTop), maxTop);
+
+      aicePanel.style.setProperty('--aice-panel-left', `${panelLeft}px`);
+      aicePanel.style.setProperty('--aice-panel-top', `${panelTop}px`);
+      const arrowY = (btnCenterY - panelTop) / 1.25;
+      aicePanel.style.setProperty('--aice-arrow-y', `${arrowY}px`);
+    };
+
+    const openRwyCondPopup = () => {
+      closeAirportPopup();
+      closeRwyPopup();
+      closeWindPopup();
+      closeOatPopup();
+      closeQnhPopup();
+      closeAicePopup();
+      stage.classList.add('rwycond-open');
+      updateRwyCondUi();
+      positionRwyCondPanel();
+    };
+
+    const openAicePopup = () => {
+      closeAirportPopup();
+      closeRwyPopup();
+      closeWindPopup();
+      closeOatPopup();
+      closeQnhPopup();
+      closeRwyCondPopup();
+      stage.classList.add('aice-open');
+      updateAiceUi();
+      positionAicePanel();
+    };
+
+    const openRwyCondAfterQnhClose = async () => {
+      closeQnhPopup();
+      await wait(popupTransitionMs);
+      openRwyCondPopup();
+    };
+
+    const openAiceAfterRwyCondClose = async () => {
+      closeRwyCondPopup();
+      await wait(popupTransitionMs);
+      openAicePopup();
+    };
+
     const saveAirportValue = async () => {
       const value = normalizeAirportCode(airportInput?.value || '');
       const finalValue = value || 'NIL';
@@ -2551,22 +3387,23 @@
     if (savedRunway) {
       selectedRunway = savedRunway;
     }
-
-    if (rwyValue) {
-      rwyValue.textContent = formatUiValue(selectedRunway);
-    }
+    applyRunwaySelection(selectedRunway || 'NIL');
 
     loadWindData();
     updateWindUi();
     loadOatData();
     updateOatUi();
+    loadQnhData();
+    updateQnhUi();
+    loadRwyCondData();
+    loadAiceData();
 
     if (headerData.from && headerData.from !== '--') {
-      void applyAirportSelection(headerData.from);
+      void applyAirportSelection(headerData.from, { resetDependent: false });
     } else if (savedAirport && savedAirport !== 'NIL') {
-      void applyAirportSelection(savedAirport);
+      void applyAirportSelection(savedAirport, { resetDependent: false });
     } else {
-      void applyAirportSelection('NIL');
+      void applyAirportSelection('NIL', { resetDependent: false });
     }
 
     homeBtn?.addEventListener('click', () => {
@@ -2620,8 +3457,128 @@
     });
 
     oatTempField?.addEventListener('click', () => {
+      oatDraftC = '';
+      oatInputRaw = '';
+      oatStoredRaw = '';
       oatUnitSelectorOpen = false;
       updateOatUi();
+    });
+
+    qnhEditBtn?.addEventListener('click', openQnhPopup);
+    qnhOpenTriggers.forEach((trigger) => {
+      trigger.addEventListener('click', openQnhPopup);
+    });
+    qnhCloseBtn?.addEventListener('click', closeQnhPopup);
+    qnhBackdrop?.addEventListener('click', closeQnhPopup);
+    qnhUnitToggle?.addEventListener('click', () => {
+      qnhUnitSelectorOpen = !qnhUnitSelectorOpen;
+      updateQnhUi();
+    });
+
+    qnhUnitHpa?.addEventListener('click', () => {
+      qnhInputUnit = 'hpa';
+      qnhDraftHpa = '';
+      qnhInputRaw = '';
+      qnhStoredUnit = 'hpa';
+      qnhStoredRaw = '';
+      qnhUnitSelectorOpen = false;
+      updateQnhUi();
+    });
+
+    qnhUnitInhg?.addEventListener('click', () => {
+      qnhInputUnit = 'inhg';
+      qnhDraftHpa = '';
+      qnhInputRaw = '';
+      qnhStoredUnit = 'inhg';
+      qnhStoredRaw = '';
+      qnhUnitSelectorOpen = false;
+      updateQnhUi();
+    });
+
+    qnhPressureField?.addEventListener('click', () => {
+      qnhDraftHpa = '';
+      qnhInputRaw = '';
+      qnhStoredRaw = '';
+      qnhUnitSelectorOpen = false;
+      updateQnhUi();
+    });
+
+    rwyCondEditBtn?.addEventListener('click', openRwyCondPopup);
+    rwyCondOpenTriggers.forEach((trigger) => {
+      trigger.addEventListener('click', openRwyCondPopup);
+    });
+    rwyCondCloseBtn?.addEventListener('click', closeRwyCondPopup);
+    rwyCondBackdrop?.addEventListener('click', closeRwyCondPopup);
+    rwyCondOptionButtons.forEach((button) => {
+      button.addEventListener('click', () => {
+        rwyCondSelection = normalizeRwyCondSelection(button.dataset.value || '');
+        updateRwyCondUi();
+        void openAiceAfterRwyCondClose();
+      });
+    });
+
+    aiceEditBtn?.addEventListener('click', openAicePopup);
+    aiceOpenTriggers.forEach((trigger) => {
+      trigger.addEventListener('click', openAicePopup);
+    });
+    aiceCloseBtn?.addEventListener('click', closeAicePopup);
+    aiceBackdrop?.addEventListener('click', closeAicePopup);
+    aiceOptionButtons.forEach((button) => {
+      button.addEventListener('click', () => {
+        aiceSelection = String(button.dataset.value || '').trim();
+        updateAiceUi();
+        closeAicePopup();
+      });
+    });
+
+    qnhKeypadButtons.forEach((button) => {
+      button.addEventListener('click', () => {
+        if (button.dataset.disabled === 'true') {
+          return;
+        }
+
+        const key = button.dataset.key;
+        const action = button.dataset.action;
+
+        if (key) {
+          if (key === '.') {
+            if (qnhInputUnit === 'inhg') {
+              return;
+            }
+
+            if (qnhInputRaw.includes('.')) {
+              return;
+            }
+            qnhInputRaw = qnhInputRaw === '' ? '0.' : `${qnhInputRaw}.`;
+          } else {
+            qnhInputRaw = `${qnhInputRaw}${key}`;
+          }
+          qnhInputRaw = normalizeQnhRaw(qnhInputRaw, qnhInputUnit);
+          updateQnhFromInputRaw();
+          updateQnhUi();
+          return;
+        }
+
+        if (action === 'backspace') {
+          qnhInputRaw = qnhInputRaw.slice(0, -1);
+          qnhInputRaw = normalizeQnhRaw(qnhInputRaw, qnhInputUnit);
+          updateQnhFromInputRaw();
+          if (qnhInputRaw === '') {
+            qnhStoredRaw = '';
+          }
+          updateQnhUi();
+          return;
+        }
+
+        if (action === 'next') {
+          void openRwyCondAfterQnhClose();
+          return;
+        }
+
+        if (action === 'done') {
+          closeQnhPopup();
+        }
+      });
     });
 
     oatKeypadButtons.forEach((button) => {
@@ -2675,8 +3632,7 @@
         }
 
         if (action === 'next') {
-          oatUnitSelectorOpen = !oatUnitSelectorOpen;
-          updateOatUi();
+          void openQnhAfterOatClose();
           return;
         }
 
@@ -2789,14 +3745,15 @@
           } else if (activeWindField === 'speed') {
             activeWindField = 'gust';
           } else {
-            activeWindField = 'dir';
+            void openOatAfterWindClose();
+            return;
           }
           updateWindUi();
           return;
         }
 
         if (action === 'done') {
-          void openOatAfterWindClose();
+          closeWindPopup();
         }
       });
     });
@@ -2833,6 +3790,18 @@
 
       if (stage?.classList.contains('oat-open')) {
         positionOatPanel();
+      }
+
+      if (stage?.classList.contains('qnh-open')) {
+        positionQnhPanel();
+      }
+
+      if (stage?.classList.contains('rwycond-open')) {
+        positionRwyCondPanel();
+      }
+
+      if (stage?.classList.contains('aice-open')) {
+        positionAicePanel();
       }
     });
 

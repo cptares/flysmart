@@ -1222,6 +1222,9 @@
     const takeoffRunwayStorageKey = 'flysmart-takeoff-rwy';
     const takeoffWindStorageKey = 'flysmart-takeoff-wind';
     const takeoffOatStorageKey = 'flysmart-takeoff-oat';
+    const takeoffQnhStorageKey = 'flysmart-takeoff-qnh';
+    const takeoffRwyCondStorageKey = 'flysmart-takeoff-rwy-cond';
+    const takeoffAIceStorageKey = 'flysmart-takeoff-aice';
 
     const valueElements = {
       aircraftType: aircraftTypeValue,
@@ -1300,6 +1303,9 @@
       localStorage.removeItem(takeoffRunwayStorageKey);
       localStorage.removeItem(takeoffWindStorageKey);
       localStorage.removeItem(takeoffOatStorageKey);
+      localStorage.removeItem(takeoffQnhStorageKey);
+      localStorage.removeItem(takeoffRwyCondStorageKey);
+      localStorage.removeItem(takeoffAIceStorageKey);
     };
 
     const editFieldValue = (field) => {
