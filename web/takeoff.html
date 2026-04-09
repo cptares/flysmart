@@ -467,11 +467,14 @@
 
     #rwyBtn,
     #rwyValue,
+    #towBtn,
+    #towValue,
     .stage.wind-filled #windValue,
     .stage.oat-filled #oatValue,
     .stage.qnh-filled #qnhValue,
     .stage.rwycond-filled #rwyCondValue,
-    .stage.aice-filled #aiceValue {
+    .stage.aice-filled #aiceValue,
+    .stage.tow-filled #towValue {
       font-family: "Bahnschrift Condensed", "Arial Narrow", "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
       font-weight: 400;
     }
@@ -516,7 +519,8 @@
     .stage.oat-open .oat-row,
     .stage.qnh-open .qnh-row,
     .stage.rwycond-open .rwycond-row,
-    .stage.aice-open .aice-row {
+    .stage.aice-open .aice-row,
+    .stage.tow-open .tow-row {
       background: linear-gradient(180deg, #7397ba 0%, #4d7398 100%);
     }
 
@@ -3939,30 +3943,32 @@
     };
 
     const positionOatPanel = () => {
-      if (!stage || !oatEditBtn || !oatPanel) {
+      if (!stage || !oatEditBtn || !oatPanel || !windEditBtn) {
         return;
       }
 
       const stageRect = stage.getBoundingClientRect();
-      const btnRect = oatEditBtn.getBoundingClientRect();
+      const windBtnRect = windEditBtn.getBoundingClientRect();
+      const oatBtnRect = oatEditBtn.getBoundingClientRect();
       const panelWidth = oatPanel.offsetWidth || 280;
       const panelHeight = oatPanel.offsetHeight || 300;
 
       const minLeft = 8;
       const maxLeft = Math.max(minLeft, stageRect.width - panelWidth - 8);
-      let panelLeft = (btnRect.right - stageRect.left) + 33;
+      let panelLeft = (windBtnRect.right - stageRect.left) + 33;
       panelLeft = Math.min(Math.max(panelLeft, minLeft), maxLeft);
 
       const minTop = 8;
       const maxTop = Math.max(minTop, stageRect.height - panelHeight - 8);
-      const btnCenterY = btnRect.top - stageRect.top + (btnRect.height / 2);
-      const panelTopOffset = 95;
-      let panelTop = btnCenterY - panelTopOffset;
+      const windBtnCenterY = windBtnRect.top - stageRect.top + (windBtnRect.height / 2);
+      let panelTop = windBtnCenterY - 120;
       panelTop = Math.min(Math.max(panelTop, minTop), maxTop);
+
+      const oatBtnCenterY = oatBtnRect.top - stageRect.top + (oatBtnRect.height / 2);
 
       oatPanel.style.setProperty('--oat-panel-left', `${panelLeft}px`);
       oatPanel.style.setProperty('--oat-panel-top', `${panelTop}px`);
-      const arrowY = (btnCenterY - panelTop) / 1.25;
+      const arrowY = (oatBtnCenterY - panelTop) / 1.25;
       oatPanel.style.setProperty('--oat-arrow-y', `${arrowY}px`);
     };
 
@@ -4139,30 +4145,32 @@
     };
 
     const positionQnhPanel = () => {
-      if (!stage || !qnhEditBtn || !qnhPanel) {
+      if (!stage || !qnhEditBtn || !qnhPanel || !windEditBtn) {
         return;
       }
 
       const stageRect = stage.getBoundingClientRect();
-      const btnRect = qnhEditBtn.getBoundingClientRect();
+      const windBtnRect = windEditBtn.getBoundingClientRect();
+      const qnhBtnRect = qnhEditBtn.getBoundingClientRect();
       const panelWidth = qnhPanel.offsetWidth || 280;
       const panelHeight = qnhPanel.offsetHeight || 300;
 
       const minLeft = 8;
       const maxLeft = Math.max(minLeft, stageRect.width - panelWidth - 8);
-      let panelLeft = (btnRect.right - stageRect.left) + 33;
+      let panelLeft = (windBtnRect.right - stageRect.left) + 33;
       panelLeft = Math.min(Math.max(panelLeft, minLeft), maxLeft);
 
       const minTop = 8;
       const maxTop = Math.max(minTop, stageRect.height - panelHeight - 8);
-      const btnCenterY = btnRect.top - stageRect.top + (btnRect.height / 2);
-      const panelTopOffset = 95;
-      let panelTop = btnCenterY - panelTopOffset;
+      const windBtnCenterY = windBtnRect.top - stageRect.top + (windBtnRect.height / 2);
+      let panelTop = windBtnCenterY - 120;
       panelTop = Math.min(Math.max(panelTop, minTop), maxTop);
+
+      const qnhBtnCenterY = qnhBtnRect.top - stageRect.top + (qnhBtnRect.height / 2);
 
       qnhPanel.style.setProperty('--qnh-panel-left', `${panelLeft}px`);
       qnhPanel.style.setProperty('--qnh-panel-top', `${panelTop}px`);
-      const arrowY = (btnCenterY - panelTop) / 1.25;
+      const arrowY = (qnhBtnCenterY - panelTop) / 1.25;
       qnhPanel.style.setProperty('--qnh-arrow-y', `${arrowY}px`);
     };
 
@@ -4367,6 +4375,8 @@
       if (towInputField) {
         towInputField.textContent = towRaw === '*' ? '90000' : (towRaw || '');
       }
+      stage?.classList.toggle('tow-filled', towKg > 0);
+      updateTakeoffIncompleteMessage();
     };
 
     const loadTowData = () => {
@@ -4395,7 +4405,7 @@
       const minTop = 8;
       const maxTop = Math.max(minTop, stageRect.height - panelHeight - 8);
       const btnCenterY = btnRect.top - stageRect.top + (btnRect.height / 2);
-      let panelTop = btnCenterY - 120;
+      let panelTop = btnCenterY - 180;
       panelTop = Math.min(Math.max(panelTop, minTop), maxTop);
 
       towPanel.style.setProperty('--tow-panel-left', `${panelLeft}px`);
@@ -4566,6 +4576,12 @@
       openAicePopup();
     };
 
+    const openTowAfterAiceClose = async () => {
+      closeAicePopup();
+      await wait(popupTransitionMs);
+      openTowPopup();
+    };
+
     const saveAirportValue = async () => {
       const value = normalizeAirportCode(airportInput?.value || '');
       const finalValue = value || 'NIL';
@@ -4730,7 +4746,7 @@
       button.addEventListener('click', () => {
         aiceSelection = normalizeAiceSelection(button.dataset.value || '');
         updateAiceUi();
-        closeAicePopup();
+        void openTowAfterAiceClose();
       });
     });
 
@@ -4820,6 +4836,7 @@
 
         if (action === 'next' || action === 'done') {
           closeTowPopup();
+          saveTowData();
         }
       });
     });
