@@ -986,10 +986,10 @@
       transform: scale(1.25);
       transform-origin: top left;
       border-radius: 8px;
-      border: 2px solid #000000;
+      border: 1px solid #000000;
       background: linear-gradient(180deg, #8a919c 0%, #656d78 100%);
       z-index: 7;
-      padding: 8px;
+      padding: 18px 8px 28px;
       opacity: 0;
       pointer-events: none;
       transition: opacity 140ms ease;
@@ -999,11 +999,11 @@
       content: '';
       position: absolute;
       top: var(--tow-arrow-y, 50%);
-      left: -14px;
+      left: -12px;
       transform: translateY(-50%);
-      border-top: 10px solid transparent;
-      border-bottom: 10px solid transparent;
-      border-right: 14px solid #000000;
+      border-top: 9px solid transparent;
+      border-bottom: 9px solid transparent;
+      border-right: 12px solid #000000;
       z-index: 1;
     }
 
@@ -1023,6 +1023,12 @@
     .stage.tow-open .tow-panel {
       opacity: 1;
       pointer-events: auto;
+    }
+
+    #towPanel,
+    #towPanel * {
+      box-shadow: none !important;
+      text-shadow: none !important;
     }
 
     .tow-header {
@@ -1045,31 +1051,37 @@
 
     .tow-close {
       border: 1px solid rgba(189, 196, 208, 0.7);
-      border-radius: 6px;
-      padding: 5px 10px;
+      border-radius: 5.58px;
+      padding: 4.65px 9.3px;
       background: linear-gradient(180deg, #8a919c 0%, #656d78 100%);
       color: #f5f8ff;
-      font-size: 11px;
+      font-size: 10.23px;
       cursor: pointer;
-      text-transform: uppercase;
+      text-transform: none;
       font-weight: 700;
+      position: relative;
+      top: -10px;
     }
 
     .tow-main-field {
       height: 42px;
+      width: 80%;
       border-radius: 10px;
       border: 1px solid rgba(189, 196, 208, 0.55);
       background: linear-gradient(180deg, #4f5258 0%, #32353b 100%);
       display: flex;
       align-items: center;
       gap: 8px;
+      margin-left: auto;
+      margin-right: auto;
       margin-bottom: 10px;
       padding: 0 10px;
+      box-sizing: border-box;
       overflow: hidden;
     }
 
     .tow-field-btn {
-      flex: 1;
+      flex: 0 1 7ch;
       border: 0;
       background: transparent;
       color: #f2f5f8;
@@ -1077,30 +1089,86 @@
       font-weight: 700;
       height: 100%;
       cursor: pointer;
+      margin-left: auto;
+      min-width: 7ch;
       text-align: right;
     }
 
     .tow-unit-label {
+      border: 0;
+      background: transparent;
       color: #f2f4f7;
       font-size: 18px;
       font-weight: 700;
       text-transform: none;
+      cursor: pointer;
+      padding: 0;
     }
 
     .tow-clear-btn {
-      width: 22px;
-      height: 22px;
-      border: 1px solid rgba(189, 196, 208, 0.7);
+      width: 17.6px;
+      height: 17.6px;
+      border: 0.8px solid #000000;
       border-radius: 999px;
       background: linear-gradient(180deg, #f7f9fb 0%, #e2e7ec 100%);
       color: #4f5b64;
-      font-size: 16px;
+      font-size: 20.48px;
       line-height: 1;
       cursor: pointer;
       display: inline-flex;
       align-items: center;
       justify-content: center;
       padding: 0;
+    }
+
+    .tow-clear-btn-text {
+      display: block;
+      transform: translate(-0.4px, 1.2px);
+    }
+
+    .tow-unit-selector {
+      position: relative;
+      display: flex;
+      width: 100%;
+      max-height: 0;
+      margin: 0;
+      padding: 0 9px;
+      border: 0;
+      border-top: 0 solid rgba(0, 0, 0, 0.45);
+      border-bottom: 0 solid rgba(0, 0, 0, 0.45);
+      border-radius: 0;
+      background: rgba(40, 43, 48, 0.85);
+      justify-content: center;
+      gap: 100px;
+      overflow: hidden;
+      opacity: 0;
+      pointer-events: none;
+      transition: max-height 0.7s ease, margin-bottom 0.7s ease, padding-top 0.7s ease, padding-bottom 0.7s ease, border-top-width 0.7s ease, border-bottom-width 0.7s ease, opacity 0.35s ease;
+      --tow-unit-arrow-left: 50%;
+    }
+
+    .tow-unit-selector.visible {
+      max-height: 64px;
+      margin: 0 0 10px;
+      padding-top: 7px;
+      padding-bottom: 7px;
+      border-top-width: 1px;
+      border-bottom-width: 1px;
+      overflow: visible;
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .tow-unit-selector::before {
+      content: '';
+      position: absolute;
+      top: -7px;
+      left: var(--tow-unit-arrow-left);
+      transform: translateX(-50%);
+      border-left: 6px solid transparent;
+      border-right: 6px solid transparent;
+      border-bottom: 7px solid rgba(40, 43, 48, 0.85);
+      z-index: 1;
     }
 
     .tow-help {
@@ -1264,6 +1332,23 @@
       display: grid;
       grid-template-columns: repeat(4, 1fr);
       gap: 16px;
+    }
+
+    #towKeypad {
+      width: 75%;
+      margin: 0 auto;
+      gap: 12px;
+    }
+
+    #towKeypad .wind-key-btn {
+      height: 42px;
+      border-radius: 6.75px;
+      font-size: 12.75px;
+    }
+
+    #towKeypad .wind-key-btn.action,
+    #towKeypad .wind-key-btn.sign {
+      font-size: 11.25px;
     }
 
     .wind-header {
@@ -2689,8 +2774,18 @@
       </div>
       <div class="tow-main-field">
         <button id="towInputField" class="tow-field-btn" type="button"></button>
-        <span class="tow-unit-label">Kg</span>
-        <button id="towClearBtn" class="tow-clear-btn" type="button" aria-label="Cancella TOW">×</button>
+        <button id="towUnitLabel" class="tow-unit-label" type="button">kg</button>
+        <button id="towClearBtn" class="tow-clear-btn" type="button" aria-label="Cancella TOW"><span class="tow-clear-btn-text">×</span></button>
+      </div>
+      <div id="towUnitSelector" class="tow-unit-selector" aria-label="Selettore unita TOW">
+        <button id="towUnitKg" class="wind-unit-btn active" type="button">
+          <span class="wind-unit-dot" aria-hidden="true"></span>
+          <span>kg</span>
+        </button>
+        <button id="towUnitLb" class="wind-unit-btn" type="button">
+          <span class="wind-unit-dot" aria-hidden="true"></span>
+          <span>lb</span>
+        </button>
       </div>
       <p class="tow-help"><strong>TOW format: XXX.X T or XXXXXX Kg</strong><br><strong>TOW Range: from 40000.0 to 90000.0 Kg</strong><br><strong>Enter * to obtain Structural TOW</strong><br><strong>value entered in lb is converted into Kg</strong></p>
       <div id="towKeypad" class="oat-keypad" aria-label="Tastierino TOW">
@@ -2888,6 +2983,9 @@
     const towPanel = document.querySelector('#towPanel');
     const towCloseBtn = document.querySelector('#towCloseBtn');
     const towInputField = document.querySelector('#towInputField');
+    const towUnitLabel = document.querySelector('#towUnitLabel');
+    const towUnitKg = document.querySelector('#towUnitKg');
+    const towUnitLb = document.querySelector('#towUnitLb');
     const towClearBtn = document.querySelector('#towClearBtn');
     const towKeypadButtons = document.querySelectorAll('#towKeypad .wind-key-btn');
     const rwyCondBackdrop = document.querySelector('#rwyCondBackdrop');
@@ -2936,6 +3034,8 @@
     let qnhUnitSelectorOpen = false;
     let towRaw = '68000';
     let towKg = 68000;
+    let towInputUnit = 'kg';
+    let towUnitSelectorOpen = false;
     let rwyCondSelection = '';
     let aiceSelection = '';
     const popupTransitionMs = 480;
@@ -3526,7 +3626,8 @@
     };
 
     const closeTowPopup = () => {
-      localStorage.setItem(takeoffTowStorageKey, String(towKg));
+      localStorage.setItem(takeoffTowStorageKey, JSON.stringify({ kg: towKg, unit: towInputUnit }));
+      towUnitSelectorOpen = false;
       stage.classList.remove('tow-open');
     };
 
@@ -4361,7 +4462,9 @@
         return;
       }
 
-      if (towRaw.includes('.')) {
+      if (towInputUnit === 'lb') {
+        towKg = clamp(Math.round(numeric * 0.453592), 40000, 90000);
+      } else if (towRaw.includes('.')) {
         towKg = clamp(Math.round(numeric * 1000), 40000, 90000);
       } else {
         towKg = clamp(Math.round(numeric), 40000, 90000);
@@ -4375,16 +4478,44 @@
       if (towInputField) {
         towInputField.textContent = towRaw === '*' ? '90000' : (towRaw || '');
       }
+      if (towUnitLabel) {
+        towUnitLabel.textContent = towInputUnit === 'lb' ? 'lb' : 'kg';
+      }
+      towUnitKg?.classList.toggle('active', towInputUnit === 'kg');
+      towUnitLb?.classList.toggle('active', towInputUnit === 'lb');
+      document.querySelector('#towUnitSelector')?.classList.toggle('visible', towUnitSelectorOpen);
       stage?.classList.toggle('tow-filled', towKg > 0);
       updateTakeoffIncompleteMessage();
     };
 
     const loadTowData = () => {
-      const raw = localStorage.getItem(takeoffTowStorageKey);
-      const parsed = Number.parseInt(String(raw || '68000'), 10);
-      towKg = Number.isFinite(parsed) ? clamp(parsed, 40000, 90000) : 68000;
-      towRaw = String(towKg);
-      updateTowUi();
+      try {
+        const raw = localStorage.getItem(takeoffTowStorageKey);
+        if (!raw) {
+          towKg = 68000;
+          towRaw = '68000';
+          towInputUnit = 'kg';
+          updateTowUi();
+          return;
+        }
+        const parsed = JSON.parse(raw);
+        if (typeof parsed === 'object' && parsed !== null) {
+          const kg = Number.parseInt(String(parsed.kg || '68000'), 10);
+          towKg = Number.isFinite(kg) ? clamp(kg, 40000, 90000) : 68000;
+          towInputUnit = parsed.unit === 'lb' ? 'lb' : 'kg';
+        } else {
+          const kg = Number.parseInt(String(raw || '68000'), 10);
+          towKg = Number.isFinite(kg) ? clamp(kg, 40000, 90000) : 68000;
+          towInputUnit = 'kg';
+        }
+        towRaw = String(towKg);
+        updateTowUi();
+      } catch {
+        towKg = 68000;
+        towRaw = '68000';
+        towInputUnit = 'kg';
+        updateTowUi();
+      }
     };
 
     const positionTowPanel = () => {
@@ -4405,12 +4536,12 @@
       const minTop = 8;
       const maxTop = Math.max(minTop, stageRect.height - panelHeight - 8);
       const btnCenterY = btnRect.top - stageRect.top + (btnRect.height / 2);
-      let panelTop = btnCenterY - 180;
+      let panelTop = btnCenterY - 190;
       panelTop = Math.min(Math.max(panelTop, minTop), maxTop);
 
       towPanel.style.setProperty('--tow-panel-left', `${panelLeft}px`);
       towPanel.style.setProperty('--tow-panel-top', `${panelTop}px`);
-      towPanel.style.setProperty('--tow-arrow-y', `${(btnCenterY - panelTop) / 1.25}px`);
+      towPanel.style.setProperty('--tow-arrow-y', '50%');
     };
 
     const openTowPopup = () => {
@@ -4421,6 +4552,7 @@
       closeQnhPopup();
       closeRwyCondPopup();
       closeAicePopup();
+      towUnitSelectorOpen = false;
       stage.classList.add('tow-open');
       updateTowUi();
       positionTowPanel();
@@ -4722,6 +4854,25 @@
       updateTowUi();
     });
 
+    towUnitLabel?.addEventListener('click', () => {
+      towUnitSelectorOpen = !towUnitSelectorOpen;
+      updateTowUi();
+    });
+
+    towUnitKg?.addEventListener('click', () => {
+      towInputUnit = 'kg';
+      towRaw = String(towKg);
+      towUnitSelectorOpen = false;
+      updateTowUi();
+    });
+
+    towUnitLb?.addEventListener('click', () => {
+      towInputUnit = 'lb';
+      towRaw = String(Math.round(towKg / 0.453592));
+      towUnitSelectorOpen = false;
+      updateTowUi();
+    });
+
     rwyCondEditBtn?.addEventListener('click', openRwyCondPopup);
     rwyCondOpenTriggers.forEach((trigger) => {
       trigger.addEventListener('click', openRwyCondPopup);
@@ -4813,7 +4964,7 @@
           if (key === '*') {
             towRaw = '*';
           } else if (key === '.') {
-            if (towRaw === '*' || towRaw.includes('.')) {
+            if (towRaw === '*' || towRaw.includes('.') || towInputUnit === 'lb') {
               return;
             }
             towRaw = towRaw === '' ? '0.' : `${towRaw}.`;
