@@ -440,6 +440,9 @@
     #windValue,
     #oatValue,
     #qnhValue,
+    #toThrustValue,
+    #confValue,
+    #airCondValue,
     #rwyCondValue,
     #aiceValue,
     #airportInput,
@@ -469,6 +472,9 @@
     #rwyValue,
     #towBtn,
     #towValue,
+    .stage.tothrust-filled #toThrustValue,
+    .stage.conf-filled #confValue,
+    .stage.aircond-filled #airCondValue,
     .stage.wind-filled #windValue,
     .stage.oat-filled #oatValue,
     .stage.qnh-filled #qnhValue,
@@ -518,6 +524,9 @@
     .stage.wind-open .wind-row,
     .stage.oat-open .oat-row,
     .stage.qnh-open .qnh-row,
+    .stage.tothrust-open .tothrust-row,
+    .stage.conf-open .conf-row,
+    .stage.aircond-open .aircond-row,
     .stage.rwycond-open .rwycond-row,
     .stage.aice-open .aice-row,
     .stage.tow-open .tow-row {
@@ -593,6 +602,12 @@
     .oat-panel *,
     .qnh-panel,
     .qnh-panel *,
+    .tothrust-panel,
+    .tothrust-panel *,
+    .conf-panel,
+    .conf-panel *,
+    .aircond-panel,
+    .aircond-panel *,
     .rwycond-panel,
     .rwycond-panel *,
     .aice-panel,
@@ -1400,6 +1415,9 @@
       font-size: 15.525px;
     }
 
+    #windKeypad .wind-key-btn.action[data-action="backspace"],
+    #oatKeypad .wind-key-btn.action[data-action="backspace"],
+    #qnhKeypad .wind-key-btn.action[data-action="backspace"],
     #towKeypad .wind-key-btn.action[data-action="backspace"] {
       font-size: 0;
       padding: 0;
@@ -1442,6 +1460,28 @@
       cursor: pointer;
       text-transform: uppercase;
       font-weight: 700;
+    }
+
+    #toThrustPanel .wind-header > span,
+    #confPanel .wind-header > span,
+    #airCondPanel .wind-header > span {
+      width: 56px;
+      flex: 0 0 56px;
+    }
+
+    #toThrustPanel .wind-close,
+    #confPanel .wind-close,
+    #airCondPanel .wind-close {
+      min-width: auto;
+      height: auto;
+      padding: 4.65px 9.3px;
+      font-size: 10.23px;
+      text-transform: none;
+      position: relative;
+      top: 0;
+      margin: 0;
+      display: inline-block;
+      line-height: normal;
     }
 
     .wind-fields {
@@ -1649,6 +1689,9 @@
     #windValue,
     #oatValue,
     #qnhValue,
+    #toThrustValue,
+    #confValue,
+    #airCondValue,
     #rwyCondValue,
     #aiceValue {
       position: absolute;
@@ -1661,6 +1704,9 @@
       transform: translateY(-50%);
     }
 
+    #toThrustValue,
+    #confValue,
+    #airCondValue,
     #rwyCondValue,
     #aiceValue {
       right: calc(clamp(22px, 3.2vw, 40px) - 25px);
@@ -1705,6 +1751,9 @@
       cursor: pointer;
     }
 
+    .tothrust-backdrop,
+    .conf-backdrop,
+    .aircond-backdrop,
     .rwycond-backdrop,
     .aice-backdrop {
       position: absolute;
@@ -1716,11 +1765,14 @@
       transition: opacity 140ms ease;
     }
 
+    .tothrust-panel,
+    .conf-panel,
+    .aircond-panel,
     .rwycond-panel,
     .aice-panel {
       position: absolute;
-      left: var(--rwycond-panel-left, 0px);
-      top: var(--rwycond-panel-top, 0px);
+      left: var(--tothrust-panel-left, 0px);
+      top: var(--tothrust-panel-top, 0px);
       width: 280px;
       transform: scale(1.25);
       transform-origin: top left;
@@ -1735,16 +1787,34 @@
       transition: opacity 140ms ease;
     }
 
+    .rwycond-panel {
+      left: var(--rwycond-panel-left, 0px);
+      top: var(--rwycond-panel-top, 0px);
+    }
+
+    .conf-panel {
+      left: var(--conf-panel-left, 0px);
+      top: var(--conf-panel-top, 0px);
+    }
+
+    .aircond-panel {
+      left: var(--aircond-panel-left, 0px);
+      top: var(--aircond-panel-top, 0px);
+    }
+
     .aice-panel {
       left: var(--aice-panel-left, 0px);
       top: var(--aice-panel-top, 0px);
     }
 
+    .tothrust-panel::before,
+    .conf-panel::before,
+    .aircond-panel::before,
     .rwycond-panel::before,
     .aice-panel::before {
       content: '';
       position: absolute;
-      top: var(--rwycond-arrow-y, 50%);
+      top: var(--tothrust-arrow-y, 50%);
       left: -12px;
       transform: translateY(-50%);
       border-top: 9px solid transparent;
@@ -1753,15 +1823,30 @@
       z-index: 1;
     }
 
+    .rwycond-panel::before {
+      top: var(--rwycond-arrow-y, 50%);
+    }
+
+    .conf-panel::before {
+      top: var(--conf-arrow-y, 50%);
+    }
+
+    .aircond-panel::before {
+      top: var(--aircond-arrow-y, 50%);
+    }
+
     .aice-panel::before {
       top: var(--aice-arrow-y, 50%);
     }
 
+    .tothrust-panel::after,
+    .conf-panel::after,
+    .aircond-panel::after,
     .rwycond-panel::after,
     .aice-panel::after {
       content: '';
       position: absolute;
-      top: var(--rwycond-arrow-y, 50%);
+      top: var(--tothrust-arrow-y, 50%);
       left: -11px;
       transform: translateY(-50%);
       border-top: 8px solid transparent;
@@ -1770,16 +1855,103 @@
       z-index: 2;
     }
 
+    .rwycond-panel::after {
+      top: var(--rwycond-arrow-y, 50%);
+    }
+
+    .conf-panel::after {
+      top: var(--conf-arrow-y, 50%);
+    }
+
+    .aircond-panel::after {
+      top: var(--aircond-arrow-y, 50%);
+    }
+
     .aice-panel::after {
       top: var(--aice-arrow-y, 50%);
     }
 
+    .stage.tothrust-open .tothrust-backdrop,
+    .stage.tothrust-open .tothrust-panel,
+    .stage.conf-open .conf-backdrop,
+    .stage.conf-open .conf-panel,
+    .stage.aircond-open .aircond-backdrop,
+    .stage.aircond-open .aircond-panel,
     .stage.rwycond-open .rwycond-backdrop,
     .stage.rwycond-open .rwycond-panel,
     .stage.aice-open .aice-backdrop,
     .stage.aice-open .aice-panel {
       opacity: 1;
       pointer-events: auto;
+    }
+
+    .tothrust-panel .setting-option {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+    }
+
+    .tothrust-right {
+      display: inline-flex;
+      align-items: center;
+      justify-content: flex-end;
+      min-width: 58px;
+      gap: 10px;
+    }
+
+    .tothrust-max {
+      opacity: 0.95;
+    }
+
+    .tothrust-check {
+      opacity: 0;
+      width: 18px;
+      height: 18px;
+      display: block;
+      object-fit: contain;
+    }
+
+    .tothrust-panel .setting-option.active .tothrust-check {
+      opacity: 1;
+    }
+
+    .conf-panel .setting-option {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+    }
+
+    .conf-check {
+      opacity: 0;
+      width: 18px;
+      height: 18px;
+      display: block;
+      object-fit: contain;
+    }
+
+    .conf-panel .setting-option.active .conf-check {
+      opacity: 1;
+    }
+
+    .aircond-panel .setting-option {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+    }
+
+    .aircond-check {
+      opacity: 0;
+      width: 18px;
+      height: 18px;
+      display: block;
+      object-fit: contain;
+    }
+
+    .aircond-panel .setting-option.active .aircond-check {
+      opacity: 1;
     }
 
     .setting-help {
@@ -1855,11 +2027,17 @@
       filter: brightness(0.96);
     }
 
+    .stage.tothrust-filled #toThrustValue,
+    .stage.conf-filled #confValue,
+    .stage.aircond-filled #airCondValue,
     .stage.rwycond-filled #rwyCondValue,
     .stage.aice-filled #aiceValue {
       color: #57c1eb;
     }
 
+    #toThrustValue::after,
+    #confValue::after,
+    #airCondValue::after,
     .stage.rwycond-filled #rwyCondValue::after,
     .stage.aice-filled #aiceValue::after {
       content: ">";
@@ -1871,12 +2049,25 @@
       margin-left: 4px;
     }
 
+    .stage.tothrust-filled #toThrustEditBtn,
+    .stage.conf-filled #confEditBtn,
+    .stage.aircond-filled #airCondEditBtn,
     .stage.rwycond-filled #rwyCondEditBtn,
     .stage.aice-filled #aiceEditBtn {
       visibility: hidden;
       pointer-events: none;
     }
 
+    #toThrustEditBtn,
+    #confEditBtn,
+    #airCondEditBtn {
+      visibility: hidden;
+      pointer-events: none;
+    }
+
+    .tothrust-open-trigger,
+    .conf-open-trigger,
+    .aircond-open-trigger,
     .rwycond-open-trigger,
     .aice-open-trigger {
       cursor: pointer;
@@ -2185,6 +2376,9 @@
       .wind-panel,
       .oat-panel,
       .qnh-panel,
+      .tothrust-panel,
+      .conf-panel,
+      .aircond-panel,
       .rwycond-panel,
       .aice-panel,
       .tow-panel {
@@ -2266,6 +2460,9 @@
       .wind-panel,
       .oat-panel,
       .qnh-panel,
+      .tothrust-panel,
+      .conf-panel,
+      .aircond-panel,
       .rwycond-panel,
       .aice-panel,
       .tow-panel {
@@ -2303,6 +2500,9 @@
       .wind-panel,
       .oat-panel,
       .qnh-panel,
+      .tothrust-panel,
+      .conf-panel,
+      .aircond-panel,
       .rwycond-panel,
       .aice-panel,
       .tow-panel {
@@ -2480,6 +2680,9 @@
       .wind-panel,
       .oat-panel,
       .qnh-panel,
+      .tothrust-panel,
+      .conf-panel,
+      .aircond-panel,
       .rwycond-panel,
       .aice-panel,
       .tow-panel {
@@ -2535,6 +2738,9 @@
       .wind-panel,
       .oat-panel,
       .qnh-panel,
+      .tothrust-panel,
+      .conf-panel,
+      .aircond-panel,
       .rwycond-panel,
       .aice-panel,
       .tow-panel {
@@ -2713,6 +2919,25 @@
       font-size: 15.525px;
     }
 
+    /* Keep these popup heights strictly to their visible menu content. */
+    #toThrustPanel,
+    #confPanel,
+    #airCondPanel,
+    #rwyCondPanel,
+    #aicePanel {
+      height: auto;
+      min-height: 0;
+    }
+
+    #toThrustPanel .setting-options,
+    #confPanel .setting-options,
+    #airCondPanel .setting-options,
+    #rwyCondPanel .setting-options,
+    #aicePanel .setting-options {
+      max-height: none;
+      overflow-y: visible;
+    }
+
     /* ─── Portrait orientation lock overlay ─── */
     #rotate-overlay {
       display: none;
@@ -2850,17 +3075,26 @@
             <span id="towValue">68.0</span>
           </button>
         </div>
-        <div class="left-row">
-          <span class="left-label">T.O. THRUST</span>
-          <span class="left-value arrow">FLEX (STD) °C</span>
+        <div class="left-row tothrust-row">
+          <span class="left-label tothrust-open-trigger">T.O. THRUST</span>
+          <span id="toThrustValue" class="left-value tothrust-open-trigger"></span>
+          <button id="toThrustEditBtn" class="left-edit-btn" type="button" aria-label="Modifica T.O. THRUST">
+            <img src="./pencil.png" alt="" aria-hidden="true">
+          </button>
         </div>
-        <div class="left-row">
-          <span class="left-label">CONF</span>
-          <span class="left-value arrow">OPT CONF (STD)</span>
+        <div class="left-row conf-row">
+          <span class="left-label conf-open-trigger">CONF</span>
+          <span id="confValue" class="left-value conf-open-trigger"></span>
+          <button id="confEditBtn" class="left-edit-btn" type="button" aria-label="Modifica CONF">
+            <img src="./pencil.png" alt="" aria-hidden="true">
+          </button>
         </div>
-        <div class="left-row">
-          <span class="left-label">AIR COND</span>
-          <span class="left-value arrow">On (STD)</span>
+        <div class="left-row aircond-row">
+          <span class="left-label aircond-open-trigger">AIR COND</span>
+          <span id="airCondValue" class="left-value aircond-open-trigger"></span>
+          <button id="airCondEditBtn" class="left-edit-btn" type="button" aria-label="Modifica AIR COND">
+            <img src="./pencil.png" alt="" aria-hidden="true">
+          </button>
         </div>
       </article>
     </section>
@@ -2921,7 +3155,13 @@
         <button type="button" class="wind-key-btn" data-key="4">4</button>
         <button type="button" class="wind-key-btn" data-key="5">5</button>
         <button type="button" class="wind-key-btn" data-key="6">6</button>
-        <button type="button" class="wind-key-btn action" data-action="backspace">&#9003;</button>
+        <button type="button" class="wind-key-btn action" data-action="backspace" aria-label="Backspace">
+          <svg class="tow-backspace-icon" viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M10 5H20C21.1 5 22 5.9 22 7V17C22 18.1 21.1 19 20 19H10L3 12L10 5Z" fill="#4f5b64" stroke="#4f5b64" stroke-width="1.6" stroke-linejoin="round"/>
+            <path d="M11.5 9L16.5 14" stroke="#ffffff" stroke-width="2" stroke-linecap="round"/>
+            <path d="M16.5 9L11.5 14" stroke="#ffffff" stroke-width="2" stroke-linecap="round"/>
+          </svg>
+        </button>
 
         <button type="button" class="wind-key-btn" data-key="7">7</button>
         <button type="button" class="wind-key-btn" data-key="8">8</button>
@@ -2968,9 +3208,9 @@
         <button type="button" class="wind-key-btn" data-key="6">6</button>
         <button type="button" class="wind-key-btn action" data-action="backspace" aria-label="Backspace">
           <svg class="tow-backspace-icon" viewBox="0 0 24 24" aria-hidden="true">
-            <path d="M10 5H20C21.1 5 22 5.9 22 7V17C22 18.1 21.1 19 20 19H10L3 12L10 5Z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
-            <path d="M11.5 9.5L16.5 14.5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-            <path d="M16.5 9.5L11.5 14.5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            <path d="M10 5H20C21.1 5 22 5.9 22 7V17C22 18.1 21.1 19 20 19H10L3 12L10 5Z" fill="#4f5b64" stroke="#4f5b64" stroke-width="1.6" stroke-linejoin="round"/>
+            <path d="M11.5 9L16.5 14" stroke="#ffffff" stroke-width="2" stroke-linecap="round"/>
+            <path d="M16.5 9L11.5 14" stroke="#ffffff" stroke-width="2" stroke-linecap="round"/>
           </svg>
         </button>
 
@@ -3018,7 +3258,11 @@
         <button type="button" class="wind-key-btn" data-key="5">5</button>
         <button type="button" class="wind-key-btn" data-key="6">6</button>
         <button type="button" class="wind-key-btn action" data-action="backspace" aria-label="Backspace">
-          <img class="tow-backspace-icon" src="./tow-backspace-icon.svg" alt="" aria-hidden="true">
+          <svg class="tow-backspace-icon" viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M10 5H20C21.1 5 22 5.9 22 7V17C22 18.1 21.1 19 20 19H10L3 12L10 5Z" fill="#4f5b64" stroke="#4f5b64" stroke-width="1.6" stroke-linejoin="round"/>
+            <path d="M11.5 9L16.5 14" stroke="#ffffff" stroke-width="2" stroke-linecap="round"/>
+            <path d="M16.5 9L11.5 14" stroke="#ffffff" stroke-width="2" stroke-linecap="round"/>
+          </svg>
         </button>
 
         <button type="button" class="wind-key-btn" data-key="7">7</button>
@@ -3030,6 +3274,80 @@
         <button type="button" class="wind-key-btn" data-key="0">0</button>
         <button type="button" class="wind-key-btn muted sign" data-disabled="true">+/-</button>
         <button type="button" class="wind-key-btn action" data-action="next">Next</button>
+      </div>
+    </section>
+
+    <div id="toThrustBackdrop" class="tothrust-backdrop" aria-hidden="true"></div>
+    <section id="toThrustPanel" class="tothrust-panel" aria-label="Inserimento T.O. THRUST">
+      <div class="wind-header">
+        <span></span>
+        <p class="wind-title">T.O. THRUST</p>
+        <button id="toThrustCloseBtn" class="wind-close" type="button">Close</button>
+      </div>
+      <p class="setting-help">Select THRUST option from the list.</p>
+      <div id="toThrustOptions" class="setting-options" aria-label="Lista T.O. THRUST">
+        <button type="button" class="setting-option" data-value="TOGA">
+          <span class="tothrust-option-label">TOGA</span>
+          <span class="tothrust-right">
+            <span class="tothrust-max"></span>
+            <img class="tothrust-check" src="./v.png" alt="" aria-hidden="true">
+          </span>
+        </button>
+        <button type="button" class="setting-option" data-value="FLEX (STD)">
+          <span class="tothrust-option-label">FLEX (STD)</span>
+          <span class="tothrust-right">
+            <span class="tothrust-max">MAX</span>
+            <img class="tothrust-check" src="./v.png" alt="" aria-hidden="true">
+          </span>
+        </button>
+      </div>
+    </section>
+
+    <div id="confBackdrop" class="conf-backdrop" aria-hidden="true"></div>
+    <section id="confPanel" class="conf-panel" aria-label="Inserimento CONF">
+      <div class="wind-header">
+        <span></span>
+        <p class="wind-title">CONF</p>
+        <button id="confCloseBtn" class="wind-close" type="button">Close</button>
+      </div>
+      <p class="setting-help"><strong>Select configuration from the list.</strong><br><strong>Select OPT CONF to let the software determine the best configuration.</strong></p>
+      <div id="confOptions" class="setting-options" aria-label="Lista CONF">
+        <button type="button" class="setting-option" data-value="CONF 1+F">
+          <span class="conf-option-label">CONF 1+F</span>
+          <img class="conf-check" src="./v.png" alt="" aria-hidden="true">
+        </button>
+        <button type="button" class="setting-option" data-value="CONF 2">
+          <span class="conf-option-label">CONF 2</span>
+          <img class="conf-check" src="./v.png" alt="" aria-hidden="true">
+        </button>
+        <button type="button" class="setting-option" data-value="CONF 3">
+          <span class="conf-option-label">CONF 3</span>
+          <img class="conf-check" src="./v.png" alt="" aria-hidden="true">
+        </button>
+        <button type="button" class="setting-option" data-value="OPT CONF (STD)">
+          <span class="conf-option-label">OPT CONF (STD)</span>
+          <img class="conf-check" src="./v.png" alt="" aria-hidden="true">
+        </button>
+      </div>
+    </section>
+
+    <div id="airCondBackdrop" class="aircond-backdrop" aria-hidden="true"></div>
+    <section id="airCondPanel" class="aircond-panel" aria-label="Inserimento AIR COND">
+      <div class="wind-header">
+        <span></span>
+        <p class="wind-title">AIR COND</p>
+        <button id="airCondCloseBtn" class="wind-close" type="button">Close</button>
+      </div>
+      <p class="setting-help">Select your AIR COND setting from the list.</p>
+      <div id="airCondOptions" class="setting-options" aria-label="Lista AIR COND">
+        <button type="button" class="setting-option" data-value="Off">
+          <span class="aircond-option-label">Off</span>
+          <img class="aircond-check" src="./v.png" alt="" aria-hidden="true">
+        </button>
+        <button type="button" class="setting-option" data-value="On (STD)">
+          <span class="aircond-option-label">On (STD)</span>
+          <img class="aircond-check" src="./v.png" alt="" aria-hidden="true">
+        </button>
       </div>
     </section>
 
@@ -3295,6 +3613,27 @@
     const towUnitLb = document.querySelector('#towUnitLb');
     const towClearBtn = document.querySelector('#towClearBtn');
     const towKeypadButtons = document.querySelectorAll('#towKeypad .wind-key-btn');
+    const toThrustValue = document.querySelector('#toThrustValue');
+    const toThrustEditBtn = document.querySelector('#toThrustEditBtn');
+    const toThrustOpenTriggers = document.querySelectorAll('.tothrust-open-trigger');
+    const toThrustBackdrop = document.querySelector('#toThrustBackdrop');
+    const toThrustPanel = document.querySelector('#toThrustPanel');
+    const toThrustCloseBtn = document.querySelector('#toThrustCloseBtn');
+    const toThrustOptionButtons = document.querySelectorAll('#toThrustOptions .setting-option');
+    const confValue = document.querySelector('#confValue');
+    const confEditBtn = document.querySelector('#confEditBtn');
+    const confOpenTriggers = document.querySelectorAll('.conf-open-trigger');
+    const confBackdrop = document.querySelector('#confBackdrop');
+    const confPanel = document.querySelector('#confPanel');
+    const confCloseBtn = document.querySelector('#confCloseBtn');
+    const confOptionButtons = document.querySelectorAll('#confOptions .setting-option');
+    const airCondValue = document.querySelector('#airCondValue');
+    const airCondEditBtn = document.querySelector('#airCondEditBtn');
+    const airCondOpenTriggers = document.querySelectorAll('.aircond-open-trigger');
+    const airCondBackdrop = document.querySelector('#airCondBackdrop');
+    const airCondPanel = document.querySelector('#airCondPanel');
+    const airCondCloseBtn = document.querySelector('#airCondCloseBtn');
+    const airCondOptionButtons = document.querySelectorAll('#airCondOptions .setting-option');
     const rwyCondBackdrop = document.querySelector('#rwyCondBackdrop');
     const rwyCondPanel = document.querySelector('#rwyCondPanel');
     const rwyCondCloseBtn = document.querySelector('#rwyCondCloseBtn');
@@ -3310,6 +3649,9 @@
     const takeoffOatStorageKey = 'flysmart-takeoff-oat';
     const takeoffQnhStorageKey = 'flysmart-takeoff-qnh';
     const takeoffTowStorageKey = 'flysmart-takeoff-tow';
+    const takeoffToThrustStorageKey = 'flysmart-takeoff-to-thrust';
+    const takeoffConfStorageKey = 'flysmart-takeoff-conf';
+    const takeoffAirCondStorageKey = 'flysmart-takeoff-air-cond';
     const takeoffRwyCondStorageKey = 'flysmart-takeoff-rwy-cond';
     const takeoffAIceStorageKey = 'flysmart-takeoff-aice';
     const airportsDataUrl = 'https://raw.githubusercontent.com/davidmegginson/ourairports-data/main/airports.csv';
@@ -3344,6 +3686,15 @@
     let towKg = 68000;
     let towInputUnit = 'kg';
     let towUnitSelectorOpen = false;
+    let toThrustSelection = 'FLEX (STD)';
+    let toThrustStdSelection = 'FLEX (STD)';
+    let toThrustConfirmed = false;
+    let confSelection = 'OPT CONF (STD)';
+    let confStdSelection = 'OPT CONF (STD)';
+    let confConfirmed = false;
+    let airCondSelection = 'On (STD)';
+    let airCondStdSelection = 'On (STD)';
+    let airCondConfirmed = false;
     let rwyCondSelection = '';
     let aiceSelection = '';
     const popupTransitionMs = 480;
@@ -3360,6 +3711,9 @@
       const normalized = String(value || '').trim().toUpperCase();
       return normalized === 'NIL' ? '' : String(value || '');
     };
+    const removeStdSuffix = (value) => String(value || '').replace(/\s*\(STD\)$/i, '').trim();
+    const withStdSuffix = (value) => `${removeStdSuffix(value)} (STD)`;
+    const isSameOption = (a, b) => removeStdSuffix(a).toLowerCase() === removeStdSuffix(b).toLowerCase();
     const clamp = (value, min, max) => Math.min(Math.max(value, min), max);
     const roundWindComponentValue = (value) => {
       const absValue = Math.abs(Number(value) || 0);
@@ -3924,6 +4278,21 @@
       stage.classList.remove('qnh-open');
     };
 
+    const closeToThrustPopup = () => {
+      saveToThrustData();
+      stage.classList.remove('tothrust-open');
+    };
+
+    const closeConfPopup = () => {
+      saveConfData();
+      stage.classList.remove('conf-open');
+    };
+
+    const closeAirCondPopup = () => {
+      saveAirCondData();
+      stage.classList.remove('aircond-open');
+    };
+
     const closeRwyCondPopup = () => {
       saveRwyCondData();
       stage.classList.remove('rwycond-open');
@@ -3946,6 +4315,9 @@
       closeWindPopup();
       closeOatPopup();
       closeQnhPopup();
+      closeToThrustPopup();
+      closeConfPopup();
+      closeAirCondPopup();
       closeRwyCondPopup();
       closeAicePopup();
       closeTowPopup();
@@ -3983,6 +4355,9 @@
       closeWindPopup();
       closeOatPopup();
       closeQnhPopup();
+      closeToThrustPopup();
+      closeConfPopup();
+      closeAirCondPopup();
       closeRwyCondPopup();
       closeAicePopup();
       closeTowPopup();
@@ -4031,6 +4406,9 @@
     const openRwyPopup = async () => {
       closeOatPopup();
       closeQnhPopup();
+      closeToThrustPopup();
+      closeConfPopup();
+      closeAirCondPopup();
       closeRwyCondPopup();
       closeAicePopup();
       closeTowPopup();
@@ -4341,6 +4719,9 @@
     const openWindPopup = () => {
       closeOatPopup();
       closeQnhPopup();
+      closeToThrustPopup();
+      closeConfPopup();
+      closeAirCondPopup();
       closeRwyCondPopup();
       closeAicePopup();
       closeTowPopup();
@@ -4518,6 +4899,9 @@
 
     const openOatPopup = () => {
       closeQnhPopup();
+      closeToThrustPopup();
+      closeConfPopup();
+      closeAirCondPopup();
       closeRwyCondPopup();
       closeAicePopup();
       closeTowPopup();
@@ -4553,6 +4937,24 @@
       closeOatPopup();
       await wait(popupTransitionMs);
       openQnhPopup();
+    };
+
+    const openToThrustAfterTowClose = async () => {
+      closeTowPopup();
+      await wait(popupTransitionMs);
+      openToThrustPopup();
+    };
+
+    const openConfAfterToThrustClose = async () => {
+      closeToThrustPopup();
+      await wait(popupTransitionMs);
+      openConfPopup();
+    };
+
+    const openAirCondAfterConfClose = async () => {
+      closeConfPopup();
+      await wait(popupTransitionMs);
+      openAirCondPopup();
     };
 
     const positionQnhPanel = () => {
@@ -4732,6 +5134,9 @@
       closeRwyPopup();
       closeWindPopup();
       closeOatPopup();
+      closeToThrustPopup();
+      closeConfPopup();
+      closeAirCondPopup();
       closeRwyCondPopup();
       closeAicePopup();
       closeTowPopup();
@@ -4794,7 +5199,7 @@
       towUnitKg?.classList.toggle('active', towInputUnit === 'kg');
       towUnitLb?.classList.toggle('active', towInputUnit === 'lb');
       document.querySelector('#towUnitSelector')?.classList.toggle('visible', towUnitSelectorOpen);
-      stage?.classList.toggle('tow-filled', towKg > 0);
+      stage?.classList.remove('tow-filled');
       updateTakeoffIncompleteMessage();
     };
 
@@ -4860,12 +5265,268 @@
       closeWindPopup();
       closeOatPopup();
       closeQnhPopup();
+      closeToThrustPopup();
+      closeConfPopup();
+      closeAirCondPopup();
       closeRwyCondPopup();
       closeAicePopup();
       towUnitSelectorOpen = false;
       stage.classList.add('tow-open');
       updateTowUi();
       positionTowPanel();
+    };
+
+    const TO_THRUST_VALUES = ['TOGA', 'FLEX (STD)'];
+
+    const normalizeToThrustSelection = (value) => {
+      const cleaned = String(value || '').trim();
+      const matched = TO_THRUST_VALUES.find((item) => item.toLowerCase() === cleaned.toLowerCase());
+      return matched || 'FLEX (STD)';
+    };
+
+    const formatToThrustDisplay = (value, isStd) => {
+      const base = removeStdSuffix(value);
+      const label = isStd ? withStdSuffix(base) : base;
+      if (base === 'FLEX') {
+        return `${label} °C`;
+      }
+      return label;
+    };
+
+    const toThrustDisplayValue = () => {
+      const isStd = isSameOption(toThrustSelection, toThrustStdSelection);
+      return formatToThrustDisplay(toThrustSelection, isStd);
+    };
+
+    const updateToThrustUi = () => {
+      if (toThrustValue) {
+        toThrustValue.textContent = toThrustDisplayValue();
+      }
+      stage?.classList.toggle('tothrust-filled', toThrustConfirmed);
+      toThrustOptionButtons.forEach((button) => {
+        button.classList.toggle('active', button.dataset.value === toThrustSelection);
+        const label = button.querySelector('.tothrust-option-label');
+        if (label) {
+          const value = button.dataset.value || '';
+          label.textContent = formatToThrustDisplay(value, isSameOption(value, toThrustStdSelection));
+        }
+      });
+      updateTakeoffIncompleteMessage();
+    };
+
+    const loadToThrustData = () => {
+      toThrustStdSelection = normalizeToThrustSelection(localStorage.getItem(takeoffToThrustStorageKey) || 'FLEX (STD)');
+      toThrustSelection = toThrustStdSelection;
+      toThrustConfirmed = false;
+      updateToThrustUi();
+    };
+
+    const saveToThrustData = () => {};
+
+    const positionToThrustPanel = () => {
+      if (!stage || !toThrustEditBtn || !toThrustPanel) {
+        return;
+      }
+
+      const stageRect = stage.getBoundingClientRect();
+      const btnRect = toThrustEditBtn.getBoundingClientRect();
+      const panelWidth = toThrustPanel.offsetWidth || 280;
+      const panelHeight = toThrustPanel.offsetHeight || 220;
+
+      const minLeft = 8;
+      const maxLeft = Math.max(minLeft, stageRect.width - panelWidth - 8);
+      let panelLeft = (btnRect.right - stageRect.left) + 33;
+      panelLeft = Math.min(Math.max(panelLeft, minLeft), maxLeft);
+
+      const minTop = 8;
+      const maxTop = Math.max(minTop, stageRect.height - panelHeight - 8);
+      const btnCenterY = btnRect.top - stageRect.top + (btnRect.height / 2);
+      const panelTopOffset = 95;
+      let panelTop = btnCenterY - panelTopOffset;
+      panelTop = Math.min(Math.max(panelTop, minTop), maxTop);
+
+      toThrustPanel.style.setProperty('--tothrust-panel-left', `${panelLeft}px`);
+      toThrustPanel.style.setProperty('--tothrust-panel-top', `${panelTop}px`);
+      const arrowY = (btnCenterY - panelTop) / 1.25;
+      toThrustPanel.style.setProperty('--tothrust-arrow-y', `${arrowY}px`);
+    };
+
+    const openToThrustPopup = () => {
+      closeAirportPopup();
+      closeRwyPopup();
+      closeWindPopup();
+      closeOatPopup();
+      closeQnhPopup();
+      closeConfPopup();
+      closeAirCondPopup();
+      closeRwyCondPopup();
+      closeAicePopup();
+      closeTowPopup();
+      stage.classList.add('tothrust-open');
+      updateToThrustUi();
+      positionToThrustPanel();
+    };
+
+    const CONF_VALUES = ['CONF 1+F', 'CONF 2', 'CONF 3', 'OPT CONF (STD)'];
+
+    const normalizeConfSelection = (value) => {
+      const cleaned = String(value || '').trim();
+      const matched = CONF_VALUES.find((item) => item.toLowerCase() === cleaned.toLowerCase());
+      return matched || 'OPT CONF (STD)';
+    };
+
+    const updateConfUi = () => {
+      if (confValue) {
+        confValue.textContent = isSameOption(confSelection, confStdSelection)
+          ? withStdSuffix(confSelection)
+          : removeStdSuffix(confSelection);
+      }
+      stage?.classList.toggle('conf-filled', confConfirmed);
+      confOptionButtons.forEach((button) => {
+        button.classList.toggle('active', button.dataset.value === confSelection);
+        const label = button.querySelector('.conf-option-label');
+        if (label) {
+          const value = button.dataset.value || '';
+          label.textContent = isSameOption(value, confStdSelection)
+            ? withStdSuffix(value)
+            : removeStdSuffix(value);
+        }
+      });
+      updateTakeoffIncompleteMessage();
+    };
+
+    const loadConfData = () => {
+      confStdSelection = normalizeConfSelection(localStorage.getItem(takeoffConfStorageKey) || 'OPT CONF (STD)');
+      confSelection = confStdSelection;
+      confConfirmed = false;
+      updateConfUi();
+    };
+
+    const saveConfData = () => {};
+
+    const positionConfPanel = () => {
+      if (!stage || !confEditBtn || !confPanel) {
+        return;
+      }
+
+      const stageRect = stage.getBoundingClientRect();
+      const btnRect = confEditBtn.getBoundingClientRect();
+      const panelWidth = confPanel.offsetWidth || 280;
+      const panelHeight = confPanel.offsetHeight || 250;
+
+      const minLeft = 8;
+      const maxLeft = Math.max(minLeft, stageRect.width - panelWidth - 8);
+      let panelLeft = (btnRect.right - stageRect.left) + 33;
+      panelLeft = Math.min(Math.max(panelLeft, minLeft), maxLeft);
+
+      const minTop = 8;
+      const maxTop = Math.max(minTop, stageRect.height - panelHeight - 8);
+      const btnCenterY = btnRect.top - stageRect.top + (btnRect.height / 2);
+      const panelTopOffset = 95;
+      let panelTop = btnCenterY - panelTopOffset;
+      panelTop = Math.min(Math.max(panelTop, minTop), maxTop);
+
+      confPanel.style.setProperty('--conf-panel-left', `${panelLeft}px`);
+      confPanel.style.setProperty('--conf-panel-top', `${panelTop}px`);
+      const arrowY = (btnCenterY - panelTop) / 1.25;
+      confPanel.style.setProperty('--conf-arrow-y', `${arrowY}px`);
+    };
+
+    const openConfPopup = () => {
+      closeAirportPopup();
+      closeRwyPopup();
+      closeWindPopup();
+      closeOatPopup();
+      closeQnhPopup();
+      closeToThrustPopup();
+      closeAirCondPopup();
+      closeRwyCondPopup();
+      closeAicePopup();
+      closeTowPopup();
+      stage.classList.add('conf-open');
+      updateConfUi();
+      positionConfPanel();
+    };
+
+    const AIR_COND_VALUES = ['Off', 'On (STD)'];
+
+    const normalizeAirCondSelection = (value) => {
+      const cleaned = String(value || '').trim();
+      const matched = AIR_COND_VALUES.find((item) => item.toLowerCase() === cleaned.toLowerCase());
+      return matched || 'On (STD)';
+    };
+
+    const updateAirCondUi = () => {
+      if (airCondValue) {
+        airCondValue.textContent = isSameOption(airCondSelection, airCondStdSelection)
+          ? withStdSuffix(airCondSelection)
+          : removeStdSuffix(airCondSelection);
+      }
+      stage?.classList.toggle('aircond-filled', airCondConfirmed);
+      airCondOptionButtons.forEach((button) => {
+        button.classList.toggle('active', button.dataset.value === airCondSelection);
+        const label = button.querySelector('.aircond-option-label');
+        if (label) {
+          const value = button.dataset.value || '';
+          label.textContent = isSameOption(value, airCondStdSelection)
+            ? withStdSuffix(value)
+            : removeStdSuffix(value);
+        }
+      });
+      updateTakeoffIncompleteMessage();
+    };
+
+    const loadAirCondData = () => {
+      airCondStdSelection = normalizeAirCondSelection(localStorage.getItem(takeoffAirCondStorageKey) || 'On (STD)');
+      airCondSelection = airCondStdSelection;
+      airCondConfirmed = false;
+      updateAirCondUi();
+    };
+
+    const saveAirCondData = () => {};
+
+    const positionAirCondPanel = () => {
+      if (!stage || !airCondEditBtn || !airCondPanel) {
+        return;
+      }
+
+      const stageRect = stage.getBoundingClientRect();
+      const btnRect = airCondEditBtn.getBoundingClientRect();
+      const panelWidth = airCondPanel.offsetWidth || 280;
+      const panelHeight = airCondPanel.offsetHeight || 220;
+
+      const minLeft = 8;
+      const maxLeft = Math.max(minLeft, stageRect.width - panelWidth - 8);
+      let panelLeft = (btnRect.right - stageRect.left) + 33;
+      panelLeft = Math.min(Math.max(panelLeft, minLeft), maxLeft);
+
+      const minTop = 8;
+      const maxTop = Math.max(minTop, stageRect.height - panelHeight - 8);
+      const btnCenterY = btnRect.top - stageRect.top + (btnRect.height / 2);
+      const panelTopOffset = 95;
+      let panelTop = btnCenterY - panelTopOffset;
+      panelTop = Math.min(Math.max(panelTop, minTop), maxTop);
+
+      airCondPanel.style.setProperty('--aircond-panel-left', `${panelLeft}px`);
+      airCondPanel.style.setProperty('--aircond-panel-top', `${panelTop}px`);
+      const arrowY = (btnCenterY - panelTop) / 1.25;
+      airCondPanel.style.setProperty('--aircond-arrow-y', `${arrowY}px`);
+    };
+
+    const openAirCondPopup = () => {
+      closeAirportPopup();
+      closeRwyPopup();
+      closeWindPopup();
+      closeOatPopup();
+      closeQnhPopup();
+      closeToThrustPopup();
+      closeConfPopup();
+      closeRwyCondPopup();
+      closeAicePopup();
+      closeTowPopup();
+      stage.classList.add('aircond-open');
+      updateAirCondUi();
+      positionAirCondPanel();
     };
 
     const updateRwyCondUi = () => {
@@ -4986,6 +5647,9 @@
       closeWindPopup();
       closeOatPopup();
       closeQnhPopup();
+      closeToThrustPopup();
+      closeConfPopup();
+      closeAirCondPopup();
       closeAicePopup();
       closeTowPopup();
       stage.classList.add('rwycond-open');
@@ -4999,6 +5663,9 @@
       closeWindPopup();
       closeOatPopup();
       closeQnhPopup();
+      closeToThrustPopup();
+      closeConfPopup();
+      closeAirCondPopup();
       closeRwyCondPopup();
       closeTowPopup();
       stage.classList.add('aice-open');
@@ -5045,6 +5712,9 @@
     loadQnhData();
     updateQnhUi();
     loadTowData();
+    loadToThrustData();
+    loadConfData();
+    loadAirCondData();
     loadRwyCondData();
     loadAiceData();
 
@@ -5178,6 +5848,51 @@
       updateTowUi();
     });
 
+    toThrustEditBtn?.addEventListener('click', openToThrustPopup);
+    toThrustOpenTriggers.forEach((trigger) => {
+      trigger.addEventListener('click', openToThrustPopup);
+    });
+    toThrustCloseBtn?.addEventListener('click', closeToThrustPopup);
+    toThrustBackdrop?.addEventListener('click', closeToThrustPopup);
+    toThrustOptionButtons.forEach((button) => {
+      button.addEventListener('click', () => {
+        toThrustSelection = normalizeToThrustSelection(button.dataset.value || '');
+        toThrustConfirmed = true;
+        updateToThrustUi();
+        void openConfAfterToThrustClose();
+      });
+    });
+
+    confEditBtn?.addEventListener('click', openConfPopup);
+    confOpenTriggers.forEach((trigger) => {
+      trigger.addEventListener('click', openConfPopup);
+    });
+    confCloseBtn?.addEventListener('click', closeConfPopup);
+    confBackdrop?.addEventListener('click', closeConfPopup);
+    confOptionButtons.forEach((button) => {
+      button.addEventListener('click', () => {
+        confSelection = normalizeConfSelection(button.dataset.value || '');
+        confConfirmed = true;
+        updateConfUi();
+        void openAirCondAfterConfClose();
+      });
+    });
+
+    airCondEditBtn?.addEventListener('click', openAirCondPopup);
+    airCondOpenTriggers.forEach((trigger) => {
+      trigger.addEventListener('click', openAirCondPopup);
+    });
+    airCondCloseBtn?.addEventListener('click', closeAirCondPopup);
+    airCondBackdrop?.addEventListener('click', closeAirCondPopup);
+    airCondOptionButtons.forEach((button) => {
+      button.addEventListener('click', () => {
+        airCondSelection = normalizeAirCondSelection(button.dataset.value || '');
+        airCondConfirmed = true;
+        updateAirCondUi();
+        closeAirCondPopup();
+      });
+    });
+
     rwyCondEditBtn?.addEventListener('click', openRwyCondPopup);
     rwyCondOpenTriggers.forEach((trigger) => {
       trigger.addEventListener('click', openRwyCondPopup);
@@ -5290,9 +6005,13 @@
           return;
         }
 
-        if (action === 'next' || action === 'done') {
+        if (action === 'next') {
+          void openToThrustAfterTowClose();
+          return;
+        }
+
+        if (action === 'done') {
           closeTowPopup();
-          saveTowData();
         }
       });
     });
@@ -5478,8 +6197,6 @@
         if (action === 'next') {
           if (activeWindField === 'dir') {
             activeWindField = 'speed';
-          } else if (activeWindField === 'speed') {
-            activeWindField = 'gust';
           } else {
             void openOatAfterWindClose();
             return;
@@ -5534,6 +6251,18 @@
 
       if (stage?.classList.contains('tow-open')) {
         positionTowPanel();
+      }
+
+      if (stage?.classList.contains('tothrust-open')) {
+        positionToThrustPanel();
+      }
+
+      if (stage?.classList.contains('conf-open')) {
+        positionConfPanel();
+      }
+
+      if (stage?.classList.contains('aircond-open')) {
+        positionAirCondPanel();
       }
 
       if (stage?.classList.contains('rwycond-open')) {
