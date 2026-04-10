@@ -5048,7 +5048,6 @@
       oatInputRaw = '';
       oatStoredUnit = 'c';
       oatStoredRaw = '';
-      oatUnitSelectorOpen = false;
       updateOatUi();
     });
 
@@ -5058,7 +5057,6 @@
       oatInputRaw = '';
       oatStoredUnit = 'f';
       oatStoredRaw = '';
-      oatUnitSelectorOpen = false;
       updateOatUi();
     });
 
@@ -5066,7 +5064,6 @@
       oatDraftC = '';
       oatInputRaw = '';
       oatStoredRaw = '';
-      oatUnitSelectorOpen = false;
       updateOatUi();
     });
 
@@ -5087,7 +5084,6 @@
       qnhInputRaw = '';
       qnhStoredUnit = 'hpa';
       qnhStoredRaw = '';
-      qnhUnitSelectorOpen = false;
       updateQnhUi();
     });
 
@@ -5097,7 +5093,6 @@
       qnhInputRaw = '';
       qnhStoredUnit = 'inhg';
       qnhStoredRaw = '';
-      qnhUnitSelectorOpen = false;
       updateQnhUi();
     });
 
@@ -5105,7 +5100,6 @@
       qnhDraftHpa = '';
       qnhInputRaw = '';
       qnhStoredRaw = '';
-      qnhUnitSelectorOpen = false;
       updateQnhUi();
     });
 
@@ -5128,14 +5122,12 @@
     towUnitKg?.addEventListener('click', () => {
       towInputUnit = 'kg';
       towRaw = String(towKg);
-      towUnitSelectorOpen = false;
       updateTowUi();
     });
 
     towUnitLb?.addEventListener('click', () => {
       towInputUnit = 'lb';
       towRaw = String(Math.round(towKg / 0.453592));
-      towUnitSelectorOpen = false;
       updateTowUi();
     });
 
@@ -5334,7 +5326,6 @@
     windDirField?.addEventListener('click', () => {
       windDraft.dir = '';
       activeWindField = 'dir';
-      windUnitSelectorOpen = false;
       updateWindUi();
     });
 
@@ -5345,7 +5336,6 @@
       } else {
         windDraft.speed = '';
         windMsDraft.speed = '';
-        windUnitSelectorOpen = false;
       }
       updateWindUi();
     });
@@ -5357,14 +5347,12 @@
       } else {
         windDraft.gust = '';
         windMsDraft.gust = '';
-        windUnitSelectorOpen = false;
       }
       updateWindUi();
     });
 
     windUnitKt?.addEventListener('click', () => {
       windInputUnit = 'kt';
-      windUnitSelectorOpen = false;
       updateWindUi();
     });
 
@@ -5374,7 +5362,6 @@
       windMsDraft.speed = '';
       windMsDraft.gust = '';
       windInputUnit = 'ms';
-      windUnitSelectorOpen = false;
       updateWindUi();
     });
 
