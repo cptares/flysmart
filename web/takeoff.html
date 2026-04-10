@@ -453,10 +453,7 @@
     .wind-unit-btn,
     .oat-unit-btn,
     .wind-key-btn,
-    .setting-option,
-    #rwyVizNumber,
-    #rwyVizLength,
-    #rwyVizScaleLabel {
+    .setting-option {
       font-family: "Gill Sans MT Condensed", "Arial Narrow", "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
     }
 
@@ -2089,6 +2086,47 @@
       opacity: 1;
     }
 
+    #rwyVizNumber {
+      position: absolute;
+      right: calc(clamp(10px, 1.4vw, 28px) + 55px);
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: clamp(28px, 2.2vw, 48px);
+      font-weight: 700;
+      color: #ffffff;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      text-shadow: 0 1px 4px rgba(0,0,0,0.7);
+      pointer-events: none;
+      z-index: 100;
+      opacity: 0;
+      transition: opacity 480ms ease;
+    }
+
+    .stage.rwy-filled #rwyVizNumber {
+      opacity: 1;
+    }
+
+    .stage.rwy-filled {
+      background-image: url("./takeoffpage2.png.png");
+    }
+
+    #rwyPageImg {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      z-index: 1;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 400ms ease;
+    }
+
+    .stage.rwy-filled #rwyPageImg {
+      opacity: 1;
+    }
+
     #takeoffIncompleteMessage {
       position: absolute;
       top: 50%;
@@ -2109,138 +2147,6 @@
 
     #takeoffIncompleteMessage[hidden] {
       display: none;
-    }
-
-    .rwy-viz-track {
-      position: relative;
-      width: clamp(56px, 4.4vw, 92px);
-      height: clamp(440px, 64vh, 920px);
-      background: #0e0e0e;
-      border-radius: 3px;
-      overflow: hidden;
-      box-shadow: none;
-    }
-
-    /* Threshold piano stripes — BOTTOM of strip, thin lines */
-    .rwy-viz-threshold {
-      position: absolute;
-      bottom: 2%;
-      left: 12%;
-      right: 12%;
-      height: 5%;
-      background: repeating-linear-gradient(
-        to right,
-        rgba(255, 255, 255, 0.88) 0px,
-        rgba(255, 255, 255, 0.88) 3px,
-        transparent 3px,
-        transparent calc(100% / 8)
-      );
-    }
-
-    /* Runway number above threshold */
-    .rwy-viz-number {
-      position: absolute;
-      bottom: 9%;
-      left: 0;
-      right: 0;
-      text-align: center;
-      font-size: clamp(24px, 1.95vw, 40px);
-      font-weight: 700;
-      color: #ffffff;
-      letter-spacing: 1.5px;
-      text-transform: uppercase;
-    }
-
-    /* Centerline segments – bottom-to-top layout */
-    .rwy-viz-cl {
-      position: absolute;
-      left: 50%;
-      transform: translateX(-50%);
-      width: clamp(3px, 0.28vw, 5px);
-      background: repeating-linear-gradient(
-        to top,
-        #ffffff 0%,
-        #ffffff 55%,
-        transparent 55%,
-        transparent 100%
-      );
-      background-size: 100% clamp(28px, 4vh, 52px);
-    }
-
-    /* Lower segment: exactly 4 dashes above the number */
-    .rwy-viz-cl-top {
-      bottom: 17%;
-      height: calc(4 * clamp(28px, 4vh, 52px) - 3px);
-      top: auto;
-      -webkit-mask-image: linear-gradient(to bottom, transparent 0px, black 14px);
-      mask-image: linear-gradient(to bottom, transparent 0px, black 14px);
-    }
-
-    /* Upper segment: resumes 90px above the label gap */
-    .rwy-viz-cl-bottom {
-      bottom: calc(17% + 4 * clamp(28px, 4vh, 52px) + clamp(24px, 3vh, 44px) + 90px);
-      top: 3%;
-      height: auto;
-      -webkit-mask-image: linear-gradient(to bottom, transparent 0px, black 14px);
-      mask-image: linear-gradient(to bottom, transparent 0px, black 14px);
-    }
-
-    /* Length label — sits centred in the gap between the two CL segments */
-    .rwy-viz-length-block {
-      position: absolute;
-      bottom: calc(17% + 4 * clamp(28px, 4vh, 52px) + 40px);
-      height: clamp(24px, 3vh, 44px);
-      top: auto;
-      left: 0;
-      right: 0;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      text-align: center;
-    }
-
-    .rwy-viz-length {
-      font-size: clamp(18px, 1.566vw, 29px);
-      font-weight: 700;
-      color: #ffffff;
-      position: relative;
-      left: -2px;
-      writing-mode: vertical-rl;
-      transform: rotate(180deg) translateY(-5px);
-      letter-spacing: 1px;
-      white-space: nowrap;
-    }
-
-    /* Scale bracket — right side, aligned with lower centerline */
-    .rwy-viz-scale {
-      position: absolute;
-      left: calc(100% + 5px);
-      bottom: 17%;
-      top: auto;
-      height: clamp(28px, 4vh, 52px);
-      display: flex;
-      flex-direction: row;
-      align-items: center;
-      gap: 3px;
-    }
-
-    .rwy-viz-scale-bracket {
-      height: 100%;
-      width: 7px;
-      border-top: 1px solid rgba(255, 255, 255, 0.7);
-      border-right: 1px solid rgba(255, 255, 255, 0.7);
-      border-bottom: 1px solid rgba(255, 255, 255, 0.7);
-      border-left: none;
-      flex-shrink: 0;
-    }
-
-    .rwy-viz-scale-text {
-      font-size: clamp(6px, 0.52vw, 10px);
-      color: rgba(255, 255, 255, 0.7);
-      white-space: nowrap;
-      letter-spacing: 0.3px;
-      writing-mode: vertical-rl;
-      transform: rotate(180deg);
     }
 
     .wind-sock-overlay {
@@ -2323,10 +2229,6 @@
         padding: 0;
       }
 
-      .rwy-viz-track {
-        margin-left: -50px;
-      }
-
       .wind-sock-overlay {
         --wind-sock-width: clamp(45px, 3.5vw, 75px);
         --wind-sock-height: clamp(55px, 4.5vw, 95px);
@@ -2405,10 +2307,6 @@
         padding: 0;
       }
 
-      .rwy-viz-track {
-        margin-left: -50px;
-      }
-
       .wind-sock-overlay {
         --wind-sock-width: clamp(50px, 3.8vw, 80px);
         --wind-sock-height: clamp(60px, 4.8vw, 100px);
@@ -2485,10 +2383,6 @@
     /* General iPad Touch Optimization */
     /* ────────────────────────────────────────────── */
     @media only screen and (min-width: 700px) and (max-width: 1400px) and (pointer: coarse) {
-      .rwy-viz-track {
-        margin-left: -50px;
-      }
-
       :root {
         --ipad-popup-width: 320px;
         --ipad-popup-scale: 1.25;
@@ -2511,14 +2405,6 @@
         min-height: var(--ipad-popup-min-height);
         max-width: none;
         transform: scale(var(--ipad-popup-scale));
-      }
-
-      .rwy-viz-number {
-        font-size: clamp(28.8px, 2.34vw, 48px);
-      }
-
-      .rwy-viz-length {
-        font-size: clamp(27px, 2.349vw, 43.5px);
       }
 
       #takeoffIncompleteMessage {
@@ -2618,10 +2504,6 @@
         --ipad-popup-min-height: 340px;
       }
 
-      .rwy-viz-track {
-        margin-left: -50px;
-      }
-
       .wind-sock-overlay {
         --wind-sock-width: clamp(50px, 3.8vw, 80px);
         --wind-sock-height: clamp(60px, 4.8vw, 100px);
@@ -2691,14 +2573,6 @@
         min-height: var(--ipad-popup-min-height);
         max-width: none;
         transform: scale(var(--ipad-popup-scale));
-      }
-
-      .rwy-viz-number {
-        font-size: clamp(28.8px, 2.34vw, 48px);
-      }
-
-      .rwy-viz-length {
-        font-size: clamp(27px, 2.349vw, 43.5px);
       }
 
       #takeoffIncompleteMessage {
@@ -3434,21 +3308,12 @@
       </div>
     </section>
 
+    <!-- ── RUNWAY BG IMAGE ── -->
+    <img id="rwyPageImg" src="./takeoffrwy.png" alt="" aria-hidden="true">
+
     <!-- ── RUNWAY VISUALIZATION ── -->
     <div id="rwyVisualization" aria-hidden="true">
-      <div class="rwy-viz-track">
-        <div class="rwy-viz-threshold"></div>
-        <div id="rwyVizNumber" class="rwy-viz-number"></div>
-        <div class="rwy-viz-cl rwy-viz-cl-top"></div>
-        <div class="rwy-viz-length-block">
-          <span id="rwyVizLength" class="rwy-viz-length"></span>
-        </div>
-        <div class="rwy-viz-cl rwy-viz-cl-bottom"></div>
-        <div class="rwy-viz-scale">
-          <div class="rwy-viz-scale-bracket"></div>
-          <span id="rwyVizScaleLabel" class="rwy-viz-scale-text"></span>
-        </div>
-      </div>
+      <div id="rwyVizNumber" class="rwy-viz-number"></div>
       <img src="wind.png" alt="Wind sock" class="wind-sock-overlay" aria-hidden="true" />
       <svg class="wind-components-diagram" viewBox="0 0 84 84" aria-hidden="true">
         <circle id="windComponentCenter" cx="42" cy="42" r="4" fill="#55ff55" />
@@ -3988,16 +3853,12 @@
     };
 
     const updateRunwayVisualization = () => {
-      const vizLength = document.querySelector('#rwyVizLength');
       const vizNumber = document.querySelector('#rwyVizNumber');
-      const vizScaleLabel = document.querySelector('#rwyVizScaleLabel');
 
-      if (!vizLength || !vizNumber || !vizScaleLabel) return;
+      if (!vizNumber) return;
 
-      if (selectedRunway === 'NIL' || !selectedRunwayLengthM) {
-        vizLength.textContent = '';
+      if (selectedRunway === 'NIL') {
         vizNumber.textContent = '';
-        vizScaleLabel.textContent = '';
         return;
       }
 
@@ -4008,9 +3869,7 @@
       const step = rawSegment >= 100 ? 50 : 25;
       const segmentM = Math.round(rawSegment / step) * step || Math.round(rawSegment);
 
-      vizLength.textContent = `${selectedRunwayLengthM} m`;
       vizNumber.textContent = selectedRunway;
-      vizScaleLabel.textContent = `${segmentM} m`;
     };
 
     const resetTakeoffDependentData = () => {
