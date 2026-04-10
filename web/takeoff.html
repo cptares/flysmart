@@ -1080,6 +1080,11 @@
       overflow: hidden;
     }
 
+    #towPanel .tow-main-field {
+      border: 1px solid #000000 !important;
+      box-shadow: inset 0 8px 8px -8px rgba(0, 0, 0, 0.7), inset 0 -8px 8px -8px rgba(0, 0, 0, 0.7), inset 8px 0 8px -8px rgba(0, 0, 0, 0.7), inset -8px 0 8px -8px rgba(0, 0, 0, 0.7) !important;
+    }
+
     .tow-field-btn {
       flex: 0 1 7ch;
       border: 0;
@@ -1097,7 +1102,7 @@
     .tow-unit-label {
       border: 0;
       background: transparent;
-      color: #f2f4f7;
+      color: #878e99;
       font-size: 18px;
       font-weight: 700;
       text-transform: none;
@@ -1157,6 +1162,10 @@
       overflow: visible;
       opacity: 1;
       pointer-events: auto;
+    }
+
+    #towPanel .tow-unit-selector.visible {
+      box-shadow: inset 0 8px 8px -8px rgba(0, 0, 0, 0.7), inset 0 -8px 8px -8px rgba(0, 0, 0, 0.7) !important;
     }
 
     .tow-unit-selector::before {
@@ -1351,6 +1360,38 @@
       font-size: 11.25px;
     }
 
+    #towKeypad .wind-key-btn[data-key="0"],
+    #towKeypad .wind-key-btn[data-key="1"],
+    #towKeypad .wind-key-btn[data-key="2"],
+    #towKeypad .wind-key-btn[data-key="3"],
+    #towKeypad .wind-key-btn[data-key="4"],
+    #towKeypad .wind-key-btn[data-key="5"],
+    #towKeypad .wind-key-btn[data-key="6"],
+    #towKeypad .wind-key-btn[data-key="7"],
+    #towKeypad .wind-key-btn[data-key="8"],
+    #towKeypad .wind-key-btn[data-key="9"] {
+      font-size: 19.125px;
+    }
+
+    #towKeypad .wind-key-btn.action[data-action="done"],
+    #towKeypad .wind-key-btn.action[data-action="next"] {
+      font-size: 15.525px;
+    }
+
+    #towKeypad .wind-key-btn.action[data-action="backspace"] {
+      font-size: 0;
+      padding: 0;
+      display: grid;
+      place-items: center;
+    }
+
+    .tow-backspace-icon {
+      width: 22px;
+      height: 22px;
+      display: block;
+      pointer-events: none;
+    }
+
     .wind-header {
       display: flex;
       align-items: center;
@@ -1396,10 +1437,54 @@
       color: #f2f5f8;
       font-size: 22px;
       font-weight: 700;
-      display: grid;
-      place-items: center;
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+      padding: 0 48px 0 10px;
       cursor: pointer;
       white-space: nowrap;
+    }
+
+    .wind-field::before {
+      position: absolute;
+      right: 30px;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 18px;
+      font-weight: 700;
+      color: #878e99;
+      letter-spacing: 0.1px;
+      pointer-events: none;
+      content: '';
+    }
+
+    .wind-field.unit-deg::before {
+      content: '\00B0';
+    }
+
+    .wind-field.unit-kt::before {
+      content: 'kt';
+    }
+
+    .wind-field::after {
+      content: '\00D7';
+      position: absolute;
+      right: 6px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 17.6px;
+      height: 17.6px;
+      border: 0.8px solid #000000;
+      border-radius: 999px;
+      background: linear-gradient(180deg, #f7f9fb 0%, #e2e7ec 100%);
+      color: #4f5b64;
+      font-size: 14px;
+      line-height: 1;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      pointer-events: none;
     }
 
     .wind-field.active {
@@ -2430,6 +2515,170 @@
       }
     }
 
+    /* TOW visual system replicated on WIND / OAT / QNH while preserving existing behavior. */
+    #windPanel,
+    #windPanel *,
+    #oatPanel,
+    #oatPanel *,
+    #qnhPanel,
+    #qnhPanel * {
+      box-shadow: none !important;
+      text-shadow: none !important;
+    }
+
+    .wind-panel,
+    .oat-panel,
+    .qnh-panel {
+      width: 320px;
+      border: 1px solid #000000;
+      padding: 18px 8px 28px;
+    }
+
+    .wind-panel::before,
+    .oat-panel::before,
+    .qnh-panel::before {
+      left: -12px;
+      border-top: 9px solid transparent;
+      border-bottom: 9px solid transparent;
+      border-right: 12px solid #000000;
+    }
+
+    .wind-panel::after,
+    .oat-panel::after,
+    .qnh-panel::after {
+      left: -11px;
+      border-top: 8px solid transparent;
+      border-bottom: 8px solid transparent;
+      border-right: 11px solid #878e99;
+    }
+
+    .wind-close,
+    .oat-close {
+      border-radius: 5.58px;
+      padding: 4.65px 9.3px;
+      font-size: 10.23px;
+      text-transform: none;
+      position: relative;
+      top: -10px;
+    }
+
+    #oatPanel .oat-main-field,
+    #qnhPanel .oat-main-field,
+    #windPanel .wind-field {
+      border: 1px solid #000000;
+      box-shadow: inset 0 8px 8px -8px rgba(0, 0, 0, 0.7), inset 0 -8px 8px -8px rgba(0, 0, 0, 0.7), inset 8px 0 8px -8px rgba(0, 0, 0, 0.7), inset -8px 0 8px -8px rgba(0, 0, 0, 0.7);
+    }
+
+    #windPanel .wind-unit-selector,
+    #oatPanel .oat-unit-selector,
+    #qnhPanel .oat-unit-selector {
+      position: relative;
+      display: flex;
+      width: 100%;
+      max-height: 0;
+      margin: 0;
+      padding: 0 9px;
+      border: 0;
+      border-top: 0 solid rgba(0, 0, 0, 0.45);
+      border-bottom: 0 solid rgba(0, 0, 0, 0.45);
+      border-radius: 0;
+      background: rgba(40, 43, 48, 0.85);
+      justify-content: center;
+      gap: 100px;
+      overflow: hidden;
+      opacity: 0;
+      pointer-events: none;
+      transition: max-height 0.7s ease, margin-bottom 0.7s ease, padding-top 0.7s ease, padding-bottom 0.7s ease, border-top-width 0.7s ease, border-bottom-width 0.7s ease, opacity 0.35s ease;
+    }
+
+    #windPanel .wind-unit-selector.visible,
+    #oatPanel .oat-unit-selector.visible,
+    #qnhPanel .oat-unit-selector.visible {
+      max-height: 64px;
+      margin: 0 0 10px;
+      padding-top: 7px;
+      padding-bottom: 7px;
+      border-top-width: 1px;
+      border-bottom-width: 1px;
+      overflow: visible;
+      opacity: 1;
+      pointer-events: auto;
+      box-shadow: inset 0 8px 8px -8px rgba(0, 0, 0, 0.7), inset 0 -8px 8px -8px rgba(0, 0, 0, 0.7) !important;
+    }
+
+    #windPanel .wind-unit-selector::before,
+    #oatPanel .oat-unit-selector::before,
+    #qnhPanel .oat-unit-selector::before {
+      border-bottom: 7px solid rgba(40, 43, 48, 0.85);
+    }
+
+    #windKeypad,
+    #oatKeypad,
+    #qnhKeypad {
+      width: 75%;
+      margin: 0 auto;
+      gap: 12px;
+    }
+
+    #windKeypad .wind-key-btn,
+    #oatKeypad .wind-key-btn,
+    #qnhKeypad .wind-key-btn {
+      height: 42px;
+      border-radius: 6.75px;
+      font-size: 12.75px;
+    }
+
+    #windKeypad .wind-key-btn.action,
+    #windKeypad .wind-key-btn.sign,
+    #oatKeypad .wind-key-btn.action,
+    #oatKeypad .wind-key-btn.sign,
+    #qnhKeypad .wind-key-btn.action,
+    #qnhKeypad .wind-key-btn.sign {
+      font-size: 11.25px;
+    }
+
+    #windKeypad .wind-key-btn[data-key="0"],
+    #windKeypad .wind-key-btn[data-key="1"],
+    #windKeypad .wind-key-btn[data-key="2"],
+    #windKeypad .wind-key-btn[data-key="3"],
+    #windKeypad .wind-key-btn[data-key="4"],
+    #windKeypad .wind-key-btn[data-key="5"],
+    #windKeypad .wind-key-btn[data-key="6"],
+    #windKeypad .wind-key-btn[data-key="7"],
+    #windKeypad .wind-key-btn[data-key="8"],
+    #windKeypad .wind-key-btn[data-key="9"],
+    #oatKeypad .wind-key-btn[data-key="0"],
+    #oatKeypad .wind-key-btn[data-key="1"],
+    #oatKeypad .wind-key-btn[data-key="2"],
+    #oatKeypad .wind-key-btn[data-key="3"],
+    #oatKeypad .wind-key-btn[data-key="4"],
+    #oatKeypad .wind-key-btn[data-key="5"],
+    #oatKeypad .wind-key-btn[data-key="6"],
+    #oatKeypad .wind-key-btn[data-key="7"],
+    #oatKeypad .wind-key-btn[data-key="8"],
+    #oatKeypad .wind-key-btn[data-key="9"],
+    #qnhKeypad .wind-key-btn[data-key="0"],
+    #qnhKeypad .wind-key-btn[data-key="1"],
+    #qnhKeypad .wind-key-btn[data-key="2"],
+    #qnhKeypad .wind-key-btn[data-key="3"],
+    #qnhKeypad .wind-key-btn[data-key="4"],
+    #qnhKeypad .wind-key-btn[data-key="5"],
+    #qnhKeypad .wind-key-btn[data-key="6"],
+    #qnhKeypad .wind-key-btn[data-key="7"],
+    #qnhKeypad .wind-key-btn[data-key="8"],
+    #qnhKeypad .wind-key-btn[data-key="9"] {
+      font-size: 19.125px;
+    }
+
+    #windKeypad .wind-key-btn.action[data-action="done"],
+    #windKeypad .wind-key-btn.action[data-action="next"],
+    #oatKeypad .wind-key-btn.action[data-action="done"],
+    #oatKeypad .wind-key-btn.action[data-action="next"],
+    #qnhKeypad .wind-key-btn.action[data-action="done"],
+    #qnhKeypad .wind-key-btn.action[data-action="next"] {
+      font-size: 15.525px;
+    }
+
     /* ─── Portrait orientation lock overlay ─── */
     #rotate-overlay {
       display: none;
@@ -2606,9 +2855,9 @@
         <button id="windCloseBtn" class="wind-close" type="button">Close</button>
       </div>
       <div class="wind-fields">
-        <button id="windDirField" class="wind-field active" type="button"></button>
-        <button id="windSpeedField" class="wind-field" type="button"></button>
-        <button id="windGustField" class="wind-field" type="button"></button>
+        <button id="windDirField" class="wind-field unit-deg active" type="button"></button>
+        <button id="windSpeedField" class="wind-field unit-kt" type="button"></button>
+        <button id="windGustField" class="wind-field unit-kt" type="button"></button>
       </div>
       <div id="windUnitSelector" class="wind-unit-selector" aria-label="Selettore unita vento">
         <button id="windUnitKt" class="wind-unit-btn active" type="button">
@@ -2630,7 +2879,7 @@
         <button type="button" class="wind-key-btn" data-key="4">4</button>
         <button type="button" class="wind-key-btn" data-key="5">5</button>
         <button type="button" class="wind-key-btn" data-key="6">6</button>
-        <button type="button" class="wind-key-btn action" data-action="backspace">&#10006;</button>
+        <button type="button" class="wind-key-btn action" data-action="backspace">&#9003;</button>
 
         <button type="button" class="wind-key-btn" data-key="7">7</button>
         <button type="button" class="wind-key-btn" data-key="8">8</button>
@@ -2675,7 +2924,13 @@
         <button type="button" class="wind-key-btn" data-key="4">4</button>
         <button type="button" class="wind-key-btn" data-key="5">5</button>
         <button type="button" class="wind-key-btn" data-key="6">6</button>
-        <button type="button" class="wind-key-btn action" data-action="backspace">&#10006;</button>
+        <button type="button" class="wind-key-btn action" data-action="backspace" aria-label="Backspace">
+          <svg class="tow-backspace-icon" viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M10 5H20C21.1 5 22 5.9 22 7V17C22 18.1 21.1 19 20 19H10L3 12L10 5Z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+            <path d="M11.5 9.5L16.5 14.5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            <path d="M16.5 9.5L11.5 14.5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+          </svg>
+        </button>
 
         <button type="button" class="wind-key-btn" data-key="7">7</button>
         <button type="button" class="wind-key-btn" data-key="8">8</button>
@@ -2720,7 +2975,9 @@
         <button type="button" class="wind-key-btn" data-key="4">4</button>
         <button type="button" class="wind-key-btn" data-key="5">5</button>
         <button type="button" class="wind-key-btn" data-key="6">6</button>
-        <button type="button" class="wind-key-btn action" data-action="backspace">&#10006;</button>
+        <button type="button" class="wind-key-btn action" data-action="backspace" aria-label="Backspace">
+          <img class="tow-backspace-icon" src="./tow-backspace-icon.svg" alt="" aria-hidden="true">
+        </button>
 
         <button type="button" class="wind-key-btn" data-key="7">7</button>
         <button type="button" class="wind-key-btn" data-key="8">8</button>
@@ -2797,7 +3054,13 @@
         <button type="button" class="wind-key-btn" data-key="4">4</button>
         <button type="button" class="wind-key-btn" data-key="5">5</button>
         <button type="button" class="wind-key-btn" data-key="6">6</button>
-        <button type="button" class="wind-key-btn action" data-action="backspace">&#10006;</button>
+        <button type="button" class="wind-key-btn action" data-action="backspace" aria-label="Backspace">
+          <svg class="tow-backspace-icon" viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M10 5H20C21.1 5 22 5.9 22 7V17C22 18.1 21.1 19 20 19H10L3 12L10 5Z" fill="#4f5b64" stroke="#4f5b64" stroke-width="1.6" stroke-linejoin="round"/>
+            <path d="M11.5 9L16.5 14" stroke="#ffffff" stroke-width="2" stroke-linecap="round"/>
+            <path d="M16.5 9L11.5 14" stroke="#ffffff" stroke-width="2" stroke-linecap="round"/>
+          </svg>
+        </button>
 
         <button type="button" class="wind-key-btn" data-key="7">7</button>
         <button type="button" class="wind-key-btn" data-key="8">8</button>
@@ -3020,6 +3283,7 @@
     let windInputUnit = 'kt';
     let windDraft = { dir: '', speed: '', gust: '' };
     let windMsDraft = { speed: '', gust: '' };
+    let windUnitSelectorOpen = false;
     let oatDraftC = '';
     let oatInputUnit = 'c';
     let oatInputRaw = '';
@@ -3600,6 +3864,7 @@
 
     const closeWindPopup = () => {
       saveWindData();
+      windUnitSelectorOpen = false;
       stage.classList.remove('wind-open');
     };
 
@@ -3826,7 +4091,7 @@
       windDirField?.classList.toggle('active', activeWindField === 'dir');
       windSpeedField?.classList.toggle('active', activeWindField === 'speed');
       windGustField?.classList.toggle('active', activeWindField === 'gust');
-      windUnitSelector?.classList.toggle('visible', activeWindField === 'speed' || activeWindField === 'gust');
+      windUnitSelector?.classList.toggle('visible', windUnitSelectorOpen && (activeWindField === 'speed' || activeWindField === 'gust'));
       windUnitKt?.classList.toggle('active', windInputUnit === 'kt');
       windUnitMs?.classList.toggle('active', windInputUnit === 'ms');
 
@@ -3836,15 +4101,15 @@
       }
 
       if (windDirField) {
-        windDirField.textContent = windDraft.dir ? `${windDraft.dir}°` : '';
+        windDirField.textContent = windDraft.dir ? `${windDraft.dir}` : '';
       }
       if (windSpeedField) {
         const speedText = windDraft.speed === '' ? '' : String(Number(windDraft.speed));
-        windSpeedField.textContent = speedText ? `${speedText} kt` : '';
+        windSpeedField.textContent = speedText ? `${speedText}` : '';
       }
       if (windGustField) {
         const gustText = windDraft.gust === '' ? '' : String(Number(windDraft.gust));
-        windGustField.textContent = gustText ? `G ${gustText} kt` : '';
+        windGustField.textContent = gustText ? `${gustText}` : '';
       }
       if (windValue) {
         const windSummary = formatWindSummary();
@@ -4039,6 +4304,7 @@
       closeRwyPopup();
       stage.classList.add('wind-open');
       activeWindField = 'dir';
+      windUnitSelectorOpen = false;
       updateWindUi();
       positionWindPanel();
     };
@@ -4772,7 +5038,7 @@
     oatCloseBtn?.addEventListener('click', closeOatPopup);
     oatBackdrop?.addEventListener('click', closeOatPopup);
     oatUnitToggle?.addEventListener('click', () => {
-      oatUnitSelectorOpen = !oatUnitSelectorOpen;
+      oatUnitSelectorOpen = true;
       updateOatUi();
     });
 
@@ -4811,7 +5077,7 @@
     qnhCloseBtn?.addEventListener('click', closeQnhPopup);
     qnhBackdrop?.addEventListener('click', closeQnhPopup);
     qnhUnitToggle?.addEventListener('click', () => {
-      qnhUnitSelectorOpen = !qnhUnitSelectorOpen;
+      qnhUnitSelectorOpen = true;
       updateQnhUi();
     });
 
@@ -4855,7 +5121,7 @@
     });
 
     towUnitLabel?.addEventListener('click', () => {
-      towUnitSelectorOpen = !towUnitSelectorOpen;
+      towUnitSelectorOpen = true;
       updateTowUi();
     });
 
@@ -5053,28 +5319,52 @@
       });
     });
 
+    const isWindUnitClick = (event, fieldButton) => {
+      if (!(event instanceof MouseEvent) || !fieldButton) {
+        return false;
+      }
+
+      const rect = fieldButton.getBoundingClientRect();
+      const clickX = event.clientX - rect.left;
+      const unitZoneStart = rect.width - 78;
+      const unitZoneEnd = rect.width - 24;
+      return clickX >= unitZoneStart && clickX <= unitZoneEnd;
+    };
+
     windDirField?.addEventListener('click', () => {
       windDraft.dir = '';
       activeWindField = 'dir';
+      windUnitSelectorOpen = false;
       updateWindUi();
     });
 
-    windSpeedField?.addEventListener('click', () => {
-      windDraft.speed = '';
-      windMsDraft.speed = '';
+    windSpeedField?.addEventListener('click', (event) => {
       activeWindField = 'speed';
+      if (isWindUnitClick(event, windSpeedField)) {
+        windUnitSelectorOpen = true;
+      } else {
+        windDraft.speed = '';
+        windMsDraft.speed = '';
+        windUnitSelectorOpen = false;
+      }
       updateWindUi();
     });
 
-    windGustField?.addEventListener('click', () => {
-      windDraft.gust = '';
-      windMsDraft.gust = '';
+    windGustField?.addEventListener('click', (event) => {
       activeWindField = 'gust';
+      if (isWindUnitClick(event, windGustField)) {
+        windUnitSelectorOpen = true;
+      } else {
+        windDraft.gust = '';
+        windMsDraft.gust = '';
+        windUnitSelectorOpen = false;
+      }
       updateWindUi();
     });
 
     windUnitKt?.addEventListener('click', () => {
       windInputUnit = 'kt';
+      windUnitSelectorOpen = false;
       updateWindUi();
     });
 
@@ -5084,6 +5374,7 @@
       windMsDraft.speed = '';
       windMsDraft.gust = '';
       windInputUnit = 'ms';
+      windUnitSelectorOpen = false;
       updateWindUi();
     });
 
