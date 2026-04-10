@@ -543,7 +543,7 @@
       transform: scale(1.25);
       transform-origin: top left;
       border-radius: 5px;
-      border: 2px solid #000000;
+      border: 1px solid #000000;
       background: linear-gradient(180deg, #8a919c 0%, #656d78 100%);
       box-shadow: none;
       z-index: 5;
@@ -557,11 +557,11 @@
       content: '';
       position: absolute;
       top: var(--airport-arrow-y, 50%);
-      left: -14px;
+      left: -12px;
       transform: translateY(-50%);
-      border-top: 10px solid transparent;
-      border-bottom: 10px solid transparent;
-      border-right: 14px solid #000000;
+      border-top: 9px solid transparent;
+      border-bottom: 9px solid transparent;
+      border-right: 12px solid #000000;
       z-index: 1;
     }
 
@@ -615,7 +615,7 @@
       transform: scale(1.25);
       transform-origin: top left;
       border-radius: 5px;
-      border: 2px solid #000000;
+      border: 1px solid #000000;
       background: linear-gradient(180deg, #8a919c 0%, #656d78 100%);
       box-shadow: none;
       z-index: 5;
@@ -629,11 +629,11 @@
       content: '';
       position: absolute;
       top: var(--rwy-arrow-y, 50%);
-      left: -14px;
+      left: -12px;
       transform: translateY(-50%);
-      border-top: 10px solid transparent;
-      border-bottom: 10px solid transparent;
-      border-right: 14px solid #000000;
+      border-top: 9px solid transparent;
+      border-bottom: 9px solid transparent;
+      border-right: 12px solid #000000;
       z-index: 1;
     }
 
@@ -712,6 +712,20 @@
     .rwy-option.disabled {
       cursor: default;
       opacity: 0.8;
+    }
+
+    .airport-header,
+    .rwy-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 4px;
+    }
+
+    .airport-header .airport-label,
+    .rwy-header .rwy-label {
+      margin: 0;
+      flex: 1;
     }
 
     .airport-label {
@@ -1619,6 +1633,11 @@
       pointer-events: none;
     }
 
+    .stage:not(.wind-filled) #windEditBtn {
+      visibility: hidden;
+      pointer-events: none;
+    }
+
     #windValue,
     #oatValue,
     #qnhValue,
@@ -1698,7 +1717,7 @@
       transform: scale(1.25);
       transform-origin: top left;
       border-radius: 8px;
-      border: 2px solid #000000;
+      border: 1px solid #000000;
       background: linear-gradient(180deg, #8a919c 0%, #656d78 100%);
       box-shadow: none;
       z-index: 7;
@@ -1718,11 +1737,11 @@
       content: '';
       position: absolute;
       top: var(--rwycond-arrow-y, 50%);
-      left: -14px;
+      left: -12px;
       transform: translateY(-50%);
-      border-top: 10px solid transparent;
-      border-bottom: 10px solid transparent;
-      border-right: 14px solid #000000;
+      border-top: 9px solid transparent;
+      border-bottom: 9px solid transparent;
+      border-right: 12px solid #000000;
       z-index: 1;
     }
 
@@ -2562,6 +2581,13 @@
       top: -10px;
     }
 
+    #airportPanel .wind-close,
+    #rwyPanel .wind-close,
+    #rwyCondPanel .wind-close,
+    #aicePanel .wind-close {
+      top: 0;
+    }
+
     #oatPanel .oat-main-field,
     #qnhPanel .oat-main-field,
     #windPanel .wind-field {
@@ -2835,14 +2861,22 @@
 
     <div id="airportBackdrop" class="airport-backdrop" aria-hidden="true"></div>
     <section id="airportPanel" class="airport-panel" aria-label="Inserimento aeroporto">
-      <p class="airport-label">Airport</p>
+      <div class="airport-header">
+        <span></span>
+        <p class="airport-label">Airport</p>
+        <button id="airportCloseBtn" class="wind-close" type="button">Close</button>
+      </div>
       <p class="airport-help">Select ARPT from the list.</p>
       <input id="airportInput" class="airport-input" type="text" maxlength="8" autocomplete="off" spellcheck="false" placeholder="ICAO">
       <div id="airportSuggestions" class="airport-suggestions" aria-label="Lista aeroporti"></div>
     </section>
 
     <section id="rwyPanel" class="rwy-panel" aria-label="Selezione pista">
-      <p class="rwy-label">RWY</p>
+      <div class="rwy-header">
+        <span></span>
+        <p class="rwy-label">RWY</p>
+        <button id="rwyCloseBtn" class="wind-close" type="button">Close</button>
+      </div>
       <p class="rwy-help">Select RWY from the list.</p>
       <div id="rwySuggestions" class="rwy-suggestions" aria-label="Lista piste"></div>
     </section>
@@ -3207,9 +3241,11 @@
     const windComponentsDiagramEl = document.querySelector('.wind-components-diagram');
     const airportBackdrop = document.querySelector('#airportBackdrop');
     const airportPanel = document.querySelector('#airportPanel');
+    const airportCloseBtn = document.querySelector('#airportCloseBtn');
     const airportInput = document.querySelector('#airportInput');
     const airportSuggestions = document.querySelector('#airportSuggestions');
     const rwyPanel = document.querySelector('#rwyPanel');
+    const rwyCloseBtn = document.querySelector('#rwyCloseBtn');
     const rwySuggestions = document.querySelector('#rwySuggestions');
     const windBackdrop = document.querySelector('#windBackdrop');
     const windPanel = document.querySelector('#windPanel');
@@ -4084,7 +4120,7 @@
       const dirText = windDraft.dir.padStart(3, '0');
       const speedText = hasSpeed ? String(Number(windDraft.speed)) : '0';
       const gustNumber = hasGust ? Number(windDraft.gust) : 0;
-      return `(${dirText}/${speedText}${hasGust && gustNumber > 0 ? `/G${gustNumber}` : ''})`;
+      return `${dirText}/${speedText}${hasGust && gustNumber > 0 ? `/G${gustNumber}` : ''}`;
     };
 
     const updateWindUi = () => {
@@ -4113,7 +4149,7 @@
       }
       if (windValue) {
         const windSummary = formatWindSummary();
-        windValue.textContent = windSummary;
+        windValue.textContent = windSummary || '(000/0)';
         stage?.classList.toggle('wind-filled', windSummary !== '');
       }
 
@@ -5021,9 +5057,12 @@
     });
 
     demiDeiBtn?.addEventListener('click', openAirportPopup);
+    airportCloseBtn?.addEventListener('click', closeAirportPopup);
+    airportBackdrop?.addEventListener('click', closeAirportPopup);
     rwyBtn?.addEventListener('click', () => {
       void openRwyPopup();
     });
+    rwyCloseBtn?.addEventListener('click', closeRwyPopup);
     windEditBtn?.addEventListener('click', openWindPopup);
     windOpenTriggers.forEach((trigger) => {
       trigger.addEventListener('click', openWindPopup);
