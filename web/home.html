@@ -221,7 +221,7 @@
       transform: translate(-50%, -50%);
       width: clamp(300px, 40%, 760px);
       border-radius: 10px;
-      border: 2px solid rgba(95, 103, 112, 0.8);
+      border: 1px solid #000000;
       background: rgba(151, 156, 163, 0.2);
       box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
       z-index: 3;
@@ -244,7 +244,7 @@
       top: var(--panel-top, 0px);
       width: 456px;
       border-radius: 10px;
-      border: 2px solid rgba(95, 103, 112, 0.8);
+      border: 1px solid #000000;
       background: linear-gradient(180deg, #8a919c 0%, #656d78 100%);
       box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
       z-index: 5;
@@ -252,17 +252,32 @@
       opacity: 0;
       pointer-events: none;
       transition: opacity 140ms ease;
+      max-height: calc(100% - 24px);
+      overflow: visible;
     }
 
     .settings-panel::before {
       content: "";
       position: absolute;
-      top: -20px;
+      top: -13px;
       left: var(--arrow-x, 392px);
       transform: translateX(-50%);
-      border-left: 16px solid transparent;
-      border-right: 16px solid transparent;
-      border-bottom: 20px solid rgba(95, 103, 112, 0.8);
+      border-left: 10px solid transparent;
+      border-right: 10px solid transparent;
+      border-bottom: 13px solid #000000;
+      z-index: 1;
+    }
+
+    .settings-panel::after {
+      content: "";
+      position: absolute;
+      top: -12px;
+      left: var(--arrow-x, 392px);
+      transform: translateX(-50%);
+      border-left: 9px solid transparent;
+      border-right: 9px solid transparent;
+      border-bottom: 12px solid #878e99;
+      z-index: 2;
     }
 
     .stage.settings-open .settings-backdrop,
@@ -280,32 +295,33 @@
 
     .simbrief-field {
       position: relative;
-      margin-bottom: 20px;
+      width: 75%;
+      margin: 0 auto 18px;
     }
 
     .simbrief-label {
       position: absolute;
-      left: 20px;
+      left: 16px;
       top: 50%;
       transform: translateY(-50%);
       color: #ffffff;
-      font-size: 32px;
-      letter-spacing: 0.5px;
+      font-size: 24px;
+      letter-spacing: 0.2px;
       pointer-events: none;
       z-index: 1;
     }
 
     .simbrief-display {
       width: 100%;
-      height: 72px;
-      border: 1px solid rgba(180, 186, 196, 0.24);
-      border-radius: 10px;
-      background: var(--panel-dark);
-      box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.5);
+      height: 52px;
+      border: 1px solid #000000;
+      border-radius: 8px;
+      background: rgba(57, 60, 66, 0.92);
+      box-shadow: inset 0 1px 3px rgba(255, 255, 255, 0.06), inset 0 -2px 6px rgba(0, 0, 0, 0.35);
       color: #e8da32;
-      padding: 0 20px 0 220px;
-      font-size: 32px;
-      letter-spacing: 0.5px;
+      padding: 0 12px 0 180px;
+      font-size: 24px;
+      letter-spacing: 0.2px;
       outline: none;
       text-align: right;
       caret-color: transparent;
@@ -316,51 +332,272 @@
     }
 
     .settings-keypad {
-      width: 100%;
+      width: 75%;
+      margin: 0 auto;
       display: grid;
       grid-template-columns: repeat(4, 1fr);
-      gap: 16px;
+      gap: 12px;
     }
 
-    .key-btn {
+    .settings-keypad .key-btn {
       width: 100%;
-      height: 68px;
-      border: 1px solid rgba(189, 196, 208, 0.7);
-      border-radius: 10px;
-      background: linear-gradient(180deg, #ffffff 0%, #e8ebef 100%);
-      color: #42454b;
-      font-size: 24px;
+      height: 42px;
+      border: 1px solid #5f6670;
+      border-radius: 6.75px;
+      background: linear-gradient(180deg, #f7f9fb 0%, #e2e7ec 100%);
+      color: #4f5b64;
+      font-size: 12.75px;
       font-weight: 700;
       cursor: pointer;
       line-height: 1;
-      text-shadow: 0 1px 0 rgba(255, 255, 255, 0.7);
-      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.8), 0 1px 1px rgba(0, 0, 0, 0.08);
+      text-shadow: 0 1px 0 rgba(255, 255, 255, 0.4);
+      box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.95),
+        0 2px 0 rgba(54, 61, 69, 0.45);
     }
 
-    .key-btn:active {
+    .settings-keypad .key-btn:active {
       transform: translateY(1px);
-      filter: brightness(0.96);
+      box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.75),
+        0 1px 0 rgba(54, 61, 69, 0.45);
+      filter: brightness(0.98);
     }
 
-    .key-btn.empty {
+    .settings-keypad .key-btn.empty {
       background: transparent;
       border-color: transparent;
       box-shadow: none;
       pointer-events: none;
     }
 
-    .key-btn.action {
-      font-size: 22px;
+    .settings-keypad .key-btn.action {
+      font-size: 11.25px;
       letter-spacing: 0.1px;
     }
 
-    .key-btn.muted {
-      background: linear-gradient(180deg, #bcc2c9 0%, #a8afb8 100%);
-      color: #42454b;
+    .settings-keypad .key-btn.muted {
+      background: linear-gradient(180deg, #c7ccd3 0%, #afb6c0 100%);
+      color: #7d8791;
+      text-shadow: none;
     }
 
-    .key-btn.sign {
+    .settings-keypad .key-btn.sign {
+      font-size: 11.25px;
+    }
+
+    .settings-keypad .key-btn[data-key="0"],
+    .settings-keypad .key-btn[data-key="1"],
+    .settings-keypad .key-btn[data-key="2"],
+    .settings-keypad .key-btn[data-key="3"],
+    .settings-keypad .key-btn[data-key="4"],
+    .settings-keypad .key-btn[data-key="5"],
+    .settings-keypad .key-btn[data-key="6"],
+    .settings-keypad .key-btn[data-key="7"],
+    .settings-keypad .key-btn[data-key="8"],
+    .settings-keypad .key-btn[data-key="9"] {
+      font-size: 19.125px;
+    }
+
+    .settings-keypad .key-btn.action[data-action="done"],
+    .settings-keypad .key-btn.action[data-action="next"] {
+      font-size: 15.525px;
+    }
+
+    .settings-keypad .key-btn.action[data-action="backspace"] {
+      font-size: 0;
+      padding: 0;
+      display: grid;
+      place-items: center;
+    }
+
+    .simbrief-backspace-icon {
+      width: 22px;
+      height: 22px;
+      display: block;
+      pointer-events: none;
+    }
+
+    .settings-std-list {
+      width: 75%;
+      margin: 18px auto 0;
+      border: 1px solid #000000;
+      border-radius: 8px;
+      background: rgba(57, 60, 66, 0.92);
+      box-shadow: inset 0 1px 3px rgba(255, 255, 255, 0.06), inset 0 -2px 6px rgba(0, 0, 0, 0.35);
+      overflow: hidden;
+    }
+
+    .settings-std-btn {
+      width: 100%;
+      min-height: 44px;
+      border: 0;
+      border-top: 1px solid rgba(186, 193, 204, 0.14);
+      background: transparent;
+      color: #f0f3f6;
+      display: grid;
+      grid-template-columns: 1fr auto;
+      align-items: center;
+      gap: 10px;
+      padding: 8px 12px;
+      text-align: left;
+      cursor: pointer;
+    }
+
+    .settings-std-btn:first-child {
+      border-top: 0;
+    }
+
+    .settings-std-btn:hover,
+    .settings-std-btn:focus-visible {
+      background: rgba(87, 193, 235, 0.14);
+      outline: none;
+    }
+
+    .settings-std-label {
+      color: #f0f3f6;
+      font-size: 18px;
+      line-height: 1;
+      letter-spacing: 0.2px;
+    }
+
+    .settings-std-value {
+      color: #57c1eb;
+      font-size: 18px;
+      line-height: 1;
+      letter-spacing: 0.2px;
+      white-space: nowrap;
+    }
+
+    .settings-std-value::after {
+      content: ">";
+      margin-left: 4px;
+      color: #f0f3f6;
+    }
+
+    .settings-choice-panel {
+      position: absolute;
+      left: 20px;
+      right: 20px;
+      top: 20px;
+      bottom: 20px;
+      border-radius: 8px;
+      border: 1px solid #000000;
+      background: linear-gradient(180deg, #8a919c 0%, #656d78 100%);
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+      padding: 10px;
+      z-index: 3;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 140ms ease;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .settings-choice-panel.active {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .settings-choice-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      margin-bottom: 8px;
+    }
+
+    .settings-choice-spacer {
+      width: 48px;
+      flex: 0 0 48px;
+    }
+
+    .settings-choice-title {
+      margin: 0;
+      flex: 1;
+      text-align: center;
+      color: #ffffff;
+      font-size: 22px;
+      line-height: 1;
+      letter-spacing: 0.3px;
+      text-transform: uppercase;
+      font-weight: 700;
+    }
+
+    .settings-choice-close {
+      min-width: 48px;
+      height: 30px;
+      border: 1px solid rgba(189, 196, 208, 0.7);
+      border-radius: 6px;
+      background: linear-gradient(180deg, #ffffff 0%, #e8ebef 100%);
+      color: #42454b;
+      font-size: 16px;
+      font-weight: 700;
+      cursor: pointer;
+      line-height: 1;
+    }
+
+    .settings-choice-help {
+      margin: 0 0 10px;
+      color: #edf1f5;
+      font-size: 16px;
+      text-align: left;
+      line-height: 1.3;
+      letter-spacing: 0.1px;
+      white-space: pre-line;
+    }
+
+    .settings-choice-options {
+      margin-top: 2px;
+      border: 1px solid rgba(186, 193, 204, 0.2);
+      border-radius: 8px;
+      background: rgba(57, 60, 66, 0.92);
+      overflow: auto;
+    }
+
+    .settings-choice-option {
+      width: 100%;
+      border: 0;
+      border-top: 1px solid rgba(186, 193, 204, 0.14);
+      background: transparent;
+      color: #f0f3f6;
       font-size: 20px;
+      letter-spacing: 0.2px;
+      text-align: left;
+      padding: 11px 12px;
+      cursor: pointer;
+      line-height: 1.2;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+    }
+
+    .settings-choice-option:first-child {
+      border-top: 0;
+    }
+
+    .settings-choice-option:hover,
+    .settings-choice-option:focus-visible {
+      background: rgba(87, 193, 235, 0.14);
+      outline: none;
+    }
+
+    .settings-choice-option.active {
+      background: rgba(87, 193, 235, 0.2);
+    }
+
+    .settings-choice-check {
+      width: 18px;
+      height: 18px;
+      display: block;
+      object-fit: contain;
+      opacity: 0;
+      flex: 0 0 18px;
+    }
+
+    .settings-choice-option.active .settings-choice-check {
+      opacity: 1;
     }
 
     .flight-head {
@@ -371,7 +608,8 @@
       border-radius: 8px;
       padding: clamp(10px, 1vw, 14px) clamp(14px, 1.2vw, 20px);
       margin-bottom: 12px;
-      border: 1px solid rgba(180, 186, 196, 0.24);
+      border: 1px solid #000000;
+      box-shadow: inset 0 1px 3px rgba(255, 255, 255, 0.06), inset 0 -2px 6px rgba(0, 0, 0, 0.35);
     }
 
     .flight-title {
@@ -590,9 +828,33 @@
         gap: 12px;
       }
 
-      .key-btn {
-        height: 56px;
-        font-size: 20px;
+      .settings-std-list {
+        width: 100%;
+      }
+
+      .simbrief-field {
+        width: 100%;
+      }
+
+      .settings-choice-panel {
+        left: 12px;
+        right: 12px;
+        top: 12px;
+        bottom: 12px;
+      }
+
+      .settings-choice-title {
+        font-size: 18px;
+      }
+
+      .settings-choice-help {
+        font-size: 14px;
+      }
+
+      .settings-choice-option,
+      .settings-std-label,
+      .settings-std-value {
+        font-size: 16px;
       }
 
       .flight-title {
@@ -1054,7 +1316,13 @@
         <button type="button" class="key-btn" data-key="4">4</button>
         <button type="button" class="key-btn" data-key="5">5</button>
         <button type="button" class="key-btn" data-key="6">6</button>
-        <button type="button" class="key-btn action" data-action="backspace">&#10006;</button>
+        <button type="button" class="key-btn action" data-action="backspace" aria-label="Backspace">
+          <svg class="simbrief-backspace-icon" viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M10 5H20C21.1 5 22 5.9 22 7V17C22 18.1 21.1 19 20 19H10L3 12L10 5Z" fill="#4f5b64" stroke="#4f5b64" stroke-width="1.6" stroke-linejoin="round"/>
+            <path d="M11.5 9L16.5 14" stroke="#ffffff" stroke-width="2" stroke-linecap="round"/>
+            <path d="M16.5 9L11.5 14" stroke="#ffffff" stroke-width="2" stroke-linecap="round"/>
+          </svg>
+        </button>
 
         <button type="button" class="key-btn" data-key="7">7</button>
         <button type="button" class="key-btn" data-key="8">8</button>
@@ -1066,6 +1334,29 @@
         <button type="button" class="key-btn muted sign" data-disabled="true">+/-</button>
         <button type="button" class="key-btn action muted" data-disabled="true">Next</button>
       </div>
+      <div class="settings-std-list" aria-label="Menu impostazioni standard takeoff">
+        <button id="homeToThrustBtn" class="settings-std-btn" type="button" data-settings-menu="to-thrust">
+          <span class="settings-std-label">T.O. THRUST</span>
+          <span id="homeToThrustValue" class="settings-std-value"></span>
+        </button>
+        <button id="homeConfBtn" class="settings-std-btn" type="button" data-settings-menu="conf">
+          <span class="settings-std-label">CONF</span>
+          <span id="homeConfValue" class="settings-std-value"></span>
+        </button>
+        <button id="homeAirCondBtn" class="settings-std-btn" type="button" data-settings-menu="air-cond">
+          <span class="settings-std-label">AIR COND</span>
+          <span id="homeAirCondValue" class="settings-std-value"></span>
+        </button>
+      </div>
+      <section id="settingsChoicePanel" class="settings-choice-panel" aria-hidden="true">
+        <div class="settings-choice-header">
+          <span class="settings-choice-spacer" aria-hidden="true"></span>
+          <p id="settingsChoiceTitle" class="settings-choice-title"></p>
+          <button id="settingsChoiceClose" class="settings-choice-close" type="button">Close</button>
+        </div>
+        <p id="settingsChoiceHelp" class="settings-choice-help"></p>
+        <div id="settingsChoiceOptions" class="settings-choice-options" aria-label="Opzioni impostazione standard"></div>
+      </section>
     </section>
     <div class="grain" aria-hidden="true"></div>
     <div class="top-glow" aria-hidden="true"></div>
@@ -1211,6 +1502,15 @@
     const toValue = document.querySelector('#toValue');
     const rowEditButtons = document.querySelectorAll('.row-edit-btn');
     const keypadButtons = document.querySelectorAll('.settings-keypad .key-btn');
+    const homeToThrustValue = document.querySelector('#homeToThrustValue');
+    const homeConfValue = document.querySelector('#homeConfValue');
+    const homeAirCondValue = document.querySelector('#homeAirCondValue');
+    const settingsMenuButtons = document.querySelectorAll('[data-settings-menu]');
+    const settingsChoicePanel = document.querySelector('#settingsChoicePanel');
+    const settingsChoiceTitle = document.querySelector('#settingsChoiceTitle');
+    const settingsChoiceHelp = document.querySelector('#settingsChoiceHelp');
+    const settingsChoiceOptions = document.querySelector('#settingsChoiceOptions');
+    const settingsChoiceClose = document.querySelector('#settingsChoiceClose');
 
     // Edit Modal Variables
     const editModal = document.querySelector('#editModal');
@@ -1265,8 +1565,40 @@
     const takeoffWindStorageKey = 'flysmart-takeoff-wind';
     const takeoffOatStorageKey = 'flysmart-takeoff-oat';
     const takeoffQnhStorageKey = 'flysmart-takeoff-qnh';
+    const takeoffToThrustStorageKey = 'flysmart-takeoff-to-thrust';
+    const takeoffConfStorageKey = 'flysmart-takeoff-conf';
+    const takeoffAirCondStorageKey = 'flysmart-takeoff-air-cond';
     const takeoffRwyCondStorageKey = 'flysmart-takeoff-rwy-cond';
     const takeoffAIceStorageKey = 'flysmart-takeoff-aice';
+
+    const SETTINGS_MENU_CONFIG = {
+      'to-thrust': {
+        title: 'T.O. THRUST',
+        help: 'Select T.O. THRUST default from the list.',
+        storageKey: takeoffToThrustStorageKey,
+        defaultValue: 'FLEX (STD)',
+        options: ['TOGA', 'FLEX (STD)'],
+        valueElement: homeToThrustValue
+      },
+      conf: {
+        title: 'CONF',
+        help: 'Select CONF default from the list.',
+        storageKey: takeoffConfStorageKey,
+        defaultValue: 'OPT CONF (STD)',
+        options: ['CONF 1+F', 'CONF 2', 'CONF 3', 'OPT CONF (STD)'],
+        valueElement: homeConfValue
+      },
+      'air-cond': {
+        title: 'AIR COND',
+        help: 'Select AIR COND default from the list.',
+        storageKey: takeoffAirCondStorageKey,
+        defaultValue: 'On (STD)',
+        options: ['Off', 'On (STD)'],
+        valueElement: homeAirCondValue
+      }
+    };
+
+    let activeSettingsMenu = null;
 
     const valueElements = {
       aircraftType: aircraftTypeValue,
@@ -1338,6 +1670,90 @@
       const type = (aircraftTypeValue?.textContent || '').trim();
       const from = (fromValue?.textContent || '').trim();
       localStorage.setItem(takeoffHeaderStorageKey, JSON.stringify({ registration, type, from }));
+    };
+
+    const normalizeSettingsMenuValue = (menuKey, value) => {
+      const config = SETTINGS_MENU_CONFIG[menuKey];
+      if (!config) {
+        return '';
+      }
+
+      const cleaned = String(value || '').trim();
+      const matched = config.options.find((option) => option.toLowerCase() === cleaned.toLowerCase());
+      return matched || config.defaultValue;
+    };
+
+    const withoutStdSuffix = (value) => String(value || '').replace(/\s*\(STD\)$/i, '').trim();
+
+    const withStdSuffix = (value) => `${withoutStdSuffix(value)} (STD)`;
+
+    const getSettingsMenuValue = (menuKey) => {
+      const config = SETTINGS_MENU_CONFIG[menuKey];
+      if (!config) {
+        return '';
+      }
+
+      return normalizeSettingsMenuValue(menuKey, localStorage.getItem(config.storageKey) || config.defaultValue);
+    };
+
+    const setSettingsMenuValue = (menuKey, value) => {
+      const config = SETTINGS_MENU_CONFIG[menuKey];
+      if (!config) {
+        return;
+      }
+
+      localStorage.setItem(config.storageKey, normalizeSettingsMenuValue(menuKey, value));
+      renderSettingsMenuValues();
+    };
+
+    const renderSettingsMenuValues = () => {
+      Object.entries(SETTINGS_MENU_CONFIG).forEach(([menuKey, config]) => {
+        if (!config.valueElement) {
+          return;
+        }
+
+        config.valueElement.textContent = withStdSuffix(getSettingsMenuValue(menuKey));
+      });
+    };
+
+    const closeSettingsChoicePanel = () => {
+      activeSettingsMenu = null;
+      settingsChoicePanel?.classList.remove('active');
+      settingsChoicePanel?.setAttribute('aria-hidden', 'true');
+      if (settingsChoiceOptions) {
+        settingsChoiceOptions.innerHTML = '';
+      }
+    };
+
+    const openSettingsChoicePanel = (menuKey) => {
+      const config = SETTINGS_MENU_CONFIG[menuKey];
+      if (!config || !settingsChoicePanel || !settingsChoiceTitle || !settingsChoiceHelp || !settingsChoiceOptions) {
+        return;
+      }
+
+      activeSettingsMenu = menuKey;
+      const currentValue = getSettingsMenuValue(menuKey);
+
+      settingsChoiceTitle.textContent = config.title;
+      settingsChoiceHelp.textContent = config.help;
+      settingsChoiceOptions.innerHTML = '';
+
+      config.options.forEach((option) => {
+        const button = document.createElement('button');
+        button.type = 'button';
+        button.className = 'settings-choice-option';
+        button.classList.toggle('active', option === currentValue);
+        const optionLabel = option === currentValue ? withStdSuffix(option) : withoutStdSuffix(option);
+        button.innerHTML = `<span>${optionLabel}</span><img class="settings-choice-check" src="./v.png" alt="" aria-hidden="true">`;
+        button.addEventListener('click', () => {
+          setSettingsMenuValue(menuKey, option);
+          closeSettingsChoicePanel();
+        });
+        settingsChoiceOptions.appendChild(button);
+      });
+
+      settingsChoicePanel.classList.add('active');
+      settingsChoicePanel.setAttribute('aria-hidden', 'false');
     };
 
     const clearTakeoffSavedData = () => {
@@ -1684,8 +2100,10 @@
 
     applyManualOverrides();
     saveTakeoffHeaderData();
+    renderSettingsMenuValues();
 
     const closeSettings = () => {
+      closeSettingsChoicePanel();
       stage.classList.remove('settings-open');
     };
 
@@ -1701,6 +2119,7 @@
 
       const btnCenterX = btnRect.left - stageRect.left + (btnRect.width / 2);
       const btnBottomY = btnRect.bottom - stageRect.top;
+      const arrowOffsetX = 8;
 
       const desiredArrowOffset = panelWidth - 30;
       const minLeft = 10;
@@ -1710,10 +2129,10 @@
 
       const minTop = 12;
       const maxTop = Math.max(minTop, stageRect.height - panelHeight - 10);
-      let panelTop = btnBottomY + 12;
+      let panelTop = btnBottomY + 2;
       panelTop = Math.min(Math.max(panelTop, minTop), maxTop);
 
-      const arrowX = Math.min(Math.max(btnCenterX - panelLeft, 16), panelWidth - 16);
+      const arrowX = Math.min(Math.max((btnCenterX + arrowOffsetX) - panelLeft, 16), panelWidth - 16);
 
       settingsPanel.style.setProperty('--panel-left', `${panelLeft}px`);
       settingsPanel.style.setProperty('--panel-top', `${panelTop}px`);
@@ -1729,6 +2148,7 @@
     });
 
     settingsBackdrop?.addEventListener('click', closeSettings);
+    settingsChoiceClose?.addEventListener('click', closeSettingsChoicePanel);
     updateBtn?.addEventListener('click', loadSimbriefData);
     takeoffBtn?.addEventListener('click', () => {
       saveTakeoffHeaderData();
@@ -1752,6 +2172,17 @@
     simbriefId?.addEventListener('input', () => {
       updateBtn?.classList.remove('missing-id');
       updateBtn?.classList.remove('load-error');
+    });
+
+    settingsMenuButtons.forEach((button) => {
+      button.addEventListener('click', () => {
+        const menuKey = button.getAttribute('data-settings-menu');
+        if (!menuKey) {
+          return;
+        }
+
+        openSettingsChoicePanel(menuKey);
+      });
     });
 
     keypadButtons.forEach((button) => {
@@ -1826,6 +2257,11 @@
 
     document.addEventListener('keydown', (event) => {
       if (event.key === 'Escape') {
+        if (activeSettingsMenu) {
+          closeSettingsChoicePanel();
+          return;
+        }
+
         if (editModal?.classList.contains('active')) {
           closeEditModal(false);
         } else {
