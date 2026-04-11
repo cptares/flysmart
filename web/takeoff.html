@@ -253,7 +253,8 @@
       left: clamp(14px, 1.2vw, 26px);
       top: clamp(103px, 11%, 180px);
       width: clamp(86px, 24.15%, 334px);
-      transform: scale(0.75);
+      transform: scale(0.703);
+      font-weight: 400;
       transform-origin: top left;
       z-index: 3;
       display: flex;
@@ -291,7 +292,7 @@
       letter-spacing: 0.2px;
       line-height: 1;
       white-space: nowrap;
-      font-weight: 400;
+      font-weight: 300;
       transform: scaleX(0.9);
       transform-origin: left center;
     }
@@ -2088,17 +2089,17 @@
 
     #rwyVizNumber {
       position: absolute;
-      left: 88.05%;
-      top: 80.37%;
+      left: 91.10%;
+      top: 80.07%;
       transform: translate(-50%, -50%);
-      width: 3ch;
-      text-align: center;
+      font-family: "Bahnschrift Condensed", "Arial Narrow", sans-serif;
       font-size: clamp(21px, 1.65vw, 36px);
-      font-weight: 700;
+      font-weight: 400;
       color: #ffffff;
       letter-spacing: 2px;
       text-transform: uppercase;
       text-shadow: 0 1px 4px rgba(0,0,0,0.7);
+      white-space: nowrap;
       pointer-events: none;
       z-index: 100;
       opacity: 0;
@@ -2107,6 +2108,70 @@
 
     .stage.rwy-filled #rwyVizNumber {
       opacity: 1;
+    }
+
+    #rwyVizLength {
+      position: absolute;
+      left: 91.10%;
+      top: 49.05%;
+      transform: translate(-50%, -50%) rotate(-90deg);
+      font-family: "Bahnschrift Condensed", "Arial Narrow", sans-serif;
+      font-size: clamp(20px, 1.56vw, 31px);
+      font-weight: 400;
+      color: #ffffff;
+      letter-spacing: 1px;
+      white-space: nowrap;
+      text-shadow: 0 1px 4px rgba(0,0,0,0.7);
+      pointer-events: none;
+      z-index: 100;
+      opacity: 0;
+      transition: opacity 480ms ease;
+    }
+
+    .stage.rwy-filled #rwyVizLength {
+      opacity: 1;
+    }
+
+    #rwyScaleBar {
+      position: absolute;
+      left: 97.66%;
+      top: 46.58%;
+      height: 11.59%;
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      gap: 0px;
+      opacity: 0;
+      pointer-events: none;
+      z-index: 100;
+      transition: opacity 480ms ease;
+      transform-origin: top center;
+    }
+
+    .stage.rwy-filled #rwyScaleBar {
+      opacity: 1;
+    }
+
+    #rwyScaleBracket {
+      height: 100%;
+      width: clamp(5px, 0.45vw, 9px);
+      margin-left: -6px;
+      border-right: 2px solid rgba(0,0,0,0.85);
+      border-top: 2px solid rgba(0,0,0,0.85);
+      border-bottom: 2px solid rgba(0,0,0,0.85);
+      flex-shrink: 0;
+    }
+
+    #rwyScaleLabel {
+      font-family: "Bahnschrift Condensed", "Arial Narrow", sans-serif;
+      font-size: clamp(10px, 0.72vw, 14px);
+      font-weight: 400;
+      color: rgba(0,0,0,0.85);
+      white-space: nowrap;
+      writing-mode: vertical-rl;
+      transform: rotate(180deg);
+      letter-spacing: 0.5px;
+      text-shadow: none;
     }
 
     .stage.rwy-filled {
@@ -2156,7 +2221,7 @@
       --wind-sock-width: clamp(40px, 3vw, 70px);
       --wind-sock-height: clamp(50px, 4vw, 90px);
       --wind-pivot-x-ratio: 0.5;
-      --wind-pivot-y-ratio: 0.06;
+      --wind-pivot-y-ratio: 0.11;
       --wind-axis-offset-y: calc(var(--wind-sock-height) * var(--wind-pivot-y-ratio));
       --wind-axis-offset-x: calc(var(--wind-sock-width) * var(--wind-pivot-x-ratio));
       width: var(--wind-sock-width);
@@ -3313,10 +3378,21 @@
     <!-- ── RUNWAY BG IMAGE ── -->
     <img id="rwyPageImg" src="./takeoffrwy.png" alt="" aria-hidden="true">
 
+    <!-- ── WIND SOCK ── -->
+    <img src="wind.png" alt="Wind sock" class="wind-sock-overlay" aria-hidden="true" />
+
+    <!-- ── RUNWAY NUMBER ── -->
+    <div id="rwyVizNumber" class="rwy-viz-number"></div>
+    <div id="rwyVizLength"></div>
+
+    <!-- ── SCALE BAR ── -->
+    <div id="rwyScaleBar">
+      <span id="rwyScaleLabel"></span>
+      <div id="rwyScaleBracket"></div>
+    </div>
+
     <!-- ── RUNWAY VISUALIZATION ── -->
     <div id="rwyVisualization" aria-hidden="true">
-      <div id="rwyVizNumber" class="rwy-viz-number"></div>
-      <img src="wind.png" alt="Wind sock" class="wind-sock-overlay" aria-hidden="true" />
       <svg class="wind-components-diagram" viewBox="0 0 84 84" aria-hidden="true">
         <circle id="windComponentCenter" cx="42" cy="42" r="4" fill="#55ff55" />
         <line id="windHeadTailArrow" x1="42" y1="42" x2="42" y2="26" stroke="#55ff55" stroke-width="2" marker-end="url(#arrowgreen)" />
@@ -3599,25 +3675,26 @@
     };
 
     const updateWindSockAnchor = (windFromRight) => {
-      if (!rwyVisualization || !rwyVizTrack || !windSockOverlayEl) {
+      if (!windSockOverlayEl || !stage) {
         return;
       }
 
-      const vizRect = rwyVisualization.getBoundingClientRect();
-      const trackRect = rwyVizTrack.getBoundingClientRect();
+      const stageRect = stage.getBoundingClientRect();
       const sockRect = windSockOverlayEl.getBoundingClientRect();
-      if (!vizRect.width || !trackRect.width || !sockRect.width || !sockRect.height) {
+      if (!stageRect.width || !sockRect.width || !sockRect.height) {
         return;
       }
 
       const pivotXRatio = 0.5;
-      const pivotYRatio = 0.06;
+      const pivotYRatio = 0.11;
       const pivotX = sockRect.width * pivotXRatio;
       const pivotY = sockRect.height * pivotYRatio;
 
-      const runwayCenterlineX = (trackRect.left - vizRect.left) + (trackRect.width / 2);
-      const axisX = runwayCenterlineX + (windFromRight ? 90 : -70);
-      const axisY = (trackRect.top - vizRect.top) + (trackRect.height * 0.20);
+      // Posizioni ancoraggio sull'immagine 2360x1640
+      const axisX = windFromRight
+        ? stageRect.width * (2243 / 2360)
+        : stageRect.width * (1915 / 2360);
+      const axisY = stageRect.height * (448 / 1640);
 
       windSockOverlayEl.style.left = `${axisX - pivotX}px`;
       windSockOverlayEl.style.top = `${axisY - pivotY}px`;
@@ -3856,22 +3933,34 @@
 
     const updateRunwayVisualization = () => {
       const vizNumber = document.querySelector('#rwyVizNumber');
+      const vizLength = document.querySelector('#rwyVizLength');
+      const vizScaleLabel = document.querySelector('#rwyScaleLabel');
+      const vizScaleBar = document.querySelector('#rwyScaleBar');
 
       if (!vizNumber) return;
 
       if (selectedRunway === 'NIL') {
         vizNumber.textContent = '';
+        if (vizLength) vizLength.textContent = '';
+        if (vizScaleLabel) vizScaleLabel.textContent = '';
+        if (vizScaleBar) vizScaleBar.style.height = '';
         return;
       }
 
-      // Centerline spans 6%–92% of track, with background-size 8% → ~10.75 visible segments
-      const SEGMENT_COUNT = 11;
-      const rawSegment = selectedRunwayLengthM / SEGMENT_COUNT;
-      // Round to nearest 50 m (or 25 m for very short runways)
-      const step = rawSegment >= 100 ? 50 : 25;
-      const segmentM = Math.round(rawSegment / step) * step || Math.round(rawSegment);
-
       vizNumber.textContent = selectedRunway;
+      if (vizLength) {
+        vizLength.textContent = selectedRunwayLengthM ? `${selectedRunwayLengthM} m` : '';
+      }
+      if (vizScaleLabel) {
+        vizScaleLabel.textContent = '250 m';
+      }
+      if (vizScaleBar && selectedRunwayLengthM) {
+        // Pista occupa 69.22% dell'altezza stage; 250m in proporzione
+        const heightPct = (250 / selectedRunwayLengthM) * 69.22;
+        vizScaleBar.style.height = `${heightPct.toFixed(3)}%`;
+      } else if (vizScaleBar) {
+        vizScaleBar.style.height = '11.59%';
+      }
     };
 
     const resetTakeoffDependentData = () => {
